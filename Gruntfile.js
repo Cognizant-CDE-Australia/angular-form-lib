@@ -69,7 +69,10 @@ module.exports = function(grunt) {
           options: {
             collapseWhitespace: false
           }
-        }
+        },
+        // A banner to apply to the distributed source code
+        banner: '/*\n Copyright 2014-2015 grunt-modular-project project contributors (see CONTRIBUTORS.md).\n Licenced under Apache 2.0 licence (see LICENCE.txt)\n */\n',
+        bannerFiles: ['<%= modularProject.optimise.dest.cssDir %>docs*.css', '<%= modularProject.optimise.dest.dir %><%= modularProject.output.jsSubDir %>*.js']
       },
 
       release: {
