@@ -5,6 +5,9 @@
     "type": "git",
     "url": "http://github.com/uglow/angular-form-lib.git"
   },
+  "scripts": {
+    "postinstall": "bower install && grunt install"
+  },
   "dependencies": {},
   "devDependencies": {
     "colors": "^1.0.3",
