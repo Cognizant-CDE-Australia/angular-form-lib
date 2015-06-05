@@ -3,8 +3,13 @@
   "version": "0.3.0",
   "repository": {
     "type": "git",
-    "url": "http://github.com/uglow/angular-form-lib.git"
+    "url": "http://github.com/odecee/angular-form-lib.git"
   },
+  "license": "Apache",
+  "bugs": {
+    "url": "https://github.com/odecee/angular-form-lib/issues"
+  },
+  "homepage": "http://odecee.github.io/angular-form-lib",
   "scripts": {
     "postinstall": "bower install && grunt install"
   },

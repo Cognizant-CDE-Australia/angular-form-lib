@@ -1,4 +1,4 @@
-# [Angular Form Library](https://uglow.github.io/angular-form-lib)
+# [Angular Form Library](https://odecee.github.io/angular-form-lib)
 [![Build Status](http://img.shields.io/travis/odecee/angular-form-lib/master.svg?style=flat)](http://travis-ci.org/odecee/angular-form-lib)
 [![Bower version](https://badge.fury.io/bo/angular-form-lib.svg)](http://badge.fury.io/bo/angular-form-lib)
 [![Code Climate](https://codeclimate.com/github/odecee/angular-form-lib/badges/gpa.svg)](https://codeclimate.com/github/odecee/angular-form-lib)
@@ -14,3 +14,7 @@ bower install angular-form-lib --save
 See [https://odecee.github.io/angular-form-lib](https://odecee.github.io/angular-form-lib/##gettingStarted) for details.
 
 [Contributing](CONTRIBUTING.md)
+
+[Contributors](CONTRIBUTORS.md)
+
+[Change Log](CHANGELOG.md)

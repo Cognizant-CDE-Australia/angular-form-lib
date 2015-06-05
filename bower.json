@@ -14,7 +14,7 @@
     "forms",
     "bootstrap"
   ],
-  "license": "MIT",
+  "license": "Apache",
   "private": false,
   "ignore": [
     "**/.*",

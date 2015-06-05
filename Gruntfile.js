@@ -71,8 +71,12 @@ module.exports = function(grunt) {
           }
         },
         // A banner to apply to the distributed source code
-        banner: '/*\n Copyright 2014-2015 grunt-modular-project project contributors (see CONTRIBUTORS.md).\n Licenced under Apache 2.0 licence (see LICENCE.txt)\n */\n',
-        bannerFiles: ['<%= modularProject.optimise.dest.cssDir %>docs*.css', '<%= modularProject.optimise.dest.dir %><%= modularProject.output.jsSubDir %>*.js']
+        banner: '/*\n Copyright 2014-2015 angular-form-lib project contributors (see CONTRIBUTORS.md).\n Licenced under Apache 2.0 licence (see LICENCE.txt)\n*/\n',
+        bannerFiles: [
+          '<%= modularProject.optimise.dest.cssDir %>docs*.css',
+          '<%= modularProject.optimise.dest.dir %><%= modularProject.output.jsSubDir %>*.js',
+          '<%= modularProject.buildLibrary.libDir %>**/*.js'
+        ]
       },
 
       release: {
