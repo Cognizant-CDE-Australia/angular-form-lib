@@ -17,4 +17,6 @@ See [https://odecee.github.io/angular-form-lib](https://odecee.github.io/angular
 
 [Contributors](CONTRIBUTORS.md)
 
+[License](LICENSE.txt)
+
 [Change Log](CHANGELOG.md)
