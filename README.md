@@ -19,12 +19,13 @@ See [https://odecee.github.io/angular-form-lib](https://odecee.github.io/angular
 
 We welcome external contributions.  If you extend angular-form-lib with new features please consider making them available to others.  See [Contributing](CONTRIBUTING.md) for information that will make your contributions easier to incorporate.
 
-[Contributors](CONTRIBUTORS.md) contains a list of people who have currently contributed to this project.
+Before your code can be accepted into the project you must also sign the [Individual Contributor License Agreement (CLA)](https://drive.google.com/open?id=1EmjFp3rJYnQU2pFX0A1hgSaHRoAaB_6PUopmmSmeByg).
 
-## <a name="licence"></a> Licence
-
-This project is released under the Apache Licence version 2.0.  Please see LICENCE.txt for a copy of the licence.
-[License](LICENSE.txt)
+See [Contributors](CONTRIBUTORS.md) for a list of people who have contributed to this project.
 
 ## <a name="changes"></a> Changes
 See [Change Log](CHANGELOG.md) for a complete list of changes.
+
+## <a name="licence"></a> Licence
+
+This project is released under the Apache Licence version 2.0.  Please see [License.txt](LICENSE.txt) for a copy of the licence.
