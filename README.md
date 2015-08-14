@@ -3,6 +3,7 @@
 [![Bower version](https://badge.fury.io/bo/angular-form-lib.svg)](http://badge.fury.io/bo/angular-form-lib)
 [![Code Climate](https://codeclimate.com/github/Odecee/angular-form-lib/badges/gpa.svg)](https://codeclimate.com/github/Odecee/angular-form-lib)
 [![Test Coverage](https://codeclimate.com/github/Odecee/angular-form-lib/badges/coverage.svg)](https://codeclimate.com/github/Odecee/angular-form-lib/coverage)
+
 Angular Form Library provides AngularJS 1.2+ directives for controlling form behaviour using policies with accessible form controls.
 
 ## <a name="download"></a> Download
