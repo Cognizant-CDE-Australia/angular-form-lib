@@ -1,0 +1,27 @@
+# Save as .codeclimate.yml (note leading .) in project root directory
+languages:
+  JavaScript: true
+exclude_paths:
+- "/config/*"
+- "*.spec.js"
+- "lib/*"
+- "dist/*"
+- "dist/ng-form-lib.js"
+- "dist/ng-form-lib.min.js"
+- "dist/src/common.js"
+- "dist/src/ngFormLib.js"
+- "dist/src/ngFormLib/controls.js"
+- "dist/src/ngFormLib/policy.js"
+- "dist/src/ngFormLib/controls/common.js"
+- "dist/src/ngFormLib/controls/errorMessageContainer.js"
+- "dist/src/ngFormLib/controls/formCheckbox.js"
+- "dist/src/ngFormLib/controls/formDate.js"
+- "dist/src/ngFormLib/controls/formInput.js"
+- "dist/src/ngFormLib/controls/formRadioButton.js"
+- "dist/src/ngFormLib/controls/formReset.js"
+- "dist/src/ngFormLib/controls/formSelect.js"
+- "dist/src/ngFormLib/controls/formSubmit.js"
+- "dist/src/ngFormLib/controls/requiredMarker.js"
+- "dist/src/ngFormLib/policy/behaviourOnStateChange.js"
+- "dist/src/ngFormLib/policy/checkForStateChanges.js"
+- "dist/src/ngFormLib/policy/stateDefinitions.js"
