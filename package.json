@@ -10,9 +10,7 @@
     "url": "https://github.com/Odecee/angular-form-lib/issues"
   },
   "homepage": "http://odecee.github.io/angular-form-lib",
-  "scripts": {
-    "postinstall": "bower install && grunt install"
-  },
+  "scripts": {},
   "dependencies": {},
   "devDependencies": {
     "colors": "^1.1.2",
