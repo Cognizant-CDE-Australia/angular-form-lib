@@ -1,3 +1,8 @@
+/*
+ Copyright 2014-2015 angular-form-lib project contributors (see CONTRIBUTORS.md).
+ Licenced under Apache 2.0 licence (see LICENCE.txt)
+*/
+
 (function(angular) {
   'use strict';
 
@@ -1276,7 +1281,8 @@ angular.module('ngFormLib/controls/requiredMarker/template/RequiredMarkerTemplat
         // Use element.data() to store a reference to this element for use by child.inheritedData()
         // Will storing an element this way cause a memory leak? Or should I just store the data I currently need (attr.class)
         // This has to happen during the compile step, as the children need access to the variable when they are compiled
-        tElement.data('formElementClasses', tAttr['class']);
+        //  ('class' is a reserved word to JavaScript, so we need to treat it as a string)
+        tElement.data('formElementClasses', tAttr['class']);  //jscs:ignore
 
         return {
           pre: function(scope, element, attr, controller) {
