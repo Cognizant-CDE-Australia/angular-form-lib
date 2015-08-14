@@ -1,7 +1,7 @@
 {
   "version": "0.3.0",
   "repository": {
-    "host": "//github.com/odecee/angular-form-lib/",
+    "host": "//github.com/Odecee/angular-form-lib/",
     "branch": "blob/master/"
   },
   "sitemap": [

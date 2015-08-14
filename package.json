@@ -3,11 +3,11 @@
   "version": "0.3.0",
   "repository": {
     "type": "git",
-    "url": "http://github.com/odecee/angular-form-lib.git"
+    "url": "http://github.com/Odecee/angular-form-lib.git"
   },
   "license": "Apache",
   "bugs": {
-    "url": "https://github.com/odecee/angular-form-lib/issues"
+    "url": "https://github.com/Odecee/angular-form-lib/issues"
   },
   "homepage": "http://odecee.github.io/angular-form-lib",
   "scripts": {
@@ -17,7 +17,7 @@
   "devDependencies": {
     "colors": "^1.1.2",
     "compression": "^1.5.2",
-    "conventional-changelog": "0.3.2",
+    "conventional-changelog": "0.0.11",
     "grunt": "^0.4.5",
     "grunt-angular-templates": "^0.5.7",
     "grunt-autoprefixer": "^3.0.3",
