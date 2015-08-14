@@ -26,10 +26,17 @@ From the command line, you can run the following commands:
 - `grunt test`: Runs unit tests in PhantomJS
 - `grunt test:browser`: Runs unit tests in Chrome (useful for debugging)
 
-# Notes
+### Notes
 - If Grunt throws errors for missing dependencies try installing them manually through npm install *filename*
 - If node has permission errors ensure that it has ownership of the global directory.
 
+## Releasing a new version
+
+- `grunt build test` should pass
+- Commit and push all changes to git
+- `grunt release:major|minor|patch(default)` to create a new version, update package.json and changelog
+- Push changes
+- `bower update`
 
 ## Git Commit Guidelines
 
