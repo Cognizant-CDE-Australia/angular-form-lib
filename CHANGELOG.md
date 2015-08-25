@@ -1,3 +1,17 @@
+## 0.4.0 (2015-08-26)
+
+
+#### Bug Fixes
+
+* **namespace:** add 'ngFormLib' prefix to the utility library to avoid collisions in host projec ([40215454](http://github.com/Odecee/angular-form-lib/commit/402154543dc1fbf79db185b8641d6a755e94057c))
+* **test:** make directive tests work with different versions of Angular (which add extra cl ([7e03e706](http://github.com/Odecee/angular-form-lib/commit/7e03e706ce2ba66f0ef22ddcafc5370336ce1a45))
+
+
+#### Features
+
+* **commonjs:** add CommonJS wrapper around main file ([171b6417](http://github.com/Odecee/angular-form-lib/commit/171b6417dbc4c5afc038574850f691c08ab5fc05))
+
+
 ### 0.3.1 (2015-08-14)
 
 
