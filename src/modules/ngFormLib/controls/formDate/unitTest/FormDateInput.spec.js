@@ -7,12 +7,12 @@ describe('Date Directives spec,', function() {
   beforeEach(function() {
     angular.mock.module('ngFormLib.controls.formDate');
 
-    inject(function(_$compile_, $rootScope, _DateUtil_) {
+    inject(function(_$compile_, $rootScope, ngFormLibDateUtil) {
       scope = $rootScope.$new();
       compileElement = function(html) {
         return _$compile_(html)(scope);
       };
-      DateUtil = _DateUtil_;
+      DateUtil = ngFormLibDateUtil;
     });
   });
 

@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('ngFormLib.controls.common', [
-    'common.utility',
+    'ngFormLib.common.utility',
     'ngFormLib.controls.requiredMarker',
     // Template-modules (HTML that is converted into an Angular template)
     'ngFormLib/controls/formCheckbox/template/FormCheckboxTemplate.html',

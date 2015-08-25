@@ -1,6 +1,6 @@
 (function(angular) {
   'use strict';
 
-  angular.module('common.utility', []);
-  angular.module('common', ['common.utility']);
+  angular.module('ngFormLib.common.utility', []);
+  angular.module('ngFormLib.common', ['ngFormLib.common.utility']);
 })(window.angular);

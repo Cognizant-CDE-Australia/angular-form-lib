@@ -67,7 +67,7 @@
       }
     };
 
-    this.$get = ['StringUtil', '$interpolate', function(StringUtil) {
+    this.$get = ['ngFormLibStringUtil', '$interpolate', function(StringUtil) {
 
       var service = {
         defaults: self.defaults,

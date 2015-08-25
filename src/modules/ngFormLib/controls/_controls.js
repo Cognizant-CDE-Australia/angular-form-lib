@@ -1,7 +1,7 @@
 (function(angular) {
   'use strict';
 
-  // We need the utility module for the DateUtil.getDate() method for the formDateFormat directive, and StringUtil.trim() in controls.common
+  // We need the utility module for the ngFormLibDateUtil.getDate() method for the formDateFormat directive, and ngFormLibStringUtil.trim() in controls.common
   angular.module('ngFormLib.controls', [
     'ngFormLib.controls.errorMessageContainer',
     'ngFormLib.controls.formCheckbox',

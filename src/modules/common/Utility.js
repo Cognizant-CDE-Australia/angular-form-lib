@@ -1,9 +1,9 @@
 (function(angular) {
   'use strict';
 
-  var mod = angular.module('common.utility', []);
+  var mod = angular.module('ngFormLib.common.utility', []);
 
-  mod.constant('DateUtil', {
+  mod.constant('ngFormLibDateUtil', {
     convertDate: function(dateStr, newSep) {
       // Converts a date between dd/mm/yyyy and yyyy-mm-dd
       if (!dateStr || !newSep || !(newSep === '/' || newSep === '-')) {
@@ -56,7 +56,7 @@
   });
 
 
-  mod.constant('StringUtil', (function() {
+  mod.constant('ngFormLibStringUtil', (function() {
     var trimRegExp = /^\s+|\s+$/g;
 
     return {
@@ -70,7 +70,7 @@
   })());
 
 
-  mod.constant('NumberUtil', (function() {
+  mod.constant('ngFormLibNumberUtil', (function() {
     var isDigitsRegExp = /^\d+$/;
 
     return {
@@ -81,7 +81,7 @@
   })());
 
 
-  mod.constant('ObjectUtil', {
+  mod.constant('ngFormLibObjectUtil', {
     getUniqueId: function() {
       return ('' + (new Date()).getTime() + Math.random()).replace(/\./, '');
     },
