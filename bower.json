@@ -28,9 +28,9 @@
     "/src/**"
   ],
   "dependencies": {
-    "angular": "~1.2.0",
-    "angular-animate": "~1.2.0",
-    "angular-scroll": "*",
+    "angular": "1.2.x",
+    "angular-animate": "1.2.x",
+    "angular-scroll": "0.7.1",
     "angular-translate": "2.x",
     "angular-translate-loader-static-files": "2.x"
   },
@@ -41,6 +41,6 @@
     "highlightjs": "~8.3.0"
   },
   "resolutions": {
-    "angular": "1.4.0"
+    "angular": "1.2.x"
   }
 }

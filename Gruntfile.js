@@ -50,13 +50,14 @@ module.exports = function(grunt) {
         // Public config
         tasks: [
           'mpBuildLibrary',
+          'usebanner:commonjs',
           'clean:optimised',
           'concurrent:optimisedImages',
           'copy:optimised',
           'concat:optimised', 'uglify:optimised',
           'mpOptimiseHTMLTags', 'targethtml:optimised',
           'filerev:optimised', 'useminOptimised',
-          'htmlmin:optimised', 'usebanner',
+          'htmlmin:optimised', 'usebanner:dist',
           'beep:twobits'
         ],
 
@@ -105,6 +106,18 @@ module.exports = function(grunt) {
         }
       }
     },
+    usebanner: {
+      commonjs: {
+        options: {
+          position: 'top',
+          banner: '/* commonjs package manager support (eg componentjs) */\nif (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){\n  module.exports = "angular-form-lib";\n}\n'
+        },
+        files: {
+          src: '<%= PKG.main %>'
+        }
+      }
+    },
+
     'gh-pages': {
       options: {
         tag: 'v<%= PKG.version %>_doc',
