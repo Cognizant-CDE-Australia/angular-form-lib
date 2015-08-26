@@ -1,3 +1,11 @@
+### 0.4.1 (2015-08-26)
+
+
+#### Features
+
+* **npm:** ignore unnecessary files in NPM package ([fb8d999e](http://github.com/Odecee/angular-form-lib/commit/fb8d999ebb0175e17b635d0750a9a6c33a1ee24e))
+
+
 ## 0.4.0 (2015-08-26)
 
 

@@ -1,7 +1,7 @@
 {
   "name": "angular-form-lib",
   "description": "Form library for Angular 1.x featuring accessibilty and Bootstrap style-ability",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "main": "lib/ng-form-lib.js",
   "repository": {
     "type": "git",
