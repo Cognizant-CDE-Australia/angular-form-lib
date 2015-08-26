@@ -1,6 +1,6 @@
 {
   "name": "angular-form-lib",
-  "description": "Form library for Angular 1.x featuring accessibilty and Bootstrap style-ability",
+  "description": "AngularJS 1.2+ directives for controlling form behaviour using policies with accessible form controls",
   "version": "0.4.1",
   "main": "lib/ng-form-lib.js",
   "repository": {
