@@ -1,3 +1,11 @@
+### 0.4.2 (2015-08-26)
+
+
+#### Bug Fixes
+
+* **npm:** don't ignore necessary files in NPM package ([67446de3](http://github.com/Odecee/angular-form-lib/commit/67446de39a355931f807f28243f3567094d1b75e))
+
+
 ### 0.4.1 (2015-08-26)
 
 
