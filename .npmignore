@@ -1,0 +1,14 @@
+/.tmp
+/.idea
+/bower_components
+/config
+/dev
+/dist
+/reports
+/lib
+/src
+/config
+.*
+npm-debug.log
+*.tar.gz
+
