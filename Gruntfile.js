@@ -110,7 +110,7 @@ module.exports = function(grunt) {
       commonjs: {
         options: {
           position: 'top',
-          banner: '/* commonjs package manager support (eg componentjs) */\nif (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){\n  module.exports = "angular-form-lib";\n}\n'
+          banner: '/* commonjs package manager support (eg componentjs) */\nif (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){\n  module.exports = "ngFormLib";\n}\n'
         },
         files: {
           src: '<%= PKG.main %>'
