@@ -8,10 +8,11 @@
     "url": "http://github.com/Odecee/angular-form-lib.git"
   },
   "license": "Apache",
+  "homepage": "http://odecee.github.io/angular-form-lib",
+  "keywords": ["angular", "form", "IE8"],
   "bugs": {
     "url": "https://github.com/Odecee/angular-form-lib/issues"
   },
-  "homepage": "http://odecee.github.io/angular-form-lib",
   "scripts": {},
   "dependencies": {},
   "devDependencies": {
