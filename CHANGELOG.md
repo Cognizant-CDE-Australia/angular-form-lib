@@ -1,3 +1,11 @@
+## 0.5.0 (2015-09-15)
+
+
+#### Features
+
+* **isolateComponents:** support isolate components that contain ngFormLib controls ([f80bd485](http://github.com/Odecee/angular-form-lib/commit/f80bd4850e052cd66c3d87f2cd14fb19d525e352))
+
+
 ### 0.4.3 (2015-08-28)
 
 
