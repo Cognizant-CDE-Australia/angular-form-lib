@@ -46,7 +46,7 @@
         fieldName = formName + '.' + name,
         stateConditions = formPolicy.stateDefinitions(formName, fieldName);
 
-      formPolicy.checkForStateChanges(scope, element, name, stateConditions, ngModelController, formController);
+      formPolicy.checkForStateChanges(formController._scope, element, name, stateConditions, ngModelController, formController);
     }
 
 
@@ -71,7 +71,7 @@
           }
 
           // When the error-showing flag changes, update the field style
-          scope.$watch(formName + '.' + name + '.fieldState', function(fieldState) {
+          formController._scope.$watch(formName + '.' + name + '.fieldState', function(fieldState) {
             updateAriaFeatures(fieldState, element, formName, name);
             updateElementStyle(fieldState, formGroupElement, formController._policy);
 

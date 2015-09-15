@@ -54,7 +54,7 @@
      */
     function toggleErrorVisibilityOnError(controller, formController, scope, element, watchExpr, errorType, errorText, fieldLabel) {
       //console.log('watchExpr = ' + watchExpr);
-      scope.$watch(watchExpr, function(newValue) {
+      formController._scope.$watch(watchExpr, function(newValue) {
         if (newValue) {
           // The error text could contain an interpolation string, so we need to compile it
           var val = $compile(generateErrorTag(errorType, errorText, fieldLabel))(scope);
@@ -74,7 +74,7 @@
     function toggleErrorVisibilityForTextError(errorController, formController, fieldController, scope, element, watchExpr, fieldLabel) {
       //console.log('Watching error: ' + watchExpr);
 
-      scope.$watch(watchExpr, function(newValue) {
+      formController._scope.$watch(watchExpr, function(newValue) {
         // Update the validity of the field's "watchExpr" error-key to match the value of the errorText
         fieldController.$setValidity(watchExpr, !newValue);
 

@@ -82,6 +82,9 @@
             var formController = controller[0];
             formController._policy = angular.extend(formPolicyService.getCurrentPolicy(), scope.formPolicy());
 
+            // Add a reference to the <form> element's scope to the formController, to support showing errors for nested components
+            formController._scope = scope.$parent;
+
             // Determine if we have a parent form controller. If we do, we want to use it for the focus behaviour
             formController._parentController = element.parent().controller('form');
 
