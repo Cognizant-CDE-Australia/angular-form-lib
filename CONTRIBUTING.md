@@ -36,7 +36,7 @@ From the command line, you can run the following commands:
 - Commit and push all changes to git
 - `grunt release:major|minor|patch(default)` to create a new version, update package.json and changelog
 - Push changes
-- `bower update`
+- `npm publish`
 
 ## Git Commit Guidelines
 
