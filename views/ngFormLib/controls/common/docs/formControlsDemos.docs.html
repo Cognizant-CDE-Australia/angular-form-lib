@@ -22,6 +22,8 @@
 
         <div form-checkbox uid=formDemo1_fld3 name=formDemo1_fld3 required=true ff-ng-model=ctrl.formDemo1.fld1_3 field-errors="{required: 'You must agree'}">You are required to agree to this</div>
 
+        <div form-input uid=formDemo1_fld4 label=Income required=true input-type=text input-prefix=$ input-suffix="per month" ff-ng-model=ctrl.formDemo1.fld4 field-errors="{required: 'Income is required'}"></div>
+
         <fieldset form-group>
           <div ng-repeat="item in ctrl.titleData">
             <div form-radio-button uid=formDemo1_fld{{$index}} name=formDemo1_group1 ff-ng-model=ctrl.formDemo1.group1 ff-ng-value=$index required=true>{{item.label}}</div>
@@ -50,6 +52,8 @@
 
         <div form-checkbox uid=formDemo2_fld3 name=formDemo2_fld3 required=true ff-ng-model=ctrl.formDemo2.fld2_3 field-errors="{required: 'You must agree'}">You are required to agree to this</div>
 
+        <div form-input uid=formDemo2_fld4 label=Income required=true input-type=text input-prefix=$ input-suffix="per month" ff-ng-model=ctrl.formDemo2.fld4 field-errors="{required: 'Income is required'}"></div>
+
         <fieldset form-group>
           <div ng-repeat="item in ctrl.titleData">
             <div form-radio-button uid=formDemo2_fld{{$index}} name=formDemo2_group1 ff-ng-model=ctrl.formDemo2.group1 ff-ng-value=$index required=true hide-required-indicator=true>{{item.label}}</div>
@@ -74,6 +78,8 @@
       <fieldset>
 
         <div form-input uid=formDemo3_fld1 name=formDemo3_fld1 label="Nick Name" hide-label=true required=true input-type=text ff-ng-model=ctrl.formDemo3.fld1 ff-maxlength=40 ff-ng-pattern="/^[a-zA-Z0-9 \-.']+$/" ff-placeholder="Enter Nick Name" field-errors="{required: 'Last name is required', pattern: 'Please enter a valid last name'}"></div>
+
+        <div form-input uid=formDemo3_fld4 label=Income hide-label=true required=true ff-style=width:40px input-type=text input-prefix=$ ff-ng-model=ctrl.formDemo3.fld4 field-errors="{required: 'Income is required'}"></div>
 
         <div form-select uid=formDemo3_fld2 name=formDemo3_fld2 label="Common field" hide-label=true required=true ff-ng-model=ctrl.formDemo3.fld2 ff-ng-options="item.label for item in ctrl.titleData track by item.label" placeholder="Enter Title" field-errors="{required: 'Title is required'}"></div>
 
@@ -135,7 +141,9 @@
           <div class=control-row>
             <div ng-repeat="school in ctrl.formDemo4.education" class="form form-inline" ng-init="schoolIndex = $index">
               <div ng-form=formDemo4_subform>
-                <div form-input uid=formDemo4_subform{{$index}}_fld1 name=formDemo4_subform_fld1 label=School hide-label=true required=true input-type=text ff-placeholder="School Name" ff-ng-model=school.name ff-maxlength=30 field-errors="{required: 'School name is required'}"></div>
+                <div form-input uid=formDemo4_subform{{$index}}_fld1 name=formDemo4_subform_fld1 label=School hide-label=true required=true input-type=text ff-placeholder="School Name" ff-ng-model=school.name ff-maxlength=30 ff-style="width: 100px" field-errors="{required: 'School name is required'}"></div>
+
+                <div form-input uid=formDemo4_subform{{$index}}_fld4 label=Income hide-label=true required=true ff-style=width:40px input-type=text input-prefix=$ ff-ng-model=school.income field-errors="{required: 'Income is required'}"></div>
 
                 <div form-select uid=formDemo4_subform{{$index}}_fld2 name=formDemo4_subform_fld2 label=Type hide-label=true required=true placeholder="School Type" ff-ng-model=school.type ff-ng-options="item.label for item in ctrl.schoolData track by item.label" field-errors="{required: 'Type is required'}"></div>
 
