@@ -1,3 +1,11 @@
+## 0.6.0 (2015-09-16)
+
+
+#### Features
+
+* **formInput:** add support for Bootstrap input-group add-ons ([76ada2a1](http://github.com/Odecee/angular-form-lib/commit/76ada2a1c6e1515b1af6656677275b18c6bb0f95))
+
+
 ## 0.5.0 (2015-09-15)
 
 
