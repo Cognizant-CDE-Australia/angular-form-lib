@@ -21,12 +21,6 @@
 
   mod.directive('formInput', ['formControlService', function(formControlService) {
 
-    function addPlaceholder(inputElem, placeholderText) {
-      if (placeholderText) {
-        inputElem.attr('placeholder', placeholderText);
-      }
-    }
-
     return formControlService.buildDirective({
       controlName: 'formInput',
       templateType: 'template',
@@ -36,9 +30,36 @@
         labelElem.prepend(tAttr.label);
         addPlaceholder(inputElem, tAttr.placeholder); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 
+        // If the user wants to use 'input-addon-prefix' or 'input-addon-suffix', change the DOM
+        var hasInputGroup = addInputGroup(inputElem, tAttr.inputPrefix, tAttr.inputSuffix);
+        var parentElemForErrors = (hasInputGroup) ? inputElem.parent().parent() : inputElem.parent();
+
         formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
-        formControlService.createErrorFeatures(inputElem.parent(), inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);
+        formControlService.createErrorFeatures(parentElemForErrors, inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);
       }
     });
   }]);
+
+  function addPlaceholder(inputElem, placeholderText) {
+    if (placeholderText) {
+      inputElem.attr('placeholder', placeholderText);
+    }
+  }
+
+
+  function addInputGroup(inputElem, inputGroupPrefix, inputGroupSuffix) {
+    if (inputGroupPrefix || inputGroupSuffix) {
+      inputElem.wrap('<div class="input-group">');
+
+      if (inputGroupPrefix) {
+        inputElem.parent().prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
+      }
+      if (inputGroupSuffix) {
+        inputElem.parent().append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
+      }
+      return true;
+    }
+    return false;
+  }
+
 })(window.angular);

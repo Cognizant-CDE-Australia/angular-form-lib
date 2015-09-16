@@ -59,7 +59,6 @@ describe('Form Input Directive', function() {
     elem = compileElement('<form name="frm"><form-input uid="fld" name="fldName" label="hi" hide-label="true" input-type="text" required="some.value"></form>');
     scope.$digest();
 
-    // Added form directive bits HTML changes initially
     expect(elem.find('label').hasClass('sr-only')).toEqual(true);
   });
 
@@ -68,7 +67,6 @@ describe('Form Input Directive', function() {
     elem = compileElement('<form-input uid="fld" name="name" label="Some field" input-type="text" ff-a="1" ff-b="true" ff-maxlength="8" ff-class="newClass">');
     scope.$digest();
 
-    // Added form directive bits HTML changes initially
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control newClass" id="fld" name="name" a="1" b="true" maxlength="8" ng-required="false" aria-required="false">');
   });
 
@@ -77,15 +75,37 @@ describe('Form Input Directive', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" placeholder="direct">');
     scope.$digest();
 
-    // Added form directive bits HTML changes initially
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false" placeholder="direct">');
 
     // Now use ff-placeholder
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" ff-placeholder="indirect">');
     scope.$digest();
 
-    // Added form directive bits HTML changes initially
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control" id="fld" name="fld" placeholder="indirect" ng-required="false" aria-required="false">');
+  });
+
+
+  it('should support input-prefix to add a Bootstrap input group addon before the field', function() {
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-prefix="AUD">');
+    scope.$digest();
+
+    expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-addon">AUD</span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"></div>');
+  });
+
+
+  it('should support input-suffix to add a Bootstrap input group addon after the field', function() {
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-suffix="per hour">');
+    scope.$digest();
+
+    expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-addon">per hour</span></div>');
+  });
+
+
+  it('should support both input-prefix and input-suffix to add a Bootstrap input group addons before and after the field', function() {
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-prefix="$" input-suffix="per hour">');
+    scope.$digest();
+
+    expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-addon">$</span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-addon">per hour</span></div>');
   });
 
 
@@ -139,7 +159,6 @@ describe('Form Input Directive', function() {
       elem = compileElement('<form name="frm"><div ng-repeat="item in items"><form-input uid="fld{{$index + item}}" name="fldName{{$index}}" label="hi {{item}}" input-type="text"></div></form>');
       scope.$digest();
 
-      // Added form directive bits HTML changes initially
       expect(elem.find('label').eq(0).attr('for')).toEqual('fld0a');
       expect(elem.find('label').eq(1).attr('for')).toEqual('fld1b');
       expect(elem.find('label').eq(2).attr('for')).toEqual('fld2c');

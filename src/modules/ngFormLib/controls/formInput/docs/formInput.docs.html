@@ -37,9 +37,14 @@
          input-type="date" ff-ng-model="ctrl.formInput1.fld2"
         ></div>
 
+      <div form-input uid="formInput1_fld3" name="formInput1_fld3" label="Income" required="true"
+           input-type="text" input-prefix="$" input-suffix="per month" ff-ng-model="ctrl.formInput1.fld3"
+           field-errors="{required: 'Income is required'}"
+          ></div>
+
       <!-- Use generated ids -->
       <div form-input label="Generated id field" required="true" input-type="text"
-           ff-ng-model="ctrl.formInput1.fld3" placeholder="This field has a generated name and id"
+           ff-ng-model="ctrl.formInput1.fld4" placeholder="This field has a generated name and id"
            field-errors="{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}"
           ></div>
 
@@ -69,6 +74,22 @@
           <td>string</td>
           <td></td>
           <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field.</td>
+        </tr>
+        <tr>
+          <td>input-prefix</td>
+          <td>string</td>
+          <td></td>
+          <td>Creates a Bootstrap <a href="http://getbootstrap.com/components/#input-groups" target="_blank">input group</a> around the input
+            element and displays the <strong>input-prefix</strong> string inside a <code>&lt;span class="input-group-addon"&gt;&lt;/span&gt;</code> element, which appears <strong>before</strong> the <code>input</code> element.
+          </td>
+        </tr>
+        <tr>
+          <td>input-suffix</td>
+          <td>string</td>
+          <td></td>
+          <td>Creates a Bootstrap <a href="http://getbootstrap.com/components/#input-groups" target="_blank">input group</a> around the input
+            element and displays the <strong>input-suffix</strong> string inside a <code>&lt;span class="input-group-addon"&gt;&lt;/span&gt;</code> element, which appears <strong>after</strong> the <code>input</code> element.
+          </td>
         </tr>
         <tr>
           <td>placeholder</td>

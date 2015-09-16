@@ -156,7 +156,7 @@ describe('Error Message Container directive', function() {
 
       elem.triggerHandler('submit');
 
-      angular.element(document.body).append(elem);
+      //angular.element(document.body).append(elem);
 
       expect(elem.find('input').eq(0).hasClass('ng-invalid')).toEqual(true);
       expect(elem.find('input').eq(1).hasClass('ng-invalid')).toEqual(false);
