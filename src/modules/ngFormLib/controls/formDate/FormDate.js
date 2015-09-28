@@ -22,7 +22,6 @@
 
     return formControlService.buildDirective({
       controlName: 'formDate',
-      templateType: 'templateUrl',
       expectedTemplateElements: ['input', 'label'],
       expectedAttributes: ['label'],
       configFn: function(tElement, tAttr, id, name, inputElem, labelElem) {

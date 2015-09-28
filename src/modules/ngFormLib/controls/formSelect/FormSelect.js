@@ -27,7 +27,6 @@
 
     return formControlService.buildDirective({
       controlName: 'formSelect',
-      templateType: 'templateUrl',
       inputElementName: 'select',
       expectedTemplateElements: ['select', 'label'],
       expectedAttributes: ['label'],

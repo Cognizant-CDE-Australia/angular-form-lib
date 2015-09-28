@@ -9,17 +9,18 @@
 
     <form name="formDemo1" class="form" novalidate form-submit="">
       <fieldset>
+        <!-- You can manually-assemble your label, control and errors this way... -->
         <div class="form-group">
           <label class="control-label" for="formDemo1_fldTitle">Title</label>
           <div class="control-row">
             <select id="formDemo1_fldTitle" name="formDemo1_fldTitle" ng-model="ctrl.formDemo1.title"
                     ng-options="item.label for item in ctrl.titleData track by item.label" class="form-control"
-                    ng-required="false" field-error-controller></select>
+                    ng-required="true" field-error-controller></select>
           </div>
           <div error-container field-name="formDemo1_fldTitle" field-errors="{required: 'Please select a title'}"></div>
         </div>
 
-        <!-- form-input directive generates everything you need -->
+        <!-- ...or can use the form-xxx directives to generate everything instead! -->
         <div form-input uid="formDemo1_fldName" name="formDemo1_fldName" label="Name" label-suffix="(40 chars)" required="true"
              input-type="text" ff-ng-model="ctrl.formDemo1.name" ff-maxlength="40" ff-ng-pattern="/^[a-zA-Z0-9 \-.']+$/"
              field-errors="{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}"

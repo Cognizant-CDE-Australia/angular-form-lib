@@ -52,8 +52,8 @@
         formDate: {
           template:           'ngFormLib/controls/formDate/template/FormDateInputTemplate.html'
         },
-        formInput: {              // This has to be a string as we need to dynamically replace the #type# variable BEFORE the template is turned into a DOM element
-          template:           '<div class="form-group"><label class="control-label"></label><div class="control-row"><input #type# class="form-control"><span ng-transclude></span></div></div>'
+        formInput: {
+          template:           'ngFormLib/controls/formInput/template/FormInputTemplate.html'
         },
         formRadioButton: {
           template:           'ngFormLib/controls/formRadioButton/template/FormRadioButtonTemplate.html'
@@ -90,7 +90,7 @@
                 required = service.getRequiredAttribute(tAttr.required);
 
               service.decorateLabel(labelElem, required, id, tAttr.labelClass, tAttr.hideLabel, tAttr.hideRequiredIndicator, tAttr.labelSuffix);
-              service.decorateInputField(inputElem, tElement, tAttr, id, name, required);
+              inputElem = service.decorateInputField(inputElem, tElement, tAttr, id, name, required);
 
               // Do component-specific config last
               params.configFn(tElement, tAttr, id, name, inputElem, labelElem);
@@ -99,13 +99,11 @@
               tElement.removeAttr('uid').removeAttr('name').removeAttr('label').removeAttr('required').removeAttr('field-hint')
                 .removeAttr('input-type').removeAttr('hide-label').removeAttr('hideRequiredIndicator')
                 .removeAttr('label-class').removeAttr('field-errors').removeAttr('text-errors');
+            },
+            templateUrl: function(element, attr) {
+              // Check the element for a "template" attribute, which allows customisation-per-control. Otherwise, use the control-wide template.
+              return attr.template || service.getHTMLTemplate(element, params.controlName);
             }
-          };
-
-          // The directive can elect to use a template-string or a template-url
-          directive[params.templateType] = function(element, attr) {
-            // Depending on the type, we may have to load different templates, as IE isn't happy when you change input types
-            return attr.template || service.getHTMLTemplate(element, params.controlName, attr.inputType);
           };
 
           return directive;
@@ -115,10 +113,14 @@
           return '' + self.defaults.idPrefix + counter++;
         },
 
-        getHTMLTemplate: function(element, type, inputType) {
-          // Check this element's parent-form-element-classes to see if they match. First match, wins
+        getHTMLTemplate: function(element, type) {
+          // Allow different templates to be applied for different form-styles (eg for horizontal forms, inline forms, "normal" forms).
+          // This is an advanced feature that most users will not need.
+          // E.g.: self.defaults.templates['select']['form-inline'] = 'path/to/your/custom/template.html'
+
+          // Check this element's parent-form-element-classes to see if they match. First match, wins.
           var parentFormClasses = (element.inheritedData('formElementClasses') || '').split(' ');
-          var result = self.defaults.templates[type].template;
+          var result = self.defaults.templates[type].template;  // The default template, if nothing else is specified.
 
           for (var i = 0; i < parentFormClasses.length; i++) {
             var template = self.defaults.templates[type][parentFormClasses[i]];
@@ -128,10 +130,6 @@
             }
           }
 
-          // Replace the #type# string with our input type, if we have one
-          if (inputType) {
-            result = result.replace('#type#', 'type=' + inputType);
-          }
           return result;
         },
 
@@ -194,6 +192,13 @@
 
 
         decorateInputField: function(inputElem, hostElement, attr, id, name, required) {
+          if (attr.inputType) {
+            // inputElem.attr('type', attr.inputType); // THIS WILL NOT WORK ON IE8!
+            // Instead, we must replace the entire node with the only property which SHOULD exist on the template: 'class'
+            inputElem.replaceWith('<input type="' + attr.inputType + '" class="' + inputElem.attr('class') + '">');
+            inputElem = hostElement.find('input');
+          }
+
           inputElem.attr('id', id);
 
           // Allow the name to be interpolated
@@ -221,6 +226,7 @@
 
           inputElem.attr('ng-required', required);
           inputElem.attr('aria-required', '{{!!(' + required + ')}}');  // evaluates to true / false
+          return inputElem;
         },
 
 

@@ -7,6 +7,7 @@
     // Template-modules (HTML that is converted into an Angular template)
     'ngFormLib/controls/formCheckbox/template/FormCheckboxTemplate.html',
     'ngFormLib/controls/formDate/template/FormDateInputTemplate.html',
+    'ngFormLib/controls/formInput/template/FormInputTemplate.html',
     'ngFormLib/controls/formRadioButton/template/FormRadioButtonTemplate.html',
     'ngFormLib/controls/formSelect/template/FormSelectTemplate.html',
     'ngFormLib/controls/requiredMarker/template/RequiredMarkerTemplate.html'

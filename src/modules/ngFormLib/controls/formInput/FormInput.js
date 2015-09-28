@@ -23,7 +23,6 @@
 
     return formControlService.buildDirective({
       controlName: 'formInput',
-      templateType: 'template',
       expectedTemplateElements: ['input', 'label'],
       expectedAttributes: ['label', 'inputType'],
       configFn: function(tElement, tAttr, id, name, inputElem, labelElem) {
@@ -49,13 +48,14 @@
 
   function addInputGroup(inputElem, inputGroupPrefix, inputGroupSuffix) {
     if (inputGroupPrefix || inputGroupSuffix) {
-      inputElem.wrap('<div class="input-group">');
+      inputElem.wrap('<div class="input-group">');//inputElem.parent(); // This should be the 'control-row' element//wrap('<div class="input-group">');
+      var wrapper = inputElem.parent();
 
       if (inputGroupPrefix) {
-        inputElem.parent().prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
+        wrapper.prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
       }
       if (inputGroupSuffix) {
-        inputElem.parent().append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
+        wrapper.append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
       }
       return true;
     }
