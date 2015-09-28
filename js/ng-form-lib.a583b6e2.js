@@ -159,8 +159,10 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     // Template-modules (HTML that is converted into an Angular template)
     'ngFormLib/controls/formCheckbox/template/FormCheckboxTemplate.html',
     'ngFormLib/controls/formDate/template/FormDateInputTemplate.html',
+    'ngFormLib/controls/formInput/template/FormInputTemplate.html',
     'ngFormLib/controls/formRadioButton/template/FormRadioButtonTemplate.html',
-    'ngFormLib/controls/formSelect/template/FormSelectTemplate.html'
+    'ngFormLib/controls/formSelect/template/FormSelectTemplate.html',
+    'ngFormLib/controls/requiredMarker/template/RequiredMarkerTemplate.html'
   ]);
 
 })(window.angular);
@@ -259,6 +261,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
   }]);
 
 
+  // This directive
   mod.directive('formGroup', [function() {
     return {
       restrict: 'AC',
@@ -324,8 +327,8 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
         formDate: {
           template:           'ngFormLib/controls/formDate/template/FormDateInputTemplate.html'
         },
-        formInput: {              // This has to be a string as we need to dynamically replace the #type# variable BEFORE the template is turned into a DOM element
-          template:           '<div class="form-group"><label class="control-label"></label><div class="control-row"><input #type# class="form-control"><span ng-transclude></span></div></div>'
+        formInput: {
+          template:           'ngFormLib/controls/formInput/template/FormInputTemplate.html'
         },
         formRadioButton: {
           template:           'ngFormLib/controls/formRadioButton/template/FormRadioButtonTemplate.html'
@@ -362,7 +365,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 required = service.getRequiredAttribute(tAttr.required);
 
               service.decorateLabel(labelElem, required, id, tAttr.labelClass, tAttr.hideLabel, tAttr.hideRequiredIndicator, tAttr.labelSuffix);
-              service.decorateInputField(inputElem, tElement, tAttr, id, name, required);
+              inputElem = service.decorateInputField(inputElem, tElement, tAttr, id, name, required);
 
               // Do component-specific config last
               params.configFn(tElement, tAttr, id, name, inputElem, labelElem);
@@ -371,13 +374,11 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
               tElement.removeAttr('uid').removeAttr('name').removeAttr('label').removeAttr('required').removeAttr('field-hint')
                 .removeAttr('input-type').removeAttr('hide-label').removeAttr('hideRequiredIndicator')
                 .removeAttr('label-class').removeAttr('field-errors').removeAttr('text-errors');
+            },
+            templateUrl: function(element, attr) {
+              // Check the element for a "template" attribute, which allows customisation-per-control. Otherwise, use the control-wide template.
+              return attr.template || service.getHTMLTemplate(element, params.controlName);
             }
-          };
-
-          // The directive can elect to use a template-string or a template-url
-          directive[params.templateType] = function(element, attr) {
-            // Depending on the type, we may have to load different templates, as IE isn't happy when you change input types
-            return attr.template || service.getHTMLTemplate(element, params.controlName, attr.inputType);
           };
 
           return directive;
@@ -387,10 +388,14 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
           return '' + self.defaults.idPrefix + counter++;
         },
 
-        getHTMLTemplate: function(element, type, inputType) {
-          // Check this element's parent-form-element-classes to see if they match. First match, wins
+        getHTMLTemplate: function(element, type) {
+          // Allow different templates to be applied for different form-styles (eg for horizontal forms, inline forms, "normal" forms).
+          // This is an advanced feature that most users will not need.
+          // E.g.: self.defaults.templates['select']['form-inline'] = 'path/to/your/custom/template.html'
+
+          // Check this element's parent-form-element-classes to see if they match. First match, wins.
           var parentFormClasses = (element.inheritedData('formElementClasses') || '').split(' ');
-          var result = self.defaults.templates[type].template;
+          var result = self.defaults.templates[type].template;  // The default template, if nothing else is specified.
 
           for (var i = 0; i < parentFormClasses.length; i++) {
             var template = self.defaults.templates[type][parentFormClasses[i]];
@@ -400,10 +405,6 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
             }
           }
 
-          // Replace the #type# string with our input type, if we have one
-          if (inputType) {
-            result = result.replace('#type#', 'type=' + inputType);
-          }
           return result;
         },
 
@@ -466,6 +467,13 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 
 
         decorateInputField: function(inputElem, hostElement, attr, id, name, required) {
+          if (attr.inputType) {
+            // inputElem.attr('type', attr.inputType); // THIS WILL NOT WORK ON IE8!
+            // Instead, we must replace the entire node with the only property which SHOULD exist on the template: 'class'
+            inputElem.replaceWith('<input type="' + attr.inputType + '" class="' + inputElem.attr('class') + '">');
+            inputElem = hostElement.find('input');
+          }
+
           inputElem.attr('id', id);
 
           // Allow the name to be interpolated
@@ -493,6 +501,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 
           inputElem.attr('ng-required', required);
           inputElem.attr('aria-required', '{{!!(' + required + ')}}');  // evaluates to true / false
+          return inputElem;
         },
 
 
@@ -773,7 +782,6 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 
     return formControlService.buildDirective({
       controlName: 'formCheckbox',
-      templateType: 'templateUrl',
       expectedTemplateElements: ['input', 'label', 'div'],
       expectedAttributes: [],
       configFn: function(tElement, tAttr, id, name, inputElem) {
@@ -823,7 +831,6 @@ angular.module('ngFormLib/controls/formCheckbox/template/FormCheckboxTemplate.ht
 
     return formControlService.buildDirective({
       controlName: 'formDate',
-      templateType: 'templateUrl',
       expectedTemplateElements: ['input', 'label'],
       expectedAttributes: ['label'],
       configFn: function(tElement, tAttr, id, name, inputElem, labelElem) {
@@ -946,7 +953,6 @@ angular.module('ngFormLib/controls/formDate/template/FormDateInputTemplate.html'
 
     return formControlService.buildDirective({
       controlName: 'formInput',
-      templateType: 'template',
       expectedTemplateElements: ['input', 'label'],
       expectedAttributes: ['label', 'inputType'],
       configFn: function(tElement, tAttr, id, name, inputElem, labelElem) {
@@ -972,13 +978,14 @@ angular.module('ngFormLib/controls/formDate/template/FormDateInputTemplate.html'
 
   function addInputGroup(inputElem, inputGroupPrefix, inputGroupSuffix) {
     if (inputGroupPrefix || inputGroupSuffix) {
-      inputElem.wrap('<div class="input-group">');
+      inputElem.wrap('<div class="input-group">');//inputElem.parent(); // This should be the 'control-row' element//wrap('<div class="input-group">');
+      var wrapper = inputElem.parent();
 
       if (inputGroupPrefix) {
-        inputElem.parent().prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
+        wrapper.prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
       }
       if (inputGroupSuffix) {
-        inputElem.parent().append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
+        wrapper.append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
       }
       return true;
     }
@@ -986,6 +993,15 @@ angular.module('ngFormLib/controls/formDate/template/FormDateInputTemplate.html'
   }
 
 })(window.angular);
+
+angular.module('ngFormLib/controls/formInput/template/FormInputTemplate.html', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+
+  $templateCache.put('ngFormLib/controls/formInput/template/FormInputTemplate.html',
+    "<div class=form-group><label class=control-label></label><div class=control-row><input class=form-control><span ng-transclude></span></div></div>"
+  );
+
+}]);
 
 (function(angular) {
   'use strict';
@@ -1008,7 +1024,6 @@ angular.module('ngFormLib/controls/formDate/template/FormDateInputTemplate.html'
 
     return formControlService.buildDirective({
       controlName: 'formRadioButton',
-      templateType: 'templateUrl',
       expectedTemplateElements: ['input', 'label', 'div'],
       expectedAttributes: [], // The template should NOT have a form-group element inside it, as this has to be specified externally (due to the group-nature of radio buttons)
       configFn: function(tElement, tAttr, id, name, inputElem) {
@@ -1116,7 +1131,6 @@ angular.module('ngFormLib/controls/formRadioButton/template/FormRadioButtonTempl
 
     return formControlService.buildDirective({
       controlName: 'formSelect',
-      templateType: 'templateUrl',
       inputElementName: 'select',
       expectedTemplateElements: ['select', 'label'],
       expectedAttributes: ['label'],
@@ -1193,8 +1207,7 @@ angular.module('ngFormLib/controls/formSelect/template/FormSelectTemplate.html',
   'use strict';
 
   var mod = angular.module('ngFormLib.controls.requiredMarker', [
-    'ngFormLib.controls.common',
-    'ngFormLib/controls/requiredMarker/template/RequiredMarkerTemplate.html'
+    'ngFormLib.controls.common'
   ]);
 
   // Add a simple "required" marker that is not read-out by screen readers (as the field should also have a required indicator)
@@ -1429,7 +1442,6 @@ angular.module('ngFormLib/controls/requiredMarker/template/RequiredMarkerTemplat
 
   function setFocusOnField($document, $timeout, duration, element, offset) {
     // If no offsetHeight then assume it's invisible and let the next error field take the scroll position
-    // Safe because no element will ever have offsetTop of 0 due to our header
     if (element[0].offsetHeight) {
       //console.log('Error focus set to: ' + domElement.id);
       $timeout.cancel(timeoutPromise);

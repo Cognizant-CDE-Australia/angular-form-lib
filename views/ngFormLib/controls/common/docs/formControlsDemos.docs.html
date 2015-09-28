@@ -9,10 +9,11 @@
 
     <form name=formDemo1 class=form novalidate form-submit="">
       <fieldset>
+        
         <div class=form-group>
           <label class=control-label for=formDemo1_fldTitle>Title</label>
           <div class=control-row>
-            <select id=formDemo1_fldTitle name=formDemo1_fldTitle ng-model=ctrl.formDemo1.title ng-options="item.label for item in ctrl.titleData track by item.label" class=form-control ng-required=false field-error-controller></select>
+            <select id=formDemo1_fldTitle name=formDemo1_fldTitle ng-model=ctrl.formDemo1.title ng-options="item.label for item in ctrl.titleData track by item.label" class=form-control ng-required=true field-error-controller></select>
           </div>
           <div error-container field-name=formDemo1_fldTitle field-errors="{required: 'Please select a title'}"></div>
         </div>
