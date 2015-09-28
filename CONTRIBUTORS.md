@@ -1,6 +1,6 @@
 The following people have contributed to this project.
 
-* Brett Uglow <buglow@odecee.com.au>
+* Brett Uglow <buglow@odecee.com.au>, <u_glow@hotmail.com>
 * Rod Leviton <rodleviton@rodleviton.com>
 * Steven Miller <steven.miller@anz.com>
 
