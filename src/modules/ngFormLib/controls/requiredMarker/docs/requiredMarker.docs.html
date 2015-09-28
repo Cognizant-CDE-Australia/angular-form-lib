@@ -37,11 +37,10 @@
 
       <!-- Optionally hide the marker, and show it next to the field-->
       <div class="form-group">
-        <label for="formRequiredMarker_fldTitle2">Optionally required field</label>
+        <label for="formRequiredMarker_fldTitle2">Optionally required field</label><span required-marker hide="ctrl.data.title.label === 'Mr'"></span>
         <div class="control-row">
           <select uid="formRequiredMarker_fldTitle2" name="formRequiredMarker_fldTitle2" ng-model="ctrl.data.title2" ng-options="item.label for item in ctrl.titleData" class="form-control"
                   ng-required="ctrl.data.title.label !== 'Mr'" field-error-controller></select>
-          <span required-marker hide="ctrl.data.title.label === 'Mr'"></span>
         </div>
         <div error-container field-name="formRequiredMarker_fldTitle2" field-errors="{required: 'Please select a title'}"></div>
       </div>

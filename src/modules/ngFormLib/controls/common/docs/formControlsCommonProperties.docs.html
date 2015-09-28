@@ -61,6 +61,13 @@
   <td>A key-value pair object linking an error to a message. Error messages can be language-resource-keys.</td>
 </tr>
 <tr>
+  <td>text-errors</td>
+  <td>array</td>
+  <td></td>
+  <td>An array of scope-properties to watch for "truthiness". E.g. For `text-errors="['scopeProp']"`, the text-value of `scope.scopeProp` will be
+    displayed when the value is "truthy" (typically a non empty string). This property is useful for handling error messages returned from calling APIs.</td>
+</tr>
+<tr>
   <td>ff-ng-model</td>
   <td>expression</td>
   <td></td>
@@ -72,4 +79,10 @@
   <td></td>
   <td>Additional attributes/directives that are copied onto the <strong>input/select element</strong> can be specified using by prefixing them with <code>ff-</code>. For example <code>ff-size="3"</code>
     would be compiled to <code>size="3"</code> on the <code>input</code>/<code>select</code> element.</td>
+</tr>
+<tr>
+  <td>template</td>
+  <td>URL</td>
+  <td>See <a ahref="#formControlsService">Form Controls Service options</a></td>
+  <td>The HTML template to use for the control. The default value can be overridden on the element, or globally by setting the default value in the <a href="#formControlsService">formControlsService</a></td>
 </tr>
