@@ -1,3 +1,11 @@
+### 0.6.1 (2015-09-28)
+
+
+#### Bug Fixes
+
+* **focusBehaviour:** all controls now use templateUrl to ensure focus is applied using source-order ([d3ec7b06](http://github.com/Odecee/angular-form-lib/commit/d3ec7b064f16e814a7390a33b624d4fd98c23085))
+
+
 ## 0.6.0 (2015-09-16)
 
 
