@@ -9,6 +9,10 @@ Angular Form Library provides AngularJS 1.2+ directives for controlling form beh
 
 ## <a name="download"></a> Download
 ```
+npm install angular-form-lib --save
+```
+or
+```
 bower install angular-form-lib --save
 ```
 
