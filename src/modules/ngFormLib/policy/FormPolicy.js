@@ -64,9 +64,6 @@
     return {
       //priority: -1,
       restrict: 'AE',
-      scope: {
-        formPolicy: '&' // Trick - we don't want two-way binding, only want to do this once
-      },
       require: ['?form'], // Tells the directive to get the controller for the 'form' directive, which is the FormController controller
       compile: function(tElement, tAttr) {
 
@@ -80,10 +77,10 @@
           pre: function(scope, element, attr, controller) {
             // We want to extend the FormController by adding a form policy
             var formController = controller[0];
-            formController._policy = angular.extend(formPolicyService.getCurrentPolicy(), scope.formPolicy());
+            formController._policy = angular.extend(formPolicyService.getCurrentPolicy(), scope.$eval(attr.formPolicy));
 
             // Add a reference to the <form> element's scope to the formController, to support showing errors for nested components
-            formController._scope = scope.$parent;
+            formController._scope = scope;
 
             // Determine if we have a parent form controller. If we do, we want to use it for the focus behaviour
             formController._parentController = element.parent().controller('form');
@@ -103,8 +100,7 @@
               formController._applyFormBehaviourOnStateChangePolicy.resetBehaviour();
 
               if (value && !tellNoOne) {
-                // We need to use the parent scope because this scope is an isolate scope at the moment
-                scope.$parent.$broadcast('event:FormSubmitAttempted');
+                scope.$broadcast('event:FormSubmitAttempted');
               }
             };
 

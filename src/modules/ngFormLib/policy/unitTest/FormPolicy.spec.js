@@ -59,7 +59,6 @@ describe('Form Policy Service', function() {
     // beforeEach(angular.mock.module('form.controls.forminput.template'));
     beforeEach(function() {
 
-
       inject(function($compile, $rootScope) {
         compileFieldTemplate($compile, $rootScope, elementText);
       });
@@ -145,6 +144,20 @@ describe('Form Policy Service', function() {
         elem = compileElement('<input type="text">');
       }
       expect(shouldWork).not.toThrow();
+    });
+
+    // We should check what happens when: multiple form elements with the same name, destroying form element...
+  });
+
+
+  describe('with a custom form-policy', function() {
+
+    it('should extend the existing form policy with a custom form policy when one is supplied', function() {
+      scope.myPolicy = {foo: 'bar', extendWith: {car: 'this too'}};
+      var elem = compileElement('<form form-policy="myPolicy"></form>');
+      var formController = elem.controller('form');
+      expect(formController._policy.foo).toEqual('bar');
+      expect(formController._policy.extendWith).toEqual({car: 'this too'});
     });
 
     // We should check what happens when: multiple form elements with the same name, destroying form element...
