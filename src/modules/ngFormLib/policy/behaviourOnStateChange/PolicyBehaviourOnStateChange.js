@@ -49,7 +49,16 @@
               // Set the focus to the field if there is an error showing and a form-submit has been attempted
               if (fieldState === 'error' && formSubmitAttempted) {
                 // ...and if the focusErrorElement is blank...
-                if (!focusController._focusErrorElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, formController._policy.fieldFocusScrollOffset)) {
+                //if (!focusController._focusErrorElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, formController._policy.fieldFocusScrollOffset)) {
+                //  focusController._focusErrorElement = fieldElem;
+                //}
+
+                // Make sure element is the first field with an error based on DOM order
+                var firstElement = $document[0][focusController.$name].querySelectorAll('.ng-invalid')[0];
+                var isFirstElement = firstElement ? (firstElement.id === fieldElem[0].id) : false;
+
+                // ...and if the focusErrorElement is blank...
+                if (!focusController._focusErrorElement && isFirstElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, formController._policy.fieldFocusScrollOffset)) {
                   focusController._focusErrorElement = fieldElem;
                 }
               }
