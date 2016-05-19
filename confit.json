@@ -66,28 +66,28 @@
     "entryPoint": {
       "_version": "a5743aa6ec32330496ed3f9a4215a456239e5639",
       "entryPoints": {
-        "ngFormLib": [
-          "./modules/ngFormLib/index.js"
-        ],
         "docs": [
           "./modules/docs/index.js",
           "./modules/docs/styles/docs.styl",
           "./modules/docs/styles/sampleFormStyle.styl",
           "angular-motion/dist/angular-motion.css",
           "highlightjs/styles/github.css"
+        ],
+        "ngFormLib": [
+          "./modules/ngFormLib/index.js"
         ]
       }
     },
     "serverDev": {
       "_version": "db06861d68613ebfe14a49745c03783c05d9310a",
       "hostname": "localhost",
-      "port": 3000,
+      "port": "4000",
       "protocol": "https"
     },
     "serverProd": {
       "_version": "4dbbaaa4d00c979746568aa32ef21425e2fe560d",
       "hostname": "localhost",
-      "port": 3000,
+      "port": "4000",
       "protocol": "https"
     },
     "testUnit": {

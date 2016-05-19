@@ -1,8 +1,9 @@
 import angular from 'angular';
-import ngFormLib from '../ngFormLib';
+import angularAnimate from 'angular-animate';   // Allows animations to run
 import 'angular-strap';   // No export, currently
-import ngTranslate from 'angular-translate';
 import highlightjs from 'highlightjs/highlight.pack.js';
+import ngFormLib from '../ngFormLib';
+import ngTranslate from 'angular-translate';
 
 // Import specific policies for the documentation website
 import defaultStateChangeBehaviour from '../ngFormLib/policy/behaviourOnStateChange/PolicyBehaviourOnStateChange';
@@ -14,11 +15,12 @@ import docFixtures from './docFixtures';
 
 
 const mod = angular.module('ngFormLibDocs.docs', [
-  'mgcrea.ngStrap',
   ngFormLib,
+  angularAnimate,
   defaultStateChangeBehaviour,
   defaultStateChangeChecks,
   defaultStateDefinitions,
+  'mgcrea.ngStrap',
   ngTranslate,
 
   // require ALL of the docs /demo components

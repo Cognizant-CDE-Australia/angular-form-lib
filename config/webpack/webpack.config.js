@@ -53,15 +53,15 @@ var config = {
 
 /** Entry point START **/
 config.entry = {
-  'ngFormLib': [
-    './modules/ngFormLib/index.js'
-  ],
   'docs': [
     './modules/docs/index.js',
     './modules/docs/styles/docs.styl',
     './modules/docs/styles/sampleFormStyle.styl',
     'angular-motion/dist/angular-motion.css',
     'highlightjs/styles/github.css'
+  ],
+  'ngFormLib': [
+    './modules/ngFormLib/index.js'
   ]
 };
 
