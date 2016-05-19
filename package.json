@@ -15,7 +15,7 @@
     "type": "git",
     "url": "https://github.com/odecee/angular-form-lib.git"
   },
-  "license": "Apache",
+  "license": "Apache-2.0",
   "homepage": "http://odecee.github.io/angular-form-lib",
   "keywords": [
     "angular",
@@ -39,7 +39,6 @@
     "serve:prod": "grunt connect:prod",
     "start": "npm run dev",
     "test": "npm run test:unit",
-    "test:browser": "protractor config/testBrowser/protractor.conf.js",
     "test:unit": "karma start ./config/testUnit/karma.conf.js",
     "test:unit:debug": "karma start ./config/testUnit/karma.conf.js --debug",
     "test:unit:once": "karma start --singleRun=true ./config/testUnit/karma.conf.js",
@@ -117,7 +116,6 @@
     "phantomjs-polyfill": "0.0.2",
     "phantomjs-prebuilt": "2.1.7",
     "postcss-loader": "0.8.2",
-    "protractor": "3.2.1",
     "rimraf": "2.5.2",
     "style-loader": "0.13.0",
     "stylus-loader": "1.4.3",
