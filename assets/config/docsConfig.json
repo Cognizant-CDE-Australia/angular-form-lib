@@ -1,0 +1,204 @@
+{
+  "version": "0.0.0-semantically-released",
+  "repository": {
+    "host": "//github.com/odecee/angular-form-lib/",
+    "branch": "blob/master/"
+  },
+  "sitemap": [
+    {
+      "title": "Demo",
+      "template": "<div form-controls-demos-docs></div>",
+      "href": "#formDemos",
+      "subSection": [
+        {
+          "title": "Standard Form",
+          "href": "#formDemo1"
+        },
+        {
+          "title": "Horizontal Form",
+          "href": "#formDemo2"
+        },
+        {
+          "title": "Inline Form",
+          "href": "#formDemo3"
+        },
+        {
+          "title": "Repeating Form",
+          "href": "#formDemo4"
+        }
+      ]
+    },
+    {
+      "title": "Controls Common",
+      "template": "<div form-controls-common-docs></div>",
+      "href": "#formControls",
+      "subSection": []
+    },
+    {
+      "title": "Controls Service",
+      "template": "<div form-controls-service-docs></div>",
+      "href": "#formControlsService",
+      "subSection": [
+        {
+          "title": "Options",
+          "href": "#formControlsServiceOptions"
+        }
+      ]
+    },
+    {
+      "title": "Form Policy",
+      "template": "<div form-policy-docs></div>",
+      "href": "#formPolicy",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formPolicyExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formPolicyUsage"
+        },
+        {
+          "title": "Config",
+          "href": "#formPolicyConfig"
+        }
+      ],
+      "separateAfter": true
+    },
+    {
+      "title": "Form Submit",
+      "template": "<div form-submit-docs></div>",
+      "href": "#formSubmit",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formSubmitExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formSubmitUsage"
+        }
+      ]
+    },
+    {
+      "title": "Form Reset",
+      "template": "<div form-reset-docs></div>",
+      "href": "#formReset",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formResetExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formResetUsage"
+        }
+      ]
+    },
+    {
+      "title": "Input",
+      "template": "<div form-input-docs></div>",
+      "href": "#formInput",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formInputExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formInputUsage"
+        }
+      ]
+    },
+    {
+      "title": "Checkbox",
+      "template": "<div form-checkbox-docs></div>",
+      "href": "#formCheckbox",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formCheckboxExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formCheckboxUsage"
+        }
+      ]
+    },
+    {
+      "title": "Radio Button",
+      "template": "<div form-radio-button-docs></div>",
+      "href": "#formRadioButton",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formRadioButtonExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formRadioButtonUsage"
+        }
+      ]
+    },
+    {
+      "title": "Select",
+      "template": "<div form-select-docs></div>",
+      "href": "#formSelect",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formSelectExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formSelectUsage"
+        }
+      ]
+    },
+    {
+      "title": "Date",
+      "template": "<div form-date-docs></div>",
+      "href": "#formDate",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formDateExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formDateUsage"
+        }
+      ]
+    },
+    {
+      "title": "Error Message",
+      "template": "<div error-message-container-docs></div>",
+      "href": "#errorMessageContainer",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#errorMessageContainerExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#errorMessageContainerUsage"
+        }
+      ]
+    },
+    {
+      "title": "Required",
+      "template": "<div required-marker-docs></div>",
+      "href": "#requiredMarker",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#requiredMarkerExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#requiredMarkerUsage"
+        }
+      ]
+    }
+  ]
+}
