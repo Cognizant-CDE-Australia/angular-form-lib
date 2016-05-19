@@ -35,3 +35,8 @@ mod.directive('formCheckbox', ['formControlService', function(formControlService
     }
   });
 }]);
+
+// Populate the template cache with the default template
+mod.run(['$templateCache', ($templateCache) => {
+  $templateCache.put('ngFormLib/template/formCheckbox.html', require('./template/FormCheckboxTemplate.html'));
+}]);

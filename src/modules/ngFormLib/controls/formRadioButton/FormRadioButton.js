@@ -15,7 +15,6 @@ export default mod.name;
 
 // OUTPUT:
 
-
 mod.directive('formRadioButton', ['formControlService', function(formControlService) {
 
   return formControlService.buildDirective({
@@ -32,6 +31,10 @@ mod.directive('formRadioButton', ['formControlService', function(formControlServ
       formControlService.buildNgClassExpression(inputElem, inputElem);  // Put the ng-class onto the input element itself, as this makes styling easier
     }
   });
-
 }]);
 
+
+// Populate the template cache with the default template
+mod.run(['$templateCache', ($templateCache) => {
+  $templateCache.put('ngFormLib/template/formRadioButton.html', require('./template/FormRadioButtonTemplate.html'));
+}]);

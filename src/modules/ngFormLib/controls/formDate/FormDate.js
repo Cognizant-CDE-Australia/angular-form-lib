@@ -34,6 +34,11 @@ mod.directive('formDate', ['formControlService', function(formControlService) {
   });
 }]);
 
+// Populate the template cache with the default template
+mod.run(['$templateCache', ($templateCache) => {
+  $templateCache.put('ngFormLib/template/formDate.html', require('./template/FormDateInputTemplate.html'));
+}]);
+
 
 mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
   // All dates greater than AD 0 and less than AD 10000 in dd/mm/yyyy format

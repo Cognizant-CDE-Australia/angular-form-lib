@@ -6,14 +6,10 @@ describe('when I use the Form Checkbox button it', function() {
   beforeEach(function() {
     angular.mock.module(componentUnderTest);
 
-    angular.mock.inject(($compile, $rootScope, $httpBackend) => {
+    angular.mock.inject(($compile, $rootScope) => {
       scope = $rootScope.$new();
-      $httpBackend.expectGET(/template\/FormCheckboxTemplate\.tpl\.html/).respond(200, require('html!./../../formCheckbox/template/FormCheckboxTemplate.tpl.html'));
-      $httpBackend.expectGET(/template\/RequiredMarkerTemplate\.tpl\.html/).respond(200, require('html!./../../requiredMarker/template/RequiredMarkerTemplate.tpl.html'));
-
       compileElement = function(html) {
         var element = $compile(html)(scope);
-        $httpBackend.flush();
         scope.$digest();
         return element;
       };

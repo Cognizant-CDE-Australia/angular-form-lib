@@ -38,5 +38,9 @@ mod.directive('formSelect', ['formControlService', function(formControlService) 
       formControlService.createErrorFeatures(inputElem.parent(), inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);
     }
   });
+}]);
 
+// Populate the template cache with the default template
+mod.run(['$templateCache', ($templateCache) => {
+  $templateCache.put('ngFormLib/template/formSelect.html', require('./template/FormSelectTemplate.html'));
 }]);

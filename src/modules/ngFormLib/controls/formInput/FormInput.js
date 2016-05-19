@@ -40,6 +40,11 @@ mod.directive('formInput', ['formControlService', function(formControlService) {
   });
 }]);
 
+// Populate the template cache with the default template
+mod.run(['$templateCache', ($templateCache) => {
+  $templateCache.put('ngFormLib/template/formInput.html', require('./template/FormInputTemplate.html'));
+}]);
+
 
 function addPlaceholder(inputElem, placeholderText) {
   if (placeholderText) {

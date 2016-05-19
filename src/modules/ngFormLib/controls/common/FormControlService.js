@@ -49,22 +49,22 @@ mod.provider('formControlService', function() {
     idPrefix: 'fpFld',
     templates: {
       formCheckbox: {
-        template:           require('file?name=/template/[name].[ext]!../formCheckbox/template/FormCheckboxTemplate.tpl.html')
+        template:           'ngFormLib/template/formCheckbox.html'
       },
       formDate: {
-        template:           require('file?name=/template/[name].[ext]!../formDate/template/FormDateInputTemplate.tpl.html')
+        template:           'ngFormLib/template/formDate.html'
       },
       formInput: {
-        template:           require('file?name=/template/[name].[ext]!../formInput/template/FormInputTemplate.tpl.html')
+        template:           'ngFormLib/template/formInput.html'
       },
       formRadioButton: {
-        template:           require('file?name=/template/[name].[ext]!../formRadioButton/template/FormRadioButtonTemplate.tpl.html')
+        template:           'ngFormLib/template/formRadioButton.html'
       },
       formSelect: {
-        template:           require('file?name=/template/[name].[ext]!../formSelect/template/FormSelectTemplate.tpl.html')
+        template:           'ngFormLib/template/formSelect.html'
       },
       requiredMarker: {
-        template:           require('file?name=/template/[name].[ext]!../requiredMarker/template/RequiredMarkerTemplate.tpl.html')
+        template:           'ngFormLib/template/requiredMarker.html'
       }
     }
   };

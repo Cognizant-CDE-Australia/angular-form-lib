@@ -207,13 +207,4 @@ config.module.loaders.push({
 config.htmlLoader.collapseWhitespace = false;
 
 
-// Prevent webpack from handling the templates for *.tpl.html files, which are the form control templates.
-// Instead, these files will be loaded at runtime
-config.module.loaders.forEach(function(loader) {
-  if (loader.loader === 'html-loader') {
-    loader.exclude = [loader.exclude, /\.tpl\.html$/];
-  }
-});
-
-
 module.exports = config;

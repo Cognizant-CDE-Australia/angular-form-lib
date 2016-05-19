@@ -30,3 +30,8 @@ mod.directive('requiredMarker', ['formControlService', function(formControlServi
     }
   };
 }]);
+
+// Populate the template cache with the default template
+mod.run(['$templateCache', ($templateCache) => {
+  $templateCache.put('ngFormLib/template/requiredMarker.html', require('./template/RequiredMarkerTemplate.html'));
+}]);
