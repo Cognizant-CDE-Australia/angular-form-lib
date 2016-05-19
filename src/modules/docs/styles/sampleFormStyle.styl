@@ -1,15 +1,15 @@
-@require "_colours";
+@require "colours"
 
 // We have to @extend some grid classes, so need to import (and repeat myself, but this would not be required in a production system - it is convenient here)
-@require "../../../../bower_components/bootstrap-stylus/stylus/variables";
-@require "../../../../bower_components/bootstrap-stylus/stylus/mixins";
-@require "../../../../bower_components/bootstrap-stylus/stylus/utilities";
-@require "../../../../bower_components/bootstrap-stylus/stylus/grid";
+@require "~bootstrap-styl/stylus/variables"
+@require "~bootstrap-styl/stylus/mixins"
+@require "~bootstrap-styl/stylus/utilities"
+@require "~bootstrap-styl/stylus/grid"
 
 
 // Validatation..
 .control-row
-  position: relative;
+  position: relative
 
 /*.form-submit-attempted,*/
 .has-error
@@ -42,19 +42,19 @@
 
 
   > div
-    min-height: 42px;
+    min-height: 42px
 
 .text-error
-  display: table-cell;
-  vertical-align: middle;
+  display: table-cell
+  vertical-align: middle
 
 
 // Required indicator
-label > .required:after, .required:after{
-  color: $brand-danger;
-  content: "^";
-  padding-left: 5px;
-}
+label > .required:after, .required:after
+  color: $brand-danger
+  content: "^"
+  padding-left: 5px
+
 
 
 // Style for "normal" checkboxes
@@ -107,4 +107,4 @@ $default-horiz-control-cols = 12 - $default-horiz-label-cols
 
 
 // Image Checkbox
-@require "_imageCheckbox";
+@require "_imageCheckbox"

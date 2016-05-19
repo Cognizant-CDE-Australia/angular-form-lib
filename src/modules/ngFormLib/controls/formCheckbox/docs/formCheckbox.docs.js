@@ -1,16 +1,23 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.formCheckbox.docs.formCheckbox', []);
 
-  mod.controller('FormCheckboxDemoController', function() {
-    var vm = this;
+export default mod.name;
 
-    vm.titleData = [
-      {label: 'Dr'},
-      {label: 'Mr'},
-      {label: 'Ms'}
-    ];
-  });
+mod.directive('formCheckboxDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'FormCheckboxDemoController',
+    template: require('./formCheckbox.docs.html')
+  }
+});
 
-})(window, window.angular);
+mod.controller('FormCheckboxDemoController', function() {
+  var vm = this;
+
+  vm.titleData = [
+    {label: 'Dr'},
+    {label: 'Mr'},
+    {label: 'Ms'}
+  ];
+});

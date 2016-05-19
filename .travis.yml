@@ -1,20 +1,40 @@
+sudo: false
 language: node_js
 node_js:
-  - "0.10"
+  - '4'
 
-before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - npm install --quiet -g grunt-cli karma bower codeclimate-test-reporter
-  - npm install
-  - bower install --dev --config.interactive=0
-
-script:
-  - grunt karma:unit
-
-after_script:
-  - codeclimate-test-reporter < reports/coverage/*/lcov.info
+# Need to specify a GCC compiler now!
+# https://docs.travis-ci.com/user/languages/javascript-with-nodejs#Node.js-v4-(or-io.js-v3)-compiler-requirements
+env:
+  - CXX=g++-4.8
 
 addons:
-  code_climate:
-    repo_token: bf097e69813d9d00ac67660685fc91f054fd48390035a738e97794acd438af20
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+
+before_install:
+  - npm set progress=false
+
+install:
+  - npm install
+
+before_script:
+  - npm prune
+
+script:
+  - npm test
+
+after_success:
+  - npm run semantic-release
+
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
+
+notifications:
+  email:
+    recipients:
+      - u_glow@hotmail.com

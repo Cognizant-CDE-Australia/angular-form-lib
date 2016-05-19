@@ -1,0 +1,23 @@
+<div docs-navbar></div>
+<div docs-header></div>
+
+<div role="content">
+  <div class="container">
+    <main role="main" class="main">
+
+      <div class="row">
+        <div class="col-md-2 hidden-sm hidden-xs">
+          <div docs-affixed-sidenav></div>
+        </div>
+        <div class="col-md-10">
+          <div docs-getting-started></div>
+          <div id="directives">
+            <div ng-repeat="menuContent in mainCtrl.DOC_CONFIG.sitemap" bind-compile="menuContent.template"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div docs-footer></div>

@@ -1,27 +1,31 @@
-'use strict';
+import componentUnderTest from '../FormDate';
 
 describe('Date Directives spec,', function() {
 
-  var compileElement, scope, elem, DateUtil;
+  let compileElement, scope, elem;
 
-  beforeEach(function() {
-    angular.mock.module('ngFormLib.controls.formDate');
-
-    inject(function(_$compile_, $rootScope, ngFormLibDateUtil) {
-      scope = $rootScope.$new();
-      compileElement = function(html) {
-        return _$compile_(html)(scope);
-      };
-      DateUtil = ngFormLibDateUtil;
-    });
+  beforeEach(() => {
+    angular.mock.module(componentUnderTest);
   });
 
   describe('formDateFormat', function() {
 
+    let DateUtil;
+
+    beforeEach(() => {
+      angular.mock.inject(($compile, $rootScope, ngFormLibDateUtil) => {
+        scope = $rootScope.$new();
+
+        compileElement = function(html) {
+          var element = $compile(html)(scope);
+          scope.$digest();
+          return element;
+        };
+        DateUtil = ngFormLibDateUtil;
+      });
+    });
+
     function testDate(element, testData) {
-
-      scope.$digest();
-
       var inputElem = element.find('input');
 
       // Initially it is blank
@@ -94,7 +98,6 @@ describe('Date Directives spec,', function() {
       scope.callback = jasmine.createSpy('callback');
       elem = compileElement('<form name="frm"><input type="text" name="startDate" ng-model="startDate" date-change="callback()" form-date-format></form>');
 
-      scope.$digest();
       var inputElem = elem.find('input');
 
       expect(scope.callback.calls.count()).toEqual(0);
@@ -119,9 +122,23 @@ describe('Date Directives spec,', function() {
 
   describe('formDateInput', function() {
 
+    beforeEach(() => {
+      angular.mock.inject(($compile, $rootScope, $httpBackend) => {
+        scope = $rootScope.$new();
+        $httpBackend.expectGET(/template\/FormDateInputTemplate\.tpl\.html/).respond(200, require('html!./../../formDate/template/FormDateInputTemplate.tpl.html'));
+        $httpBackend.expectGET(/template\/RequiredMarkerTemplate\.tpl\.html/).respond(200, require('html!./../../requiredMarker/template/RequiredMarkerTemplate.tpl.html'));
+
+        compileElement = function(html) {
+          var element = $compile(html)(scope);
+          $httpBackend.flush();
+          scope.$digest();
+          return element;
+        };
+      });
+    });
+
     it('should create a date input', function() {
       elem = compileElement('<form name="frm"><form-date ff-ng-model="scope.date" label="frm-date" uid="frm-date" name="frm-date"></form-date></form>');
-      scope.$digest();
 
       expect(elem.html()).toMatch('<div class="form-group">' +
         '<label class="control-label" for="frm-date">frm-date<span class="required ng-isolate-scope ng-hide" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" required-marker="" hide="\\!\\(false\\)"></span></label>' +
@@ -131,12 +148,12 @@ describe('Date Directives spec,', function() {
 
 
     it('should throw an error if any of the label, id and name attributes are missing', function() {
-      var controlName = 'formDate', directiveName = 'form-date';
+      var controlName = 'formDate';
+      var directiveName = 'form-date';
       //var errorNoNameOrId = 'All ' + controlName + ' components MUST have a uid and name attribute, and the directive MUST exist inside a <form> for errors to appear';
       var errorNoLabel = 'The ' + controlName + ' component requires a label attribute.';
       var exceptionFn = function(html) {
         compileElement(html);
-        scope.$digest();
       };
 
       var testData = [

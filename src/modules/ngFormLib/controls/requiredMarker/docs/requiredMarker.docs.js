@@ -1,16 +1,23 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.requiredMarker.docs.requiredMarker', []);
 
-  mod.controller('RequiredMarkerDemoController', function() {
-    var vm = this;
+export default mod.name;
 
-    vm.titleData = [
-      {label: 'Dr'},
-      {label: 'Mr'},
-      {label: 'Ms'}
-    ];
-  });
+mod.directive('requiredMarkerDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'RequiredMarkerDemoController',
+    template: require('./requiredMarker.docs.html')
+  }
+});
 
-})(window, window.angular);
+mod.controller('RequiredMarkerDemoController', function() {
+  var vm = this;
+
+  vm.titleData = [
+    {label: 'Dr'},
+    {label: 'Mr'},
+    {label: 'Ms'}
+  ];
+});

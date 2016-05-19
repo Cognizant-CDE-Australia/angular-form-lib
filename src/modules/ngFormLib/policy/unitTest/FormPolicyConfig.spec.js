@@ -1,15 +1,16 @@
+import componentUnderTest from '../FormPolicy';
+
 describe('Form Policy Service configuration', function() {
-  'use strict';
 
   describe('has default settings', function() {
     var defaultFormSettings = {}, formPolicyService;
 
     beforeEach(function() {
-      angular.mock.module('ngFormLib', ['formPolicyServiceProvider', function(formPolicyServiceProvider) {
+      angular.mock.module(componentUnderTest, function(formPolicyServiceProvider) {
         defaultFormSettings = formPolicyServiceProvider.defaults;
-      }]);
+      });
 
-      inject(function(_formPolicyService_) {
+      angular.mock.inject(function(_formPolicyService_) {
         formPolicyService = _formPolicyService_;
       });
     });
@@ -40,11 +41,11 @@ describe('Form Policy Service configuration', function() {
 
     // Set the defaults using the provider method
     beforeEach(function() {
-      angular.mock.module('ngFormLib', ['formPolicyServiceProvider', function(formPolicyServiceProvider) {
+      angular.mock.module(componentUnderTest, function(formPolicyServiceProvider) {
         formPolicyServiceProvider.defaults = mockDefaults;
-      }]);
+      });
 
-      inject(function(_formPolicyService_) {
+      angular.mock.inject(function(_formPolicyService_) {
         formPolicyService = _formPolicyService_;
       });
     });

@@ -1,16 +1,23 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.common.docs.formControlsService', []);
 
-  mod.controller('FormControlsServiceDemoCtrl', function() {
-    // var vm = this;
-    //
-    // vm.titleData = [
-    //   {label: 'Dr'},
-    //   {label: 'Mr'},
-    //   {label: 'Ms'}
-    // ];
-  });
+export default mod.name;
 
-})(window, window.angular);
+mod.directive('formControlsServiceDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'FormControlServiceDemoCtrl',
+    template: require('./formControlsService.docs.html')
+  }
+});
+
+mod.controller('FormControlServiceDemoCtrl', function() {
+  // var vm = this;
+  //
+  // vm.titleData = [
+  //   {label: 'Dr'},
+  //   {label: 'Mr'},
+  //   {label: 'Ms'}
+  // ];
+});

@@ -1,20 +1,28 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.errorMessageContainer.docs.errorMessageContainer', []);
 
-  mod.controller('ErrorMessageContainerDemoController', function() {
-    var vm = this;
+export default mod.name;
 
-    vm.titleData = [
-      {label: 'Dr'},
-      {label: 'Mr'},
-      {label: 'Ms'}
-    ];
+mod.directive('errorMessageContainerDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'ErrorMessageContainerDemoController',
+    template: require('./errorMessageContainer.docs.html')
+  }
+});
 
-    vm.toggleTextError = function() {
-      vm.myTextError = (vm.myTextError) ? '' : 'My text error. ';
-    };
-  });
+mod.controller('ErrorMessageContainerDemoController', function() {
+  var vm = this;
 
-})(window, window.angular);
+  vm.titleData = [
+    {label: 'Dr'},
+    {label: 'Mr'},
+    {label: 'Ms'}
+  ];
+
+  vm.toggleTextError = function() {
+    vm.myTextError = (vm.myTextError) ? '' : 'My text error. ';
+  };
+});
+

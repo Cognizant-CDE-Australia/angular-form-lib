@@ -1,40 +1,47 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.common.docs.formControlsDemos', []);
 
-  mod.controller('FormControlsDemosController', function() {
-    var vm = this;
+export default mod.name;
 
-    vm.titleData = [
-      {label: 'Dr'},
-      {label: 'Mr'},
-      {label: 'Ms'}
-    ];
+mod.directive('formControlsDemosDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'FormControlsDemosController',
+    template: require('./formControlsDemos.docs.html')
+  }
+});
 
-    vm.schoolData = [
-      {label: 'Primary'},
-      {label: 'Secondary'},
-      {label: 'Tertiary'}
-    ];
+mod.controller('FormControlsDemosController', function() {
+  var vm = this;
 
-    vm.formDemo4 = {
-      name: '',
-      education: [
-        {
-          name: 'Melbourne High School',
-          type: vm.schoolData[1]
-        },
-        {
-          name: undefined,
-          type: undefined
-        }
-      ]
-    };
+  vm.titleData = [
+    {label: 'Dr'},
+    {label: 'Mr'},
+    {label: 'Ms'}
+  ];
 
-    vm.addSchool = function() {
-      vm.formDemo4.education.push({name: '', type: undefined});
-    };
-  });
+  vm.schoolData = [
+    {label: 'Primary'},
+    {label: 'Secondary'},
+    {label: 'Tertiary'}
+  ];
 
-})(window, window.angular);
+  vm.formDemo4 = {
+    name: '',
+    education: [
+      {
+        name: 'Melbourne High School',
+        type: vm.schoolData[1]
+      },
+      {
+        name: undefined,
+        type: undefined
+      }
+    ]
+  };
+
+  vm.addSchool = function() {
+    vm.formDemo4.education.push({name: '', type: undefined});
+  };
+});

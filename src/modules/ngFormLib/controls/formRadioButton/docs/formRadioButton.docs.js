@@ -1,30 +1,28 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.formRadioButton.docs.formRadioButton', []);
 
-  mod.controller('FormRadioButtonDemoController', function() {
-    var vm = this;
+export default mod.name;
 
-    vm.titleData = [
-      {label: 'Amazing Spiderman, The'},
-      {label: 'Batman'},
-      {label: 'Catwoman'}
-    ];
-
-    vm.data2 = {
-      radioVal: 2   // No initial value
-    };
-
-    vm.customReset = function(formField, defaultFn) {
-      if (formField.$name === 'formRadio1_group2') {
-        formField.$setViewValue(2);
-      } else {
-        defaultFn(formField);
-      }
-    };
+mod.directive('formRadioButtonDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'FormRadioButtonDemoController',
+    template: require('./formRadioButton.docs.html')
+  }
+});
 
 
-  });
+mod.controller('FormRadioButtonDemoController', function() {
+  var vm = this;
 
-})(window, window.angular);
+  vm.titleData = [
+    {label: 'Amazing Spiderman, The'},
+    {label: 'Batman'},
+    {label: 'Catwoman'}
+  ];
+
+  vm.data = {
+    radioVal2: 2   // Initial value of second radio button
+  };
+});

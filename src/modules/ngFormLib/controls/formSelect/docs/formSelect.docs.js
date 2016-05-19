@@ -1,16 +1,23 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.formSelect.docs.formSelect', []);
 
-  mod.controller('FormSelectDemoController', function() {
-    var vm = this;
+export default mod.name;
 
-    vm.titleData = [
-      {label: 'Dr'},
-      {label: 'Mr'},
-      {label: 'Ms'}
-    ];
-  });
+mod.directive('formSelectDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'FormSelectDemoController',
+    template: require('./formSelect.docs.html')
+  }
+});
 
-})(window, window.angular);
+mod.controller('FormSelectDemoController', function() {
+  var vm = this;
+
+  vm.titleData = [
+    {label: 'Dr'},
+    {label: 'Mr'},
+    {label: 'Ms'}
+  ];
+});

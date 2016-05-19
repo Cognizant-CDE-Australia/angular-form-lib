@@ -1,14 +1,21 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.formSubmit.docs.formSubmit', []);
 
-  mod.controller('FormSubmitDemoController', function() {
-    var vm = this;
+export default mod.name;
 
-    vm.callWhenValid = function() {
-      window.alert('Form is valid');
-    };
-  });
+mod.directive('formSubmitDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'FormSubmitDemoController',
+    template: require('./formSubmit.docs.html')
+  }
+});
 
-})(window, window.angular);
+mod.controller('FormSubmitDemoController', function() {
+  var vm = this;
+
+  vm.callWhenValid = function() {
+    window.alert('Form is valid');
+  };
+});

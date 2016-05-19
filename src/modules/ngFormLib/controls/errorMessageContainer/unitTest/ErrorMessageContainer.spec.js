@@ -1,20 +1,19 @@
-/* jshint maxstatements:30 */
-// See http://pivotal.github.io/jasmine/ for list of matchers (e.g .toEqual(), toMatch())
+import componentUnderTest from '../ErrorMessageContainer';
+import controlsCommon from '../../common';
+import formInput from '../../formInput/FormInput';
+import formSubmit from '../../formSubmit/FormSubmit';
+import formPolicy from '../../../policy/FormPolicy';
+import defaultPolicies from '../../../policy/defaultPolicies';
+
 describe('Error Message Container directive', function() {
-  'use strict';
-  var compileElement, scope;
+  var compileElement, scope, $httpBackend;
 
   beforeEach(function() {
-    angular.mock.module('ngFormLib.policy');
-    angular.mock.module('ngFormLib.controls');
+    angular.mock.module(componentUnderTest, controlsCommon, formInput, formSubmit, formPolicy, defaultPolicies);
 
-    // Use the default form policies that are already defined
-    angular.mock.module('ngFormLib.policy.behaviourOnStateChange');
-    angular.mock.module('ngFormLib.policy.checkForStateChanges');
-    angular.mock.module('ngFormLib.policy.stateDefinitions');
 
-    angular.mock.module('ngFormLib', ['$sceProvider', function($sceProvider) {
-      // Just in case the $sceProvider is enabled, we need to disable it for this test (I think?)
+    // Just in case the $sceProvider is enabled, we need to disable it for this test (I think?)
+    angular.mock.module(['$sceProvider', function($sceProvider) {
       $sceProvider.enabled(false);
     }]);
   });
@@ -23,8 +22,10 @@ describe('Error Message Container directive', function() {
   describe('simple tests', function() {
 
     beforeEach(function() {
-      inject(function($compile, $rootScope) {
+      angular.mock.inject(($compile, $rootScope, _$httpBackend_) => {
         scope = $rootScope.$new();
+        $httpBackend = _$httpBackend_;
+
         compileElement = function(html) {
           var element = $compile(html)(scope);
           scope.$digest();
@@ -82,10 +83,14 @@ describe('Error Message Container directive', function() {
 
 
     it('should create error messages when supplied with a text-errors attribute', function() {
+      $httpBackend.expectGET(/template\/FormInputTemplate\.tpl\.html/).respond(200, require('html!./../../formInput/template/FormInputTemplate.tpl.html'));
+      $httpBackend.expectGET(/template\/RequiredMarkerTemplate\.tpl\.html/).respond(200, require('html!./../../requiredMarker/template/RequiredMarkerTemplate.tpl.html'));
+
       var elem = compileElement('<form name="frm">' +
         '<form-input input-type="text" name="someName" uid="x" label="y" ff-ng-model="something"></form-input>' +
         '<error-container field-name="someName" text-errors="[\'msg1\', \'msg2\']"></error-container>' +
         '</form>');
+      $httpBackend.flush();
 
       var errorDiv = elem.find('div').eq(2);
 
@@ -105,7 +110,7 @@ describe('Error Message Container directive', function() {
   describe('on an isolate-scope directive', function() {
 
     beforeEach(function() {
-      angular.module('myIsolateScopeMod', ['ngFormLib'])
+      angular.module('myIsolateScopeMod', [formInput])
         .directive('myIsolateScopeDirective', function() {
           return {
             scope: {
@@ -118,8 +123,9 @@ describe('Error Message Container directive', function() {
 
       angular.mock.module('myIsolateScopeMod');
 
-      inject(function($compile, $rootScope) {
+      angular.mock.inject(($compile, $rootScope, _$httpBackend_) => {
         scope = $rootScope.$new();
+        $httpBackend = _$httpBackend_;
         scope.returnFalse = function() { return false; };
 
         compileElement = function(html) {
@@ -136,10 +142,15 @@ describe('Error Message Container directive', function() {
         postcode1: '2000',
         postcode2: '3000'
       };
+
+      $httpBackend.expectGET(/template\/FormInputTemplate\.tpl\.html/).respond(200, require('html!./../../formInput/template/FormInputTemplate.tpl.html'));
+      $httpBackend.expectGET(/template\/RequiredMarkerTemplate\.tpl\.html/).respond(200, require('html!./../../requiredMarker/template/RequiredMarkerTemplate.tpl.html'));
+
       var elem = compileElement('<form name="frm" novalidate form-submit>' +
         '<my-isolate-scope-directive model="address"></my-isolate-scope-directive>' +
         '<form-input input-type="text" name="normalField" uid="normalField" label="Normal Postcode" ff-ng-model="address.postcode2" ff-ng-pattern="/^\\d{4}$/" field-errors="{pattern: \'msg3\'}"></form-input>' +
         '</form>');
+      $httpBackend.flush();
 
       // Make sure it's generated the markup correctly
       expect(elem.find('label')[0].outerHTML).toContain('<label class="control-label" for="isoField">');

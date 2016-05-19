@@ -3,7 +3,7 @@
 
 #### Bug Fixes
 
-* **focusBehaviour:** all controls now use templateUrl to ensure focus is applied using source-order ([d3ec7b06](http://github.com/Odecee/angular-form-lib/commit/d3ec7b064f16e814a7390a33b624d4fd98c23085))
+* **focusBehaviour:** all controls now use templateUrl to ensure focus is applied using source-order ([d3ec7b06](http://github.com/odecee/angular-form-lib/commit/d3ec7b064f16e814a7390a33b624d4fd98c23085))
 
 
 ## 0.6.0 (2015-09-16)
@@ -11,7 +11,7 @@
 
 #### Features
 
-* **formInput:** add support for Bootstrap input-group add-ons ([76ada2a1](http://github.com/Odecee/angular-form-lib/commit/76ada2a1c6e1515b1af6656677275b18c6bb0f95))
+* **formInput:** add support for Bootstrap input-group add-ons ([76ada2a1](http://github.com/odecee/angular-form-lib/commit/76ada2a1c6e1515b1af6656677275b18c6bb0f95))
 
 
 ## 0.5.0 (2015-09-15)
@@ -19,7 +19,7 @@
 
 #### Features
 
-* **isolateComponents:** support isolate components that contain ngFormLib controls ([f80bd485](http://github.com/Odecee/angular-form-lib/commit/f80bd4850e052cd66c3d87f2cd14fb19d525e352))
+* **isolateComponents:** support isolate components that contain ngFormLib controls ([f80bd485](http://github.com/odecee/angular-form-lib/commit/f80bd4850e052cd66c3d87f2cd14fb19d525e352))
 
 
 ### 0.4.3 (2015-08-28)
@@ -30,7 +30,7 @@
 
 #### Bug Fixes
 
-* **npm:** don't ignore necessary files in NPM package ([67446de3](http://github.com/Odecee/angular-form-lib/commit/67446de39a355931f807f28243f3567094d1b75e))
+* **npm:** don't ignore necessary files in NPM package ([67446de3](http://github.com/odecee/angular-form-lib/commit/67446de39a355931f807f28243f3567094d1b75e))
 
 
 ### 0.4.1 (2015-08-26)
@@ -38,7 +38,7 @@
 
 #### Features
 
-* **npm:** ignore unnecessary files in NPM package ([fb8d999e](http://github.com/Odecee/angular-form-lib/commit/fb8d999ebb0175e17b635d0750a9a6c33a1ee24e))
+* **npm:** ignore unnecessary files in NPM package ([fb8d999e](http://github.com/odecee/angular-form-lib/commit/fb8d999ebb0175e17b635d0750a9a6c33a1ee24e))
 
 
 ## 0.4.0 (2015-08-26)
@@ -46,13 +46,13 @@
 
 #### Bug Fixes
 
-* **namespace:** add 'ngFormLib' prefix to the utility library to avoid collisions in host projec ([40215454](http://github.com/Odecee/angular-form-lib/commit/402154543dc1fbf79db185b8641d6a755e94057c))
-* **test:** make directive tests work with different versions of Angular (which add extra cl ([7e03e706](http://github.com/Odecee/angular-form-lib/commit/7e03e706ce2ba66f0ef22ddcafc5370336ce1a45))
+* **namespace:** add 'ngFormLib' prefix to the utility library to avoid collisions in host projec ([40215454](http://github.com/odecee/angular-form-lib/commit/402154543dc1fbf79db185b8641d6a755e94057c))
+* **test:** make directive tests work with different versions of Angular (which add extra cl ([7e03e706](http://github.com/odecee/angular-form-lib/commit/7e03e706ce2ba66f0ef22ddcafc5370336ce1a45))
 
 
 #### Features
 
-* **commonjs:** add CommonJS wrapper around main file ([171b6417](http://github.com/Odecee/angular-form-lib/commit/171b6417dbc4c5afc038574850f691c08ab5fc05))
+* **commonjs:** add CommonJS wrapper around main file ([171b6417](http://github.com/odecee/angular-form-lib/commit/171b6417dbc4c5afc038574850f691c08ab5fc05))
 
 
 ### 0.3.1 (2015-08-14)

@@ -1,13 +1,14 @@
-// See http://pivotal.github.io/jasmine/ for list of matchers (e.g .toEqual(), toMatch())
+import componentUnderTest from '../FormControlService';
+
 describe('Form controls common library', function() {
   'use strict';
 
   var formControlService;
 
   beforeEach(function() {
-    angular.mock.module('ngFormLib.controls.common');
+    angular.mock.module(componentUnderTest);
 
-    inject(function(_formControlService_) {
+    angular.mock.inject(function(_formControlService_) {
       formControlService = _formControlService_;
     });
 

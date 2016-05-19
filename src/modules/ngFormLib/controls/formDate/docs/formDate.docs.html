@@ -1,4 +1,4 @@
-<div class="bs-docs-section" ng-controller="FormDateDemoController as ctrl">
+<div class="bs-docs-section">
 
   <div class="page-header">
     <h1 id="formDate">Form Date <a class="small" href="{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formDate/formDate.js" target="_blank">FormDate.js</a>
@@ -28,8 +28,27 @@
     <!-- Example of directive on the form element. Any "submit" button will activate it -->
     <form name="formDate1" class="form" novalidate form-submit>
 
-      <h1>Coming Soon</h1>
+      <div form-date uid="formDate1_fld1" label="Text type field" required="true"
+           input-type="text" ff-ng-model="ctrl.formInput1.fld1" field-hint="{{'OTHER.HINT' | translate}}"
+           field-errors="{required: 'Title is required'}" placeholder="Placeholder text"
+      ></div>
 
+      <div form-date uid="formInput1_fld2" name="formInput1_fld2" label="Date type field" required="false"
+           input-type="date" ff-ng-model="ctrl.formInput1.fld2"
+      ></div>
+
+      <div form-input uid="formInput1_fld3" name="formInput1_fld3" label="Income" required="true"
+           input-type="text" input-prefix="$" input-suffix="per month" ff-ng-model="ctrl.formInput1.fld3"
+           field-errors="{required: 'Income is required'}"
+      ></div>
+
+      <!-- Use generated ids -->
+      <div form-input label="Generated id field" required="true" input-type="text"
+           ff-ng-model="ctrl.formInput1.fld4" placeholder="This field has a generated name and id"
+           field-errors="{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}"
+      ></div>
+
+      <button type="submit" class="btn btn-primary">Submit button</button>
     </form>
 
   </div>
@@ -57,7 +76,7 @@
           <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field. This string can be a language-resource-key.</td>
         </tr>
       </tbody>
-      <tbody ng-include="'views/ngFormLib/controls/common/docs/formControlsCommonProperties.docs.html'"></tbody>
+      <tbody form-controls-common-properties-docs></tbody>
     </table>
   </div>
 </div>
