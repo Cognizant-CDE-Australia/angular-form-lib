@@ -8,18 +8,21 @@ module.exports = function (grunt) {
         tag: 'v<%= PKG.version %>_doc',
         message: 'docs(v<%= PKG.version %>): Update documentation',
         base: 'dist',
-        push: false,
+        push: true,
         branch: 'gh-pages'
       },
       src: ['**']
     }
   });
 
-  grunt.registerTask('publishSite', 'Publishes the GitHub Pages site', function() {
+  grunt.registerTask('publishDocs', 'Publishes the GitHub Pages site', function() {
     // Modify the dist/assets/config/docConfig.json file
-    var docConfig = grunt.file.readJSON('dist/assets/config/docConfig.json');
+    var configPath = 'dist/assets/config/docsConfig.json';
+    var docConfig = grunt.file.readJSON(configPath);
     docConfig.version = grunt.config('PKG').version;
-    grunt.file.writeJSON(docConfig);
+
+    grunt.log.ok('Updated docConfig.json version to ' + docConfig.version);
+    grunt.file.write(configPath, JSON.stringify(docConfig, null, '  '));
 
     grunt.task.run('gh-pages');
   });

@@ -27,7 +27,7 @@ config.entry = {
   ngFormLib: ['./modules/ngFormLib/index.js'],
   ngFormLibPolicies: ['./modules/ngFormLib/policy/defaultPolicies.js']
 };
-config.output.filename = 'lib/[name].js';
+config.output.filename = 'es5/[name].js';
 config.output.libraryTarget = 'umd';
 
 

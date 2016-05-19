@@ -1,6 +1,7 @@
 {
   "name": "angular-form-lib",
   "description": "AngularJS 1.2+ directives for controlling form behaviour using policies with accessible form controls",
+  "version": "0.0.0-semantically-released",
   "main": "src/modules/ngFormLib/index.js",
   "files": [
     "dist/",
@@ -34,7 +35,7 @@
     "clean:prod": "rimraf dist/",
     "dev": "npm-run-all clean:dev verify --parallel verify:watch build:dev serve:dev",
     "release": "npm-run-all build verify test:unit:once",
-    "publishSite": "grunt publishSite",
+    "publish:docs": "grunt publishDocs",
     "serve:prod": "grunt connect:prod",
     "start": "npm run dev",
     "test": "npm run test:unit",
@@ -44,7 +45,7 @@
     "test:unit:once": "karma start --singleRun=true ./config/testUnit/karma.conf.js",
     "verify": "grunt verify",
     "verify:watch": "grunt watch:verify",
-    "semantic-release": "semantic-release pre && npm publish && publishSite && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && publish:docs && semantic-release post"
   },
   "config": {
     "commitizen": {
