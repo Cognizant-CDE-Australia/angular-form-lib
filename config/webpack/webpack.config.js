@@ -56,9 +56,11 @@ config.entry = {
   'docs': [
     './modules/docs/index.js',
     './modules/docs/styles/docs.styl',
-    './modules/docs/styles/sampleFormStyle.styl',
     'angular-motion/dist/angular-motion.css',
     'highlightjs/styles/github.css'
+  ],
+  'sampleFormStyle': [
+    './modules/docs/styles/sampleFormStyle.styl'
   ],
   'ngFormLib': [
     './modules/ngFormLib/index.js'
