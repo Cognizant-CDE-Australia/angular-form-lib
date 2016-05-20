@@ -44,4 +44,8 @@ mod.controller('FormControlsDemosController', function() {
   vm.addSchool = function() {
     vm.formDemo4.education.push({name: '', type: undefined});
   };
+
+  vm.submit = function() {
+    alert('Submitted');
+  }
 });

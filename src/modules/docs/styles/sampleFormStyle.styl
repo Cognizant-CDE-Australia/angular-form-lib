@@ -73,8 +73,8 @@ $default-horiz-control-cols = 12 - $default-horiz-label-cols
   .control-row
     @extend .col-sm-{$default-horiz-control-cols}
 
-  // For checkboxes, we want to style the containing <div>, as it doesn't have a control-row or label, but has a form-group directive(attribute)
-  [form-group], .button-row
+  // For checkboxes & radio buttons, we want to style the containing <div>, as it doesn't have a control-row or label
+  .form-group-checkbox, .form-group-radio, .button-row
     @extend .col-sm-offset-{$default-horiz-label-cols}
     @extend .col-sm-{$default-horiz-control-cols}
     margin-bottom: 15px   // Overrides .form-group
@@ -85,13 +85,13 @@ $default-horiz-control-cols = 12 - $default-horiz-label-cols
       padding-left: 7px     // Overrides .form-group
 
 
-// Checkboxes inside inline forms:
+// Checkboxes & radios inside inline forms:
 .form-inline
-  .form-group, [form-group], [form-radio-button]
+  .form-group, .form-group-checkbox, [form-radio-button]
     margin-right: 5px
 
   @media (min-width: 768px)
-    [form-group]
+    [form-checkbox], .form-group-radio
       display: inline-block
       vertical-align: middle
 

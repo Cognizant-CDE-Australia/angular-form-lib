@@ -25,6 +25,10 @@
         {
           "title": "Repeating Form",
           "href": "#formDemo4"
+        },
+        {
+          "title": "Dynamic Form",
+          "href": "#formDemo5"
         }
       ]
     },

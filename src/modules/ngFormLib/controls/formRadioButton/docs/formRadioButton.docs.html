@@ -33,7 +33,7 @@
       <!-- Example of a radio-group that has no initial-selection. Note the radio buttons are required
        but hide-required-indicator="true", and field-errors are specified on the error-container,
        NOT on the radio button -->
-      <fieldset form-group>
+      <fieldset class="form-group form-group-radio">
         <div ng-repeat="item in ctrl.titleData">
           <div form-radio-button uid="formRadio1_fld{{$index}}" name="formRadio1_group1"
             ff-ng-model="ctrl.data.radioVal1" ff-ng-value="$index" required="true" hide-required-indicator
@@ -45,7 +45,7 @@
       <p>Selected value: {{ctrl.data1.radioVal1}}</p>
 
       <!-- To avoid the complexity with required radio-buttons, you typically make one of them initially-selected -->
-      <fieldset form-group>
+      <fieldset class="form-group form-group-radio">
         <div ng-repeat="item in ctrl.titleData">
           <div form-radio-button uid="formRadio1_fld2{{$index}}" name="formRadio1_group2"
                ff-ng-model="ctrl.data.radioVal2" ff-ng-value="$index"

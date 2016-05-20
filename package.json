@@ -21,13 +21,13 @@
     "LICENSE",
     "README.md"
   ],
-  "main": "src/modules/ngFormLib/index.js",
+  "main": "dist/es5/ngFormLib.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/odecee/angular-form-lib.git"
   },
   "scripts": {
-    "build": "npm-run-all clean:prod build:docs build:prod",
+    "build": "npm-run-all clean:prod build:prod build:docs",
     "build:dev": "webpack-dev-server --progress --config config/webpack/dev.webpack.config.js --hot",
     "build:docs": "webpack --progress --config config/webpack/docs.webpack.config.js",
     "build:prod": "webpack --progress --config config/webpack/prod.webpack.config.js",

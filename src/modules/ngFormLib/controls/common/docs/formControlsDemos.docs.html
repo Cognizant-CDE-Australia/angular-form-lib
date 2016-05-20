@@ -36,7 +36,7 @@
              field-errors="{required: 'Income is required'}"
             ></div>
 
-        <fieldset form-group>
+        <fieldset class="form-group form-group-radio">
           <div ng-repeat="item in ctrl.titleData">
             <div form-radio-button uid="formDemo1_fld{{$index}}" name="formDemo1_group1"
                  ff-ng-model="ctrl.formDemo1.group1" ff-ng-value="$index" required="true"
@@ -80,7 +80,7 @@
              field-errors="{required: 'Income is required'}"
             ></div>
 
-        <fieldset form-group>
+        <fieldset class="form-group form-group-radio">
           <div ng-repeat="item in ctrl.titleData">
             <div form-radio-button uid="formDemo2_fld{{$index}}" name="formDemo2_group1"
                  ff-ng-model="ctrl.formDemo2.group1" ff-ng-value="$index" required="true" hide-required-indicator="true"
@@ -127,7 +127,7 @@
              field-errors="{required: 'You must agree'}"
             >I agree</div>
 
-        <fieldset form-group>
+        <fieldset class="form-group form-group-radio">
           <span ng-repeat="item in ctrl.titleData">
             <div form-radio-button uid="formDemo3_fld{{$index}}" name="formDemo3_group1"
                  ff-ng-model="ctrl.formDemo3.group1" ff-ng-value="$index" required="true" hide-required-indicator="true"
@@ -161,7 +161,8 @@
       margin-left: 15px;
     }
 
-    [name="formDemo4"] .form-inline [form-group] {
+    [name="formDemo4"] .form-inline .form-group-checkbox,
+    [name="formDemo4"] .form-inline .form-group-radio {
       margin-left: 0;
       width: auto;
       float: none;
@@ -215,7 +216,7 @@
                      field-errors="{required: 'Uniforms are required'}">Uniform</div>
 
 
-                <fieldset form-group>
+                <fieldset class="form-group form-group-radio">
                   <span ng-repeat="item in ctrl.titleData">
                     <div form-radio-button uid="formDemo4_subform{{schoolIndex}}_fld4_{{$index}}" name="formDemo4_subform_group{{schoolIndex}}"
                          ff-ng-model="school.title" ff-ng-value="$index" required="true" hide-required-indicator="true"
@@ -236,6 +237,75 @@
           <button type="submit" class="btn btn-primary">Submit</button>
           <button type="button" class="btn" form-reset="ctrl.formDemo4">Reset</button>
         </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <h2 id="formDemo5">Child forms that are conditionally shown</h2>
+
+  <div class="callout callout-info">
+    <h4>Focus management</h4>
+    <p>The default <code>behaviourOnStateChange</code> policy correctly sets the focus to the top-most field that contains an error, making it easy for users to find and fix the problem.</p>
+  </div>
+
+  <div class="callout callout-warning">
+    <h4><code>ng-if</code> versus <code>ng-show/ng-hide</code></h4>
+    <p>Use <code>ng-if</code> instead of <code>ng-show/ng-hide</code> when dynamically showing form elements. <code>ng-show/hide</code> keeps the form field in the DOM
+    which means that the <code>ngModelController</code> of each hidden field is <strong>still attached to the <code>ngModelController</code> of the form</strong>. This
+    causes problems when trying to submit the form, as the form will contain an error, but the field with the error is not visible!</p>
+
+    <p>Using <code>ng-if</code> prevents this issue from occurring, as <code>ng-if</code> removes the hidden form elements from the DOM,
+    which detaches them from the form's <code>ngModelController</code>.</p>
+  </div>
+
+  <div class="bs-example" style="padding-bottom: 24px;" append-source>
+    <form name="formDemo5" class="form" novalidate form-submit="ctrl.submit()">
+      <fieldset>
+
+        <div form-checkbox uid="formDemo5_toggle" name="formDemo5_toggle"
+             ff-ng-model="ctrl.toggleChildForm"
+        ><strong>Toggle child form</strong></div>
+
+        <!-- You can manually-assemble your label, control and errors this way... -->
+        <div class="form-group">
+          <label class="control-label" for="formDemo5_fldTitle">Title</label>
+          <div class="control-row">
+            <select id="formDemo5_fldTitle" name="formDemo5_fldTitle" ng-model="ctrl.formDemo5.title"
+                    ng-options="item.label for item in ctrl.titleData track by item.label" class="form-control"
+                    ng-required="true" field-error-controller></select>
+          </div>
+          <div error-container field-name="formDemo5_fldTitle" field-errors="{required: 'Please select a title'}"></div>
+        </div>
+
+        <div form-checkbox uid="formDemo5_fld3" name="formDemo5_fld3" required="true"
+             ff-ng-model="ctrl.formDemo5.fld1_3"
+             field-errors="{required: 'You must agree'}"
+        >You are required to agree to this</div>
+
+        <ng-form name="formDemo5_subform" ng-if="!ctrl.toggleChildForm">
+          <div form-input uid="formDemo5_fld4" label="Income" required="true"
+               input-type="text" input-prefix="$" input-suffix="per month" ff-ng-model="ctrl.formDemo5.fld4"
+               field-errors="{required: 'Income is required'}"
+          ></div>
+        </ng-form>
+
+        <!-- ...or can use the form-xxx directives to generate everything instead! -->
+        <div form-input uid="formDemo5_fldName" name="formDemo5_fldName" label="Name" label-suffix="(40 chars)" required="true"
+             input-type="text" ff-ng-model="ctrl.formDemo5.name" ff-maxlength="40" ff-ng-pattern="/^[a-zA-Z0-9 \-.']+$/"
+             field-errors="{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}"
+        ></div>
+
+        <fieldset class="form-group form-group-radio">
+          <div ng-repeat="item in ctrl.titleData">
+            <div form-radio-button uid="formDemo5_fld{{$index}}" name="formDemo5_group1"
+                 ff-ng-model="ctrl.formDemo5.group1" ff-ng-value="$index" required="true"
+            >{{item.label}}</div>
+          </div>
+          <div error-container field-name="formDemo5_group1" field-errors="{required: 'Please select one of the above options'}"></div>
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn" form-reset="ctrl.formDemo5">Reset</button>
       </fieldset>
     </form>
   </div>

@@ -97,10 +97,11 @@ mod.directive('fieldErrorController', ['formControlService', '$timeout', functio
 }]);
 
 
-// This directive
+// This directive wraps all of the form elements and binds the universe together.
+// It MUST be used as a class as the form focus behaviour references '.form-control .ng-invalid' when finding controls to focus
 mod.directive('formGroup', [function() {
   return {
-    restrict: 'AC',
+    restrict: 'C',
     controller: ['$scope', '$element', function($scope, $element) {
       this.$element = $element;
     }]

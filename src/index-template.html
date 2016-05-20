@@ -8,9 +8,8 @@
 
   <!-- Die frame! DIE! http://en.wikipedia.org/wiki/Framekiller -->
   <style>html{display:none}</style>
-  <% htmlWebpackPlugin.files.css.forEach(function(cssFile) { %>
-  <link href="<%= cssFile %>" rel="stylesheet">
-  <% }); %>
+  <link href="css/docs.css" rel="stylesheet">
+  <link href="css/sampleFormStyle.css" rel="stylesheet">
   <script>
     if (window.self !== window.top) {
       window.top.location.href = window.location.href;

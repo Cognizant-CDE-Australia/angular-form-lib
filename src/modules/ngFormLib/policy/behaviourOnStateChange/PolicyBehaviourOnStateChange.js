@@ -55,13 +55,14 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
         applyBehaviour: function(fieldElem, fieldState, formSubmitAttempted) {
           // Set the focus to the field if there is an error showing and a form-submit has been attempted
           if (fieldState === 'error' && formSubmitAttempted) {
-            // ...and if the focusErrorElement is blank...
-            //if (!focusController._focusErrorElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, formController._policy.fieldFocusScrollOffset)) {
-            //  focusController._focusErrorElement = fieldElem;
-            //}
-
             // Make sure element is the first field with an error based on DOM order
-            var firstElement = $document[0][focusController.$name].querySelectorAll('.ng-invalid')[0];
+            var elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
+            var firstElement;
+            angular.forEach(elems, function(elem) {
+              if (elem.getBoundingClientRect().top && !firstElement) {
+                firstElement = elem;
+              }
+            });
             var isFirstElement = firstElement ? (firstElement.id === fieldElem[0].id) : false;
 
             // ...and if the focusErrorElement is blank...

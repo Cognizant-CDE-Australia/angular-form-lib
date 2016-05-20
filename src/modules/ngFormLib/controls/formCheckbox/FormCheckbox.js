@@ -25,11 +25,6 @@ mod.directive('formCheckbox', ['formControlService', function(formControlService
     expectedTemplateElements: ['input', 'label', 'div'],
     expectedAttributes: [],
     configFn: function(tElement, tAttr, id, name, inputElem) {
-      // Move the class attribute from the outer-DIV to the checkbox DIV (special case)
-      var checkboxDiv = tElement.find('div');
-      checkboxDiv.addClass(tElement.attr('class'));
-      tElement.removeAttr('class');
-
       formControlService.createErrorFeatures(tElement, inputElem, name, '', tAttr.fieldErrors, tAttr.textErrors);
       formControlService.buildNgClassExpression(inputElem, inputElem);  // Put the ng-class onto the input element itself, as this makes styling easier
     }

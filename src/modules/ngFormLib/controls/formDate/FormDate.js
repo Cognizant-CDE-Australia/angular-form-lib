@@ -45,7 +45,11 @@ mod.directive('formDate', ['formControlService', function(formControlService) {
 // Populate the template cache with the default template
 mod.run(['$templateCache', ($templateCache) => {
   $templateCache.put('ngFormLib/template/formDate.html', require('./template/FormDateInputTemplate.html'));
-  $templateCache.put('datepicker/datepicker.tpl.html', require('angular-strap/src/datepicker/datepicker.tpl.html'));
+  try {
+    $templateCache.put('datepicker/datepicker.tpl.html', require('angular-strap/src/datepicker/datepicker.tpl.html'));
+  } catch (err) {
+    console.debug('angular-strap/src/datepicker/datepicker.tpl.html is not available for the formDate control');
+  }
 }]);
 
 
