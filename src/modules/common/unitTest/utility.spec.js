@@ -159,7 +159,7 @@ describe('Utility', function() {
         {input: '2014-01-01', input2: '2015-01-31', expectedOutput: 12},
         {input: '2015-01-01', input2: '2014-01-31', expectedOutput: -12},
         {input: '2012-02-28', input2: '2012-02-29', expectedOutput: 0},
-        {input: '2013-02-28', input2: '2013-02-29', expectedOutput: NaN},
+        {input: '2013-02-28', input2: '2013-02-29', expectedOutput: NaN}, // is NaN on Phantom, but 1 on Chrome!
         {input: '2000-02-28', input2: '2000-02-29', expectedOutput: 0},
         {input: '1976-07-01', input2: '1976-12-25', expectedOutput: 5}
       ];

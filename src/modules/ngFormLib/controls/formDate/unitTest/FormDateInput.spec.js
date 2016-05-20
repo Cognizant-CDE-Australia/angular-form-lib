@@ -48,13 +48,13 @@ describe('Date Directives spec,', function() {
 
     it('should validate an ordinary input field which must be a date, no other restrictions', function() {
       var testData = [
-        {input: '02',         output: '02',         expectedClasses: ['ng-invalid', 'ng-invalid-date'], desc: 'Partial date'},
+        {input: '02',         output: '02',         expectedClasses: ['ng-invalid', 'ng-invalid-date-format'], desc: 'Partial date'},
         {input: '02/01/1900', output: '02/01/1900', expectedClasses: ['ng-valid'],                      desc: 'Old valid date'},
         {input: '',           output: '',           expectedClasses: ['ng-valid'],                      desc: 'Blank date'},
         {input: '29/02/2000', output: '29/02/2000', expectedClasses: ['ng-valid'],                      desc: 'Is a leap year'},
-        {input: '29/02/1900', output: '29/02/1900', expectedClasses: ['ng-invalid', 'ng-invalid-date'], desc: 'Not leap year'},
+        {input: '29/02/1900', output: '29/02/1900', expectedClasses: ['ng-invalid', 'ng-invalid-date-format'], desc: 'Not leap year'},
         {input: '29/02/2012', output: '29/02/2012', expectedClasses: ['ng-valid'],                      desc: 'Is a leap year'},
-        {input: '29/02/2013', output: '29/02/2013', expectedClasses: ['ng-invalid', 'ng-invalid-date'], desc: 'Not leap year'},
+        {input: '29/02/2013', output: '29/02/2013', expectedClasses: ['ng-invalid', 'ng-invalid-date-format'], desc: 'Not leap year'},
         {input: '31122015',   output: '31122015',   expectedClasses: ['ng-valid'],                      desc: 'String of 8 digits accepted??'}
       ];
 
@@ -65,7 +65,7 @@ describe('Date Directives spec,', function() {
 
     it('should validate an ordinary input field which must be a date, with a min and max date restriction', function() {
       var testData = [
-        {input: '02',         output: '02',         expectedClasses: ['ng-invalid', 'ng-invalid-date'],     desc: 'Partial date'},
+        {input: '02',         output: '02',         expectedClasses: ['ng-invalid', 'ng-invalid-date-format'],     desc: 'Partial date'},
         {input: '31/12/1999', output: '31/12/1999', expectedClasses: ['ng-invalid', 'ng-invalid-min-date'], desc: 'Date too small'},
         {input: '',           output: '',           expectedClasses: ['ng-valid'],                          desc: 'Blank date'},
         {input: '01/01/2011', output: '01/01/2011', expectedClasses: ['ng-invalid', 'ng-invalid-max-date'], desc: 'Date too large'},

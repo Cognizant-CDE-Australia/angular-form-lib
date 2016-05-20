@@ -30,7 +30,7 @@ describe('Form Select directive', function() {
   it('should create a select dropdown with a placeholder, if the placeholder attribute is specified', function() {
     elem = compileElement('<form-select label="sel" uid="sel" name="select" placeholder="Select an item"></form-select>');
 
-    expect(elem.find('select').find('option')[0].outerHTML).toEqual('<option translate="" value="" class="ng-scope">Select an item</option>');
+    expect(elem.find('select').find('option')[0].outerHTML).toEqual('<option translate="" value="">Select an item</option>');
   });
 
 
