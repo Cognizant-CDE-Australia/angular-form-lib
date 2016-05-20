@@ -36,7 +36,7 @@
     "clean:prod": "rimraf dist/",
     "dev": "npm-run-all clean:dev verify --parallel verify:watch build:dev serve:dev",
     "publish:docs": "grunt publishDocs",
-    "semantic-release-pre": "semantic-release pre",
+    "release": "npm-run-all build verify test:unit:once",
     "semantic-release": "semantic-release pre && npm run publish:docs && npm publish && semantic-release post",
     "serve:prod": "grunt connect:prod",
     "start": "npm run dev",
