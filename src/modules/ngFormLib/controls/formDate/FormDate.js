@@ -2,13 +2,17 @@ import angular from 'angular';
 import FormLibCommon from '../common';
 import ErrorMessageContainer from '../errorMessageContainer/ErrorMessageContainer';
 
-const mod = angular.module('ngFormLib.controls.formDate', [FormLibCommon, ErrorMessageContainer]);
+
+const mod = angular.module('ngFormLib.controls.formDate', [
+  FormLibCommon,
+  ErrorMessageContainer,
+  //'mgcrea.ngStrap.datepicker'   We are using this, but if it is not loaded, we can still offer basic functionality
+]);
 
 export default mod.name;
 
-
 // INPUT:
-//    <div form-date id="toDate" name="toDate" label="To date" hide-label="true" input-type="text"
+//    <div form-date id="toDate" name="toDate" label="To date" hide-label="true"
 //    ff-ng-model="acctCtrl.search.toDate" ff-max-date="today" ff-bs-show="acctCtrl.datePickers.datePickerTo"
 //    ff-ng-blur="acctCtrl.toggleDatePicker('datePickerTo', true)"
 //    ff-ng-focus="acctCtrl.toggleDatePicker('datePickerFrom', true)"
@@ -25,11 +29,15 @@ mod.directive('formDate', ['formControlService', function(formControlService) {
     expectedTemplateElements: ['input', 'label'],
     expectedAttributes: ['label'],
     configFn: function(tElement, tAttr, id, name, inputElem, labelElem) {
-      labelElem.prepend(tAttr.label);
+      formControlService.addLabelText(labelElem, tAttr.label);
+      addPlaceholder(inputElem, formControlService.translate(tAttr.placeholder)); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 
-      //formControlService.decorateInputGroup(tElement.find('div'), tAttr.inputGroupClass);
+      // If the user wants to use 'input-addon-prefix' or 'input-addon-suffix', change the DOM
+      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr.inputPrefix, tAttr.inputSuffix);
+      var parentElemForErrors = (hasInputGroup) ? inputElem.parent().parent() : inputElem.parent();
+
       formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
-      formControlService.createErrorFeatures(inputElem.parent(), inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);
+      formControlService.createErrorFeatures(parentElemForErrors, inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);
     }
   });
 }]);
@@ -37,7 +45,15 @@ mod.directive('formDate', ['formControlService', function(formControlService) {
 // Populate the template cache with the default template
 mod.run(['$templateCache', ($templateCache) => {
   $templateCache.put('ngFormLib/template/formDate.html', require('./template/FormDateInputTemplate.html'));
+  $templateCache.put('datepicker/datepicker.tpl.html', require('angular-strap/src/datepicker/datepicker.tpl.html'));
 }]);
+
+
+function addPlaceholder(inputElem, placeholderText) {
+  if (placeholderText) {
+    inputElem.attr('placeholder', placeholderText);
+  }
+}
 
 
 mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
@@ -50,16 +66,23 @@ mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
     priority: 150,    // Higher priority than ui-mask (100), so the postLink function runs last
     link: function(scope, elem, attrs, ctrl) {
 
+      function resetValidators() {
+        ctrl.$setValidity('dateFormat', true);
+        ctrl.$setValidity('minDate', true);  // Turn off the error if the date format isn't valid
+        ctrl.$setValidity('maxDate', true);  // Turn off the error if the date format isn't valid
+      }
 
       ctrl.$parsers.unshift(function(viewValue) {
 
-
-        // If viewValue is undefined or null, jump out
+        // If viewValue or modelValue is undefined or null, jump out
         if (!viewValue) {
-          ctrl.$setValidity('date', true);
-          ctrl.$setValidity('minDate', true);  // Turn off the error if the date format isn't valid
-          ctrl.$setValidity('maxDate', true);  // Turn off the error if the date format isn't valid
+          resetValidators();
           return viewValue;
+        }
+
+        if (viewValue.getTime) {
+          // Convert the date value to a date string
+          viewValue = DateUtil.formatDay(viewValue);
         }
 
         // If viewValue is a string of 8 digits, then convert it to dd/dd/dddd first
@@ -69,7 +92,7 @@ mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
 
         // Check that it is a valid date
         var dateFormatValid = dateRegEx.test(viewValue) || typeof viewValue === 'undefined' || !viewValue;
-        ctrl.$setValidity('date', dateFormatValid);
+        ctrl.$setValidity('dateFormat', dateFormatValid);
 
         //console.log('dateInput: ' + viewValue + ', ' + ctrl.$modelValue);
 

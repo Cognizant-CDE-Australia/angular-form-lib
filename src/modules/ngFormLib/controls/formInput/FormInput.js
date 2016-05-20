@@ -27,11 +27,11 @@ mod.directive('formInput', ['formControlService', function(formControlService) {
     expectedTemplateElements: ['input', 'label'],
     expectedAttributes: ['label', 'inputType'],
     configFn: function(tElement, tAttr, id, name, inputElem, labelElem) {
-      labelElem.prepend(tAttr.label);
-      addPlaceholder(inputElem, tAttr.placeholder); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
+      formControlService.addLabelText(labelElem, tAttr.label);
+      addPlaceholder(inputElem, formControlService.translate(tAttr.placeholder)); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 
       // If the user wants to use 'input-addon-prefix' or 'input-addon-suffix', change the DOM
-      var hasInputGroup = addInputGroup(inputElem, tAttr.inputPrefix, tAttr.inputSuffix);
+      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr.inputPrefix, tAttr.inputSuffix);
       var parentElemForErrors = (hasInputGroup) ? inputElem.parent().parent() : inputElem.parent();
 
       formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
@@ -53,18 +53,3 @@ function addPlaceholder(inputElem, placeholderText) {
 }
 
 
-function addInputGroup(inputElem, inputGroupPrefix, inputGroupSuffix) {
-  if (inputGroupPrefix || inputGroupSuffix) {
-    inputElem.wrap('<div class="input-group">');//inputElem.parent(); // This should be the 'control-row' element//wrap('<div class="input-group">');
-    var wrapper = inputElem.parent();
-
-    if (inputGroupPrefix) {
-      wrapper.prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
-    }
-    if (inputGroupSuffix) {
-      wrapper.append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
-    }
-    return true;
-  }
-  return false;
-}

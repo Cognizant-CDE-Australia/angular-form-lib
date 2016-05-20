@@ -9,9 +9,10 @@
   <p>The Error Message Container is a directive which shows & hides error messages based on the parent-form's policy and the corresponding input-field's state.
     It links the error message(s) to the field using ARIA attributes. This increases the accessibility of form-elements quite a bit.</p>
 
-  <div class="callout callout-danger">
-    <h4>Plugin dependency</h4>
-    <p>Error Message Controller requires the <code>pascalprecht.translate</code> module (to perform translation of error messages). See <a href="http://angular-translate.github.io/">Angular Translate</a>.</p>
+  <div class="callout callout-info">
+    <h4>Message translation</h4>
+    <p>Error Message Controller will optionally use the <code>pascalprecht.translate</code> module and the <code>$translate.instant()</code> method to perform translation of error messages,
+      if it has been loaded. See <a href="http://angular-translate.github.io/">Angular Translate</a>.</p>
   </div>
 
   <p>Error messages typically have a consistent grammer.
@@ -48,8 +49,14 @@
                    class="form-control" ng-required="true" field-error-controller>
           </div>
           <div error-container field-name="errMsgDemo_fldName" field-label="custom error label" field-errors="{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}"
-              text-errors="['ctrl.myTextError']"></div>
+              text-errors="['ctrl.myTextError', 'ctrl.translationKey']"></div>
         </div>
+
+        <div form-input uid="errMsgDemo_fldName2" label="FIELD.LABEL" label-suffix="FIELD.LABEL_SUFFIX" required="true"
+             input-type="text" ff-ng-model="ctrl.formDemo1.name" ff-maxlength="40" ff-ng-pattern="/^[a-zA-Z0-9 \-.']+$/"
+             field-errors="{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}"
+        ></div>
+
       </fieldset>
 
       <button type="submit" class="btn btn-primary" form-submit="">Submit</button>
@@ -90,14 +97,16 @@
           <td>field-errors</td>
           <td>object</td>
           <td></td>
-          <td>A key-value pair object linking an error to a message. Error messages can be language-resource-keys.</td>
+          <td>A key-value pair object linking an error to a message. The value can be a language-resource-key if `angular-translate` is loaded.</td>
         </tr>
         <tr>
           <td>text-errors</td>
           <td>array</td>
           <td></td>
-          <td>An array of scope-properties to watch for "truthiness". E.g. For <code>text-errors="['scopeProp']"</code>, the text-value of <code>scope.scopeProp</code> will be
-            displayed when the value is "truthy" (typically a non empty string). This property is useful for handling error messages returned from calling APIs.</td>
+          <td>An array of scope-properties to watch for "truthiness". E.g. For `text-errors="['scopeProp']"`, the text-value of `scope.scopeProp` will be
+            displayed when the value is "truthy" (typically a non empty string).
+            This property is useful for handling error messages returned from calling APIs.
+            The scope value can be a language-resource-key if <code>angular-translate</code> is loaded.</td>
         </tr>
       </tbody>
     </table>

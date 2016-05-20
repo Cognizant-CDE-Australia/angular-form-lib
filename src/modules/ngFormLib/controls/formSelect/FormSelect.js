@@ -31,7 +31,7 @@ mod.directive('formSelect', ['formControlService', function(formControlService) 
     expectedTemplateElements: ['select', 'label'],
     expectedAttributes: ['label'],
     configFn: function(tElement, tAttr, id, name, inputElem, labelElem) {
-      labelElem.prepend(tAttr.label);
+      formControlService.addLabelText(labelElem, tAttr.label);
       addPlaceholder(inputElem, tAttr.placeholder);  // Adds the extra option element to the start of the <option>
 
       formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);

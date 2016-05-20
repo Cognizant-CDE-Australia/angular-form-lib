@@ -23,6 +23,7 @@ mod.controller('ErrorMessageContainerDemoController', function() {
 
   vm.toggleTextError = function() {
     vm.myTextError = (vm.myTextError) ? '' : 'My text error. ';
+    vm.translationKey = (vm.translationKey) ? '' : 'FIELD_ERROR.TEXT_ERROR';
   };
 });
 

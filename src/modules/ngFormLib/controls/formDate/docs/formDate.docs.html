@@ -1,4 +1,4 @@
-<div class="bs-docs-section">
+<div class="bs-docs-section" ng-controller="FormDateDocsController as ctrl">
 
   <div class="page-header">
     <h1 id="formDate">Form Date <a class="small" href="{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formDate/formDate.js" target="_blank">FormDate.js</a>
@@ -6,16 +6,15 @@
     <code>ngFormLib.controls.formDate</code>
   </div>
 
-  <p>The Form Date directive acts like a macro in that it expands into a <code>label</code><code>input</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>
-
-  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>
-    the <code>label</code> element is changed so that a required-indicator-CSS-class is applied to the element.
-  </p>
+  <p>Same as the Form Input directive, but with additional date validation. The date validation is DD/MM/YYYY-centric. Feel free to refactor it to be more international-friendly.</p>
 
   <div class="callout callout-danger">
     <h4>Plugin dependency</h4>
-    <p>Form Date requires the <a href="#formControlsService">form controls service module</a>, the <a href="#fieldErrorController">field error controller module</a>
-      , the <a href="#errorMessageContainer">error message container module</a> and the <a href="{{mainCtrl.REPO}}src/controls/formDate/template/FormDateInputTemplate.html" target="_blank">FormDateInputTemplate.html</a> template to be loaded.</p>
+    <p>Form Date requires the <a ahref="#formControlService" use-hash="true" scroll-offset="50">FormControlService module</a>, the <a href="#fieldErrorController">field error controller module</a>
+      , the <a ahref="#errorMessageContainer">error message container module</a> and the <a href="{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formDate/template/FormDateInputTemplate.html" target="_blank">FormDateInputTemplate.html</a> template to be loaded.
+      Additionally, if the <code>mgcrea.ngStrap.datepicker</code> module is loaded (as part of <a href="http://http://mgcrea.github.io/angular-strap" target="_blank">AngularStrap</a>, then a calendar control will be displayed.
+      See the <a href="http://mgcrea.github.io/angular-strap/#/datepickers">Date Picker API</a> for more options.
+    </p>
   </div>
 
   <h2 id="formDateExamples">Examples</h2>
@@ -28,25 +27,14 @@
     <!-- Example of directive on the form element. Any "submit" button will activate it -->
     <form name="formDate1" class="form" novalidate form-submit>
 
-      <div form-date uid="formDate1_fld1" label="Text type field" required="true"
-           input-type="text" ff-ng-model="ctrl.formInput1.fld1" field-hint="{{'OTHER.HINT' | translate}}"
-           field-errors="{required: 'Title is required'}" placeholder="Placeholder text"
+      <div form-date uid="formDate1_fld1" label="Date field" required="true"
+           ff-ng-model="ctrl.date1" field-hint="OTHER.HINT"
+           ff-min-date="07/07/2010" ff-max-date="today" ff-date-type="string" ff-date-format="dd/MM/yyyy" ff-model-date-format="dd/MM/yyyy"
+           field-errors="{required: 'Date is required', dateFormat: 'Date must be correct format',
+            minDate: 'Must be greater than 07/07/2010', maxDate: 'Date must not be greater than today'}"
       ></div>
 
-      <div form-date uid="formInput1_fld2" name="formInput1_fld2" label="Date type field" required="false"
-           input-type="date" ff-ng-model="ctrl.formInput1.fld2"
-      ></div>
-
-      <div form-input uid="formInput1_fld3" name="formInput1_fld3" label="Income" required="true"
-           input-type="text" input-prefix="$" input-suffix="per month" ff-ng-model="ctrl.formInput1.fld3"
-           field-errors="{required: 'Income is required'}"
-      ></div>
-
-      <!-- Use generated ids -->
-      <div form-input label="Generated id field" required="true" input-type="text"
-           ff-ng-model="ctrl.formInput1.fld4" placeholder="This field has a generated name and id"
-           field-errors="{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}"
-      ></div>
+      <div>{{ctrl.date1}}</div>
 
       <button type="submit" class="btn btn-primary">Submit button</button>
     </form>
@@ -69,6 +57,18 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td>ff-min-date</td>
+          <td>string</td>
+          <td></td>
+          <td>Minimum valid date. A string representation of a date in dd/mm/yyyy format, or the string 'today'</td>
+        </tr>
+        <tr>
+          <td>ff-max-date</td>
+          <td>string</td>
+          <td></td>
+          <td>Maximum valid date. A string representation of a date in dd/mm/yyyy format, or the string 'today'</td>
+        </tr>
         <tr>
           <td>field-hint</td>
           <td>string</td>

@@ -24,8 +24,7 @@ config.plugins = config.plugins.filter(function (plugin) {
 
 // Only have a single entry-point when building for production/distribution
 config.entry = {
-  ngFormLib: ['./modules/ngFormLib/index.js'],
-  ngFormLibPolicies: ['./modules/ngFormLib/policy/defaultPolicies.js']
+  ngFormLib: ['./modules/ngFormLib/index.js']
 };
 config.output.filename = 'es5/[name].js';
 config.output.libraryTarget = 'umd';

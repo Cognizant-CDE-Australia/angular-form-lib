@@ -1,7 +1,7 @@
 import angular from 'angular';
-import ngTranslate from 'angular-translate';
+import FormControlService from '../common/FormControlService';
 
-const mod = angular.module('ngFormLib.controls.errorMessageContainer', [ngTranslate]);
+const mod = angular.module('ngFormLib.controls.errorMessageContainer', [FormControlService]);
 
 export default mod.name;
 
@@ -11,11 +11,11 @@ export default mod.name;
 /**
  * This directive is really a FIELD error message container - it is designed to work with fields exclusively
  */
-mod.directive('errorContainer', ['$compile', '$filter', function($compile, $filter) {
+mod.directive('errorContainer', ['$compile', 'formControlService', function($compile, formControlService) {
 
   function translateError(errorMessage, fieldLabel) {
     var firstLetterIsAVowel = fieldLabel ? ('aeiou'.indexOf(fieldLabel[0].toLowerCase()) !== -1) : undefined;
-    return $filter('translate')(errorMessage, {pronoun: firstLetterIsAVowel ? 'an' : 'a', fieldLabel: fieldLabel});
+    return formControlService.translate(errorMessage, {pronoun: firstLetterIsAVowel ? 'an' : 'a', fieldLabel: fieldLabel});
   }
 
   function ErrorController(element) {

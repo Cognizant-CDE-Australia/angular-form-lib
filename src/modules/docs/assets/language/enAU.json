@@ -4,11 +4,14 @@
       "REQUIRED": "Please enter {{pronoun}} {{fieldLabel}}."
     },
     "NAME_REQUIRED": "@:ERROR.TEMPLATE.REQUIRED",
-    "TITLE_REQUIRED": "@:ERROR.TEMPLATE.REQUIRED"
+    "TITLE_REQUIRED": "@:ERROR.TEMPLATE.REQUIRED",
+    "TEXT_ERROR": " Text error from translation file."
   },
 
   "FIELD": {
-    "TITLE": "Title (from translation file)"
+    "TITLE": "Title (from translation file)",
+    "LABEL": "Label (from translation file)",
+    "LABEL_SUFFIX": "40 chars max (from translation file)"
   },
 
   "OTHER": {

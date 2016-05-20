@@ -69,9 +69,16 @@ mod.provider('formControlService', function() {
     }
   };
 
-  this.$get = ['ngFormLibStringUtil', '$interpolate', function(StringUtil) {
+  this.$get = ['ngFormLibStringUtil', '$injector', function(StringUtil, $injector) {
+    let translator;
+    try {
+      translator = $injector.get('$translate').instant;
+    } catch (e) {
+      translator = angular.identity;
+    }
 
-    var service = {
+
+    let service = {
       defaults: self.defaults,
 
       buildDirective: function(params) {
@@ -170,6 +177,25 @@ mod.provider('formControlService', function() {
         return required;
       },
 
+      addLabelText: function(labelElem, labelText) {
+        labelElem.prepend(service.translate(labelText));
+      },
+
+      addInputGroup: function(inputElem, inputGroupPrefix, inputGroupSuffix) {
+        if (inputGroupPrefix || inputGroupSuffix) {
+          inputElem.wrap('<div class="input-group">');//inputElem.parent(); // This should be the 'control-row' element//wrap('<div class="input-group">');
+          var wrapper = inputElem.parent();
+
+          if (inputGroupPrefix) {
+            wrapper.prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
+          }
+          if (inputGroupSuffix) {
+            wrapper.append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
+          }
+          return true;
+        }
+        return false;
+      },
 
       decorateLabel: function(labelElem, required, id, labelClass, hideLabelExpr, hideRequiredIndicator, labelSuffix) {
         if (id) {
@@ -187,7 +213,7 @@ mod.provider('formControlService', function() {
         // Some labels have suffix text - text that helps with describing the label, but isn't really the label text.
         // E.g. Amount ($AUD)
         if (labelSuffix) {
-          labelElem.text(labelElem.text() + ' ' + labelSuffix);
+          labelElem.text(labelElem.text() + ' ' + service.translate(labelSuffix));
         }
       },
 
@@ -253,12 +279,13 @@ mod.provider('formControlService', function() {
         var hintElement;
 
         if (fieldHint) {
+          let hintText = service.translate(fieldHint);
           // If we have a field hint, add that as well
           if (fieldHintDisplay) {
             // If a field hint display rule exists, implement.
-            hintElement = angular.element('<p ng-if="' + fieldHintDisplay + '" class="help-block" id="' + fieldHintId + '">' + fieldHint + '</p>');
+            hintElement = angular.element('<p ng-if="' + fieldHintDisplay + '" class="help-block" id="' + fieldHintId + '">' + hintText + '</p>');
           } else {
-            hintElement = angular.element('<p class="help-block" id="' + fieldHintId + '">' + fieldHint + '</p>');
+            hintElement = angular.element('<p class="help-block" id="' + fieldHintId + '">' + hintText + '</p>');
           }
           hostElement.append(hintElement);
           inputElement.attr('aria-describedby', fieldHintId);
@@ -298,6 +325,8 @@ mod.provider('formControlService', function() {
           targetElem.attr('ng-class', '{\'checked\': ' + modelStr + '}');
         }
       },
+
+      translate: (str, interpolatedParams) => translator(str || '', interpolatedParams),
 
       validateComponentStructure: function(componentName, element, requiredElements, attr, requiredAttributes) {
         for (var i = 0; i < requiredElements.length; i++) {

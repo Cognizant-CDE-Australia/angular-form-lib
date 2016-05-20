@@ -2,25 +2,18 @@ import angular from 'angular';
 import angularAnimate from 'angular-animate';   // Allows animations to run
 import 'angular-strap';   // No export, currently
 import highlightjs from 'highlightjs/highlight.pack.js';
-import ngFormLib from '../ngFormLib';
+import {ngFormLib, defaultPolicies} from '../ngFormLib';
 import ngTranslate from 'angular-translate';
-
-// Import specific policies for the documentation website
-import defaultStateChangeBehaviour from '../ngFormLib/policy/behaviourOnStateChange/PolicyBehaviourOnStateChange';
-import defaultStateChangeChecks from '../ngFormLib/policy/checkForStateChanges/PolicyCheckForStateChanges';
-import defaultStateDefinitions from '../ngFormLib/policy/stateDefinitions/PolicyStateDefinitions';
 
 // import all of the documentation JS files
 import docFixtures from './docFixtures';
 
 
 const mod = angular.module('ngFormLibDocs.docs', [
-  ngFormLib,
-  angularAnimate,
-  defaultStateChangeBehaviour,
-  defaultStateChangeChecks,
-  defaultStateDefinitions,
   'mgcrea.ngStrap',
+  ngFormLib,
+  defaultPolicies,
+  angularAnimate,
   ngTranslate,
 
   // require ALL of the docs /demo components
@@ -45,22 +38,25 @@ mod.directive('bindCompile', ['$compile', function($compile) {
 }]);
 
 mod.config(['$locationProvider', function($locationProvider) {
-    // configure html5 to get links working on jsfiddle
-    $locationProvider.html5Mode(false);
-  }])
-  .config(['$anchorScrollProvider', function($anchorScrollProvider) {
-    $anchorScrollProvider.disableAutoScrolling();
-  }])
-  .config(['$translateProvider', function($translateProvider) {
-    let translations = require('json!./assets/language/enAU.json');
-    $translateProvider.translations('en', translations);
-    $translateProvider.preferredLanguage('enAU');
-    $translateProvider.useSanitizeValueStrategy(null);
-  }])
-  // Set the field-error-focus-scroll-position, to allow for the website's fixed header
-  .config(['formPolicyServiceProvider', function(formPolicyServiceProvider) {
-    formPolicyServiceProvider.defaults.fieldFocusScrollOffset = 80;
-  }]);
+  // configure html5 to get links working on jsfiddle
+  $locationProvider.html5Mode(false);
+}]);
+
+mod.config(['$anchorScrollProvider', function($anchorScrollProvider) {
+  $anchorScrollProvider.disableAutoScrolling();
+}]);
+
+mod.config(['$translateProvider', function($translateProvider) {
+  let translations = require('json!./assets/language/enAU.json');
+  $translateProvider.translations('enAU', translations);
+  $translateProvider.preferredLanguage('enAU');
+  $translateProvider.useSanitizeValueStrategy(null);
+}]);
+
+// Set the field-error-focus-scroll-position, to allow for the website's fixed header
+mod.config(['formPolicyServiceProvider', function(formPolicyServiceProvider) {
+  formPolicyServiceProvider.defaults.fieldFocusScrollOffset = 80;
+}]);
 
 
 mod.controller('MainController', ['$http', function($http) {

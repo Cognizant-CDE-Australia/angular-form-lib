@@ -36,12 +36,12 @@
     },
     {
       "title": "Controls Service",
-      "template": "<div form-controls-service-docs></div>",
-      "href": "#formControlsService",
+      "template": "<div form-control-service-docs></div>",
+      "href": "#formControlService",
       "subSection": [
         {
           "title": "Options",
-          "href": "#formControlsServiceOptions"
+          "href": "#formControlServiceOptions"
         }
       ]
     },
@@ -126,6 +126,21 @@
       ]
     },
     {
+      "title": "Date",
+      "template": "<div form-date-docs></div>",
+      "href": "#formDate",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formDateExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formDateUsage"
+        }
+      ]
+    },
+    {
       "title": "Radio Button",
       "template": "<div form-radio-button-docs></div>",
       "href": "#formRadioButton",
@@ -152,21 +167,6 @@
         {
           "title": "Usage",
           "href": "#formSelectUsage"
-        }
-      ]
-    },
-    {
-      "title": "Date",
-      "template": "<div form-date-docs></div>",
-      "href": "#formDate",
-      "subSection": [
-        {
-          "title": "Examples",
-          "href": "#formDateExamples"
-        },
-        {
-          "title": "Usage",
-          "href": "#formDateUsage"
         }
       ]
     },

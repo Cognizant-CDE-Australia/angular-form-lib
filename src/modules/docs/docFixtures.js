@@ -5,7 +5,7 @@ import angular from 'angular';
 import formControlsCommonDocs from '../ngFormLib/controls/common/docs/formControlsCommon.docs';
 import formControlsCommonPropertiesDocs from '../ngFormLib/controls/common/docs/formControlsCommonProperties.docs';
 import formControlsDemosDocs from '../ngFormLib/controls/common/docs/formControlsDemos.docs';
-import formControlsServiceDocs from '../ngFormLib/controls/common/docs/formControlsService.docs';
+import formControlServiceDocs from '../ngFormLib/controls/common/docs/formControlService.docs';
 import formPolicyDocs from '../ngFormLib/policy/docs/formPolicy.docs';
 import formSubmitDocs from '../ngFormLib/controls/formSubmit/docs/formSubmit.docs';
 import formResetDocs from '../ngFormLib/controls/formReset/docs/formReset.docs';
@@ -22,7 +22,7 @@ const mod = angular.module('ngFormLibDocs.docs.fixtures', [
   formControlsCommonDocs,
   formControlsCommonPropertiesDocs,
   formControlsDemosDocs,
-  formControlsServiceDocs,
+  formControlServiceDocs,
   formPolicyDocs,
   formResetDocs,
   formSubmitDocs,

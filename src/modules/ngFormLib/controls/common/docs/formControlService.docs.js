@@ -1,14 +1,14 @@
 import angular from 'angular';
 
-const mod = angular.module('ngFormLibDocs.controls.common.docs.formControlsService', []);
+const mod = angular.module('ngFormLibDocs.controls.common.docs.formControlService', []);
 
 export default mod.name;
 
-mod.directive('formControlsServiceDocs', function() {
+mod.directive('formControlServiceDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormControlServiceDemoCtrl',
-    template: require('./formControlsService.docs.html')
+    template: require('./formControlService.docs.html')
   }
 });
 

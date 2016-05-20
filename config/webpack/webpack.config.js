@@ -131,7 +131,7 @@ config.module.loaders.push({
   loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader!stylus-loader')
 });
 // For any entry-point CSS file definitions, extract them as text files as well
-config.plugins.push(new ExtractTextPlugin('css/[name].[contenthash:8].css', { allChunks: true }));
+config.plugins.push(new ExtractTextPlugin('css/[name].css', { allChunks: true }));
 /* **/
 
 /** HTML START */
