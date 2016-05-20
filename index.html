@@ -1,76 +1,48 @@
-<!doctype html>
-<html xmlns:ng=http://angularjs.org id=ng-app class=no-js ng-app=ngFormLibDocs>
-  <head>
-    <meta charset=utf-8>
-    <title>Angular Form Library</title>
-    <meta name=description content="">
-    <meta name=viewport content="width=device-width">
+<!DOCTYPE html>
+<html lang="en" xmlns:ng="http://angularjs.org" id="ng-app" class="no-js" ng-app="ngFormLibDocs">
+<head>
+  <meta charset="utf-8">
+  <title>Angular Form Library</title>
+  <meta name="description" content="Angular Form Library">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
 
-    
-    <link rel=stylesheet href=css/angular-motion.da8739d6.css>
-<link rel=stylesheet href=css/github.55d3ef36.css>
-<link rel=stylesheet href=css/docs.05c205fd.css>
-<link rel=stylesheet href=css/sampleFormStyle.9a2d263d.css>
-
-    
-
-    <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script><![endif]-->
-
+  <!-- Die frame! DIE! http://en.wikipedia.org/wiki/Framekiller -->
+  <style>html{display:none}</style>
   
-  <body ng-controller="MainController as mainCtrl">
-
-  <div ng-include="'views/docs/navbar.html'"></div>
-  <div ng-include="'views/docs/header.html'"></div>
-
-  <div role=content>
-    <div class=container>
-      <main role=main class=main>
-
-        <div class=row>
-          <div class="col-md-2 hidden-sm hidden-xs">
-            <div ng-include="'views/docs/affixed-sidenav.html'"></div>
-          </div>
-          <div class=col-md-10>
-            <div ng-include="'views/docs/getting-started.html'"></div>
-            <div id=directives>
-              <div ng-repeat="menuContent in mainCtrl.DOC_CONFIG.sitemap" ng-include=menuContent.template></div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  </div>
-
-  <div ng-include="'views/docs/footer.html'"></div>
-
-  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.3/es5-shim.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"></script><![endif]-->
-
-
+  <link href="css/docs.css" rel="stylesheet">
   
-  <script src=vendor/bower_components/angular/angular.4e41f4d2.js></script>
-<script src=vendor/bower_components/angular-animate/angular-animate.d27a63f0.js></script>
-<script src=vendor/bower_components/angular-translate/angular-translate.98e84e57.js></script>
-<script src=vendor/bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.bf8039e8.js></script>
-<script src=vendor/bower_components/angular-scroll/angular-scroll.c40ce1a4.js></script>
-<script src=vendor/bower_components/angular-strap/dist/angular-strap.ac3fd059.js></script>
-<script src=vendor/bower_components/angular-strap/dist/angular-strap.tpl.573d9b5e.js></script>
-
-  <script src=vendor/bower_components/highlightjs/highlight.pack.3d62b23c.js></script>
-
-  
-
-  
-
-  
-  <script src=js/ng-form-lib-docs.350ee4c4.js></script>
-
-  <script src=js/ng-form-lib.a583b6e2.js></script>
-  
-
-
-  <script>// Twitter
-    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+  <script>
+    if (window.self !== window.top) {
+      window.top.location.href = window.location.href;
+    } else {
+      document.documentElement.style.display = 'block';
+    }
   </script>
 
+  <!--[if lt IE 9]>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+  <div docs-component></div>
+
+  <!--[if lt IE 9]>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.3/es5-shim.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"></script>
+  <![endif]-->
+
+  
+  <script src="vendor/vendor.ef79e683.js"></script>
+  
+  <script src="js/ngFormLib.ef79e683.js"></script>
+  
+  <script src="js/docs.ef79e683.js"></script>
+  
+
+  <script>// Twitter
+  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+  </script>
+</body>
+</html>
