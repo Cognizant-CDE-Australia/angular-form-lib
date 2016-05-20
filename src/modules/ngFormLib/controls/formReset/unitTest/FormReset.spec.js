@@ -1,17 +1,16 @@
+import componentUnderTest from '../FormReset';
+import formPolicy from '../../../policy/FormPolicy';
+
 describe('FormReset', function() {
-  'use strict';
 
   var compileElement, scope, elem;
 
-
-
   describe('with ngFormLib', function() {
 
-    beforeEach(function() {
-      angular.mock.module('ngFormLib.controls.formReset');
-      angular.mock.module('ngFormLib.policy');
+    beforeEach(() => {
+      angular.mock.module(componentUnderTest, formPolicy);
 
-      inject(function(_$compile_, $rootScope) {
+      angular.mock.inject(function(_$compile_, $rootScope) {
         scope = $rootScope.$new();
         compileElement = function(html) {
           return _$compile_(html)(scope);
@@ -75,7 +74,7 @@ describe('FormReset', function() {
     beforeEach(function() {
       angular.mock.module('ngFormLib.controls.formReset');
 
-      inject(function(_$compile_, $rootScope) {
+      angular.mock.inject(function(_$compile_, $rootScope) {
         scope = $rootScope.$new();
         compileElement = function(html) {
           return _$compile_(html)(scope);

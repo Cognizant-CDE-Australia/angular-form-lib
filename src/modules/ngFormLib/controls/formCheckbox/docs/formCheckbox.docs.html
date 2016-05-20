@@ -14,8 +14,8 @@
 
   <div class="callout callout-danger">
     <h4>Plugin dependency</h4>
-    <p>FormCheckbox requires the <a ahref="#formControlsService">form controls service module</a>, the <a ahref="#fieldErrorController">field error controller module</a>
-      , the <a ahref="#errorMessageContainer">error message container module</a> and the <a href="{{mainCtrl.REPO}}src/controls/formCheckbox/template/FormCheckboxTemplate.html" target="_blank">FormCheckboxTemplate.html</a> template to be loaded.</p>
+    <p>FormCheckbox requires the <a ahref="#formControlService" use-hash="true" scroll-offset="50">FormControlService module</a>, the <a ahref="#fieldErrorController">field error controller module</a>
+      , the <a ahref="#errorMessageContainer">error message container module</a> and the <a href="{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formCheckbox/template/FormCheckboxTemplate.html" target="_blank">FormCheckboxTemplate.html</a> template to be loaded.</p>
   </div>
 
   <h2 id="formCheckboxExamples">Examples</h2>
@@ -38,6 +38,7 @@
         >Optional Checkbox with value: {{ctrl.data.fld2}}</div>
 
       <div form-checkbox uid="formCheckbox1_fld3" name="formCheckbox1_fld3" class="image-checkbox"
+           required="true" field-errors="{required: 'You must agree'}"
            ff-ng-model="ctrl.data.fld3">Styled accessible checkbox</div>
 
       <div form-checkbox uid="formCheckbox1_fld4" name="formCheckbox1_fld4" class="image-checkbox"
@@ -78,7 +79,7 @@
           <td>The value to use in the model-value when the checkbox is not checked.</td>
         </tr>
       </tbody>
-      <tbody ng-include="'views/ngFormLib/controls/common/docs/formControlsCommonProperties.docs.html'"></tbody>
+      <tbody form-controls-common-properties-docs></tbody>
     </table>
   </div>
 </div>

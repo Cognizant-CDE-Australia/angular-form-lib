@@ -1,0 +1,114 @@
+<div class="bs-docs-section">
+
+  <div class="page-header">
+    <h1 id="gettingStarted">Getting started <a class="small" href="{{mainCtrl.REPO}}readme.md" target="_blank">readme.md</a>
+    </h1>
+    <code>ngFormLib</code>
+  </div>
+
+  <div class="callout callout-info">
+    <h4 id="project-history">About the project</h4>
+    <p>Angular Form Library is a set of Angular components that allow you to configure how form validation works across your entire site,
+      plus a set of accessibility-aware input controls that are easy to integrate into your AngularJS 1.2+ application.</p>
+    <p>Designed with Bootstrap CSS styles and markup in mind, Angular Form Library can be easily customised to work with your existing
+      CSS and form markup.</p>
+  </div>
+
+  <h2 id="project-quickstart">Quick Start</h2>
+  <p>Install and manage Angular Form Library with NPM.</p>
+  <div class="highlight">
+    <pre>
+      <code class="bash" highlight-block>
+        $ npm install angular-form-lib --save
+      </code>
+    </pre>
+  </div>
+
+
+  <p>Inject the <code>ngFormLib</code>module into your Angular application.</p>
+  <div class="highlight">
+    <pre>
+      <code class="javascript" highlight-block>
+        // ES5
+        angular.module('myApp', ['ngFormLib']);
+
+        // ES6 / Webpack
+        import {ngFormLib} from 'angular-form-lib';
+
+        const app = angular.module('myApp', [ngFormLib]);
+      </code>
+    </pre>
+  </div>
+
+  <p>Typically you would load both the module and the default policies into your application:</p>
+  <div class="highlight">
+    <pre>
+      <code class="javascript" highlight-block>
+        // ES5
+        angular.module('myApp', [
+          'ngFormLib',
+          'duScroll',   // Scrolling behaviour for when the state changes to an error and we wish to focus the field
+          'ngFormLib.policy.behaviourOnStateChange',
+          'ngFormLib.policy.checkForStateChanges',
+          'ngFormLib.policy.stateDefinitions',
+          'pascalprecht.translate'    // Adds translation support, which will be used for certain properties when available
+        ]);
+
+        // ES6 / Webpack
+        import {ngFormLib, defaultPolicies} from 'angular-form-lib';
+        import 'angular-scroll';   // Scrolling behaviour for when the state changes to an error and we wish to focus the field
+        import ngTranslate from 'angular-translate';
+
+        const app = angular.module('myApp', ['duScroll', ngTranslate, ngFormLib, defaultPolicies]);
+      </code>
+    </pre>
+  </div>
+
+
+  <div class="callout callout-info">
+    <h4>Custom builds</h4>
+    <p>Angular Form Library provides independently built modules that can be loaded separately:</p>
+    <div class="highlight">
+      <pre>
+        <code class="javascript" highlight-block>
+          angular.module('myApp', [ 'ngFormLib.policy', 'ngFormLib.controls.formInput']);
+        </code>
+      </pre>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <h4>Message translation</h4>
+    <p>Angular Form Library will optionally use the <code>pascalprecht.translate</code> module and the <code>$translate.instant()</code> method
+      to perform translation of error messages, placeholder text, field hints and labels,
+      if the module has been loaded. See <a href="http://angular-translate.github.io/">Angular Translate</a>.</p>
+  </div>
+
+  <h2 id="project-contribute">Contributing</h2>
+  <div class="highlight">
+    <pre>
+      <code class="bash" highlight-block>
+        // Fork https://github.com/odecee/angular-form-lib.git on Github
+        mkdir {newDir}
+        cd {newDir}
+        git clone {your forked repo}
+        npm i commitizen -g   // Install commitizen to help generate conventional commit messages
+        npm i
+
+        // Serve and watch docs, ideal to develop
+        $ npm start
+        // Continuous integration
+        $ npm test
+        // Build Angular Form Library and serve documentation site
+        $ npm build:serve
+
+        // Make some changes then commit them
+        git add.
+        git cz
+        // Then create pull request with your changes, push to GitHub, get feedback, rinse, repeat, merge.
+      </code>
+    </pre>
+  </div>
+
+
+</div>

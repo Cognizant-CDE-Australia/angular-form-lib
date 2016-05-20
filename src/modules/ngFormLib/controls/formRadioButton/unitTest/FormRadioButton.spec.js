@@ -1,14 +1,19 @@
+import componentUnderTest from '../FormRadioButton';
+
 describe('when I use the Form Radio Button it', function() {
   'use strict';
   var compileElement, scope, elem;
 
   beforeEach(function() {
-    angular.mock.module('ngFormLib.controls.formRadioButton');
+    angular.mock.module(componentUnderTest);
 
-    inject(function(_$compile_, $rootScope) {
+    angular.mock.inject(($compile, $rootScope) => {
       scope = $rootScope.$new();
+
       compileElement = function(html) {
-        return _$compile_(html)(scope);
+        var element = $compile(html)(scope);
+        scope.$digest();
+        return element;
       };
     });
   });
@@ -16,7 +21,6 @@ describe('when I use the Form Radio Button it', function() {
 
   it('should create a radio button with the minimum markup', function() {
     elem = compileElement('<form-radio-button uid="fld" name="btn">My label</form-radio-button>');
-    scope.$digest();
 
     // Added form directive bits HTML changes initially
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="radio" field-error-controller="" id="fld" name="btn" ng-required="false" aria-required="false">');
@@ -26,7 +30,6 @@ describe('when I use the Form Radio Button it', function() {
 
   it('should create a radio button with a uid + name + change() + required', function() {
     elem = compileElement('<form-radio-button uid="fld" name="btn" ff-ng-model="state" ff-ng-checked="true" ff-value="puppy" label-class="Amy" ff-aria-label="My label" ff-ng-change="testChange()" required="true"></form-radio-button>');
-    scope.$digest();
 
     expect(elem.find('input')[0].outerHTML).toMatch('<input type="radio" field-error-controller="" id="fld" name="btn" ng-model="state" ng-checked="true" value="puppy" aria-label="My label" ng-change="testChange()" ng-required="true" aria-required="true" ng-class="{\'checked\': state === \'puppy\' || true}" class=".*" required="required" checked="checked">');
     expect(elem.find('label')[0].outerHTML).toEqual('<label for="fld" class="Amy"><span ng-transclude=""></span><span class="required ng-isolate-scope" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" required-marker="" hide="!(true)"></span></label>');

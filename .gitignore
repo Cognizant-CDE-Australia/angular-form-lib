@@ -1,7 +1,6 @@
 /.grunt
 /.tmp
-/bower_components
-/dev
+/.idea
 /dist
 /node_modules
 /reports

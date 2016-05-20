@@ -1,30 +1,32 @@
-// See http://pivotal.github.io/jasmine/ for list of matchers (e.g .toEqual(), toMatch())
+import componentUnderTest from '../RequiredMarker';
+
 describe('Required Marker tag', function() {
-  'use strict';
 
-  var $compile, scope;
-  var elem;
+  var compileElement, scope, elem;
 
-  beforeEach(angular.mock.module('ngFormLib.controls.requiredMarker'));
+  beforeEach(() => {
+    angular.mock.module(componentUnderTest);
 
-  beforeEach(inject(['$compile', '$rootScope', function($c, $r) {
-    $compile = $c;
-    scope = $r.$new();
-  }]));
+    angular.mock.inject(($compile, $rootScope) => {
+      scope = $rootScope.$new();
+
+      compileElement = function(html) {
+        var element = $compile(html)(scope);
+        scope.$digest();
+        return element;
+      };
+    });
+  });
 
   it('should transform the required-marker element into accessible HTML, basic', function() {
-    elem = angular.element('<div><span required-marker></span></div>');
-    $compile(elem)(scope);
-    scope.$digest();
+    elem = compileElement('<div><span required-marker></span></div>');
 
     expect(elem.find('span')[0].outerHTML).toEqual('<span class="required ng-isolate-scope" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" required-marker=""></span>');
   });
 
 
   it('should transform the required-marker element into accessible HTML, advanced', function() {
-    elem = angular.element('<div><span required-marker hide="isNotRequired">Hint text</span></div>');
-    $compile(elem)(scope);
-    scope.$digest();
+    elem = compileElement('<div><span required-marker hide="isNotRequired">Hint text</span></div>');
 
     expect(elem.find('span')[0].outerHTML).toEqual('<span class="required ng-isolate-scope" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" required-marker="" hide="isNotRequired"><span class="ng-scope">Hint text</span></span>');
     expect(elem.find('span').eq(0).hasClass('ng-hide')).toEqual(false);

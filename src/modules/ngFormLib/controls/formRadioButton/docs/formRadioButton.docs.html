@@ -15,9 +15,9 @@
 
   <div class="callout callout-danger">
     <h4>Plugin dependency</h4>
-    <p>Form RadioButton requires the <a ahref="#formControlsService">form controls service module</a>, the <a ahref="#fieldErrorController">field error controller module</a>
+    <p>Form RadioButton requires the <a ahref="#formControlService" use-hash="true" scroll-offset="50">FormControlService module</a>, the <a ahref="#fieldErrorController">field error controller module</a>
       , the <a ahref="#errorMessageContainer">error message container module</a> and the
-      <a href="{{mainCtrl.REPO}}src/controls/formRadioButton/template/formRadioButtonTemplate.html" target="_blank">FormRadioButtonTemplate.html</a> template to be loaded.</p>
+      <a href="{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formRadioButton/template/formRadioButtonTemplate.html" target="_blank">FormRadioButtonTemplate.html</a> template to be loaded.</p>
   </div>
 
   <h2 id="formRadioButtonExamples">Examples</h2>
@@ -33,10 +33,10 @@
       <!-- Example of a radio-group that has no initial-selection. Note the radio buttons are required
        but hide-required-indicator="true", and field-errors are specified on the error-container,
        NOT on the radio button -->
-      <fieldset form-group>
+      <fieldset class="form-group form-group-radio">
         <div ng-repeat="item in ctrl.titleData">
           <div form-radio-button uid="formRadio1_fld{{$index}}" name="formRadio1_group1"
-            ff-ng-model="ctrl.data1.radioVal1" ff-ng-value="$index" required="true" hide-required-indicator
+            ff-ng-model="ctrl.data.radioVal1" ff-ng-value="$index" required="true" hide-required-indicator
             >{{item.label}}</div>
         </div>
         <div error-container field-name="formRadio1_group1" field-errors="{required: 'Please select one of the above options'}"></div>
@@ -45,16 +45,16 @@
       <p>Selected value: {{ctrl.data1.radioVal1}}</p>
 
       <!-- To avoid the complexity with required radio-buttons, you typically make one of them initially-selected -->
-      <fieldset form-group>
+      <fieldset class="form-group form-group-radio">
         <div ng-repeat="item in ctrl.titleData">
           <div form-radio-button uid="formRadio1_fld2{{$index}}" name="formRadio1_group2"
-               ff-ng-model="ctrl.data1.radioVal2" ff-ng-value="$index"
+               ff-ng-model="ctrl.data.radioVal2" ff-ng-value="$index"
               >{{item.label}}</div>
         </div>
       </fieldset>
 
       <button type="submit" class="btn btn-primary">Submit</button>
-      <button type="button" class="btn" form-reset="ctrl.data1">Reset</button>
+      <button type="button" class="btn" form-reset="ctrl.data">Reset</button>
     </form>
 
   </div>
@@ -82,7 +82,7 @@
         <td>The value to use in the model-value when the radio-button is selected.</td>
       </tr>
       </tbody>
-      <tbody ng-include="'views/ngFormLib/controls/common/docs/formControlsCommonProperties.docs.html'"></tbody>
+      <tbody form-controls-common-properties-docs></tbody>
     </table>
   </div>
 </div>

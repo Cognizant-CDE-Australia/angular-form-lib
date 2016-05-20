@@ -1,20 +1,19 @@
-/* jshint maxstatements:30 */
-// See http://pivotal.github.io/jasmine/ for list of matchers (e.g .toEqual(), toMatch())
+import componentUnderTest from '../ErrorMessageContainer';
+import controlsCommon from '../../common';
+import formInput from '../../formInput/FormInput';
+import formSubmit from '../../formSubmit/FormSubmit';
+import formPolicy from '../../../policy/FormPolicy';
+import defaultPolicies from '../../../policy/defaultPolicies';
+
 describe('Error Message Container directive', function() {
-  'use strict';
   var compileElement, scope;
 
   beforeEach(function() {
-    angular.mock.module('ngFormLib.policy');
-    angular.mock.module('ngFormLib.controls');
+    angular.mock.module(componentUnderTest, controlsCommon, formInput, formSubmit, formPolicy, defaultPolicies);
 
-    // Use the default form policies that are already defined
-    angular.mock.module('ngFormLib.policy.behaviourOnStateChange');
-    angular.mock.module('ngFormLib.policy.checkForStateChanges');
-    angular.mock.module('ngFormLib.policy.stateDefinitions');
 
-    angular.mock.module('ngFormLib', ['$sceProvider', function($sceProvider) {
-      // Just in case the $sceProvider is enabled, we need to disable it for this test (I think?)
+    // Just in case the $sceProvider is enabled, we need to disable it for this test (I think?)
+    angular.mock.module(['$sceProvider', function($sceProvider) {
       $sceProvider.enabled(false);
     }]);
   });
@@ -23,8 +22,9 @@ describe('Error Message Container directive', function() {
   describe('simple tests', function() {
 
     beforeEach(function() {
-      inject(function($compile, $rootScope) {
+      angular.mock.inject(($compile, $rootScope) => {
         scope = $rootScope.$new();
+
         compileElement = function(html) {
           var element = $compile(html)(scope);
           scope.$digest();
@@ -105,7 +105,7 @@ describe('Error Message Container directive', function() {
   describe('on an isolate-scope directive', function() {
 
     beforeEach(function() {
-      angular.module('myIsolateScopeMod', ['ngFormLib'])
+      angular.module('myIsolateScopeMod', [formInput])
         .directive('myIsolateScopeDirective', function() {
           return {
             scope: {
@@ -118,7 +118,7 @@ describe('Error Message Container directive', function() {
 
       angular.mock.module('myIsolateScopeMod');
 
-      inject(function($compile, $rootScope) {
+      angular.mock.inject(($compile, $rootScope) => {
         scope = $rootScope.$new();
         scope.returnFalse = function() { return false; };
 
@@ -136,6 +136,7 @@ describe('Error Message Container directive', function() {
         postcode1: '2000',
         postcode2: '3000'
       };
+
       var elem = compileElement('<form name="frm" novalidate form-submit>' +
         '<my-isolate-scope-directive model="address"></my-isolate-scope-directive>' +
         '<form-input input-type="text" name="normalField" uid="normalField" label="Normal Postcode" ff-ng-model="address.postcode2" ff-ng-pattern="/^\\d{4}$/" field-errors="{pattern: \'msg3\'}"></form-input>' +

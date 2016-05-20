@@ -1,7 +1,9 @@
-/* jshint maxstatements:30 */
-// See http://jasmine.github.io/1.3/introduction.html for list of matchers (e.g .toEqual(), toMatch())
+import componentUnderTest from '../FormPolicy';
+import controls from '../../controls';
+import defaultPolicies from '../defaultPolicies';
+
+
 describe('Form Policy Service', function() {
-  'use strict';
 
   /**
    * We are actually testing quite a few directives, as they work together to create the behaviour we want
@@ -10,17 +12,19 @@ describe('Form Policy Service', function() {
   var compileElement, scope, elem;
 
   beforeEach(function() {
-    angular.mock.module('ngFormLib.controls');
-    angular.mock.module('ngFormLib.policy.checkForStateChanges');
-    angular.mock.module('ngFormLib.policy.stateDefinitions');
-    angular.mock.module('ngFormLib', ['$sceProvider', function($sceProvider) {
+    angular.mock.module(componentUnderTest, controls, defaultPolicies);
+    angular.mock.module(function($sceProvider) {
       $sceProvider.enabled(false);
-    }]);
+    });
 
-    inject(function(_$compile_, $rootScope) {
+    angular.mock.inject(function($compile, $rootScope) {
       scope = $rootScope.$new();
+      scope.returnFalse = function() { return false; };
+
       compileElement = function(html) {
-        return _$compile_(html)(scope);
+        var element = $compile(html)(scope);
+        scope.$digest();
+        return element;
       };
     });
   });
@@ -28,7 +32,6 @@ describe('Form Policy Service', function() {
 
   describe('Form Policy 5 - show errors on blur but once form submitted, show them immediately', function() {
 
-    var $compile, scope;
     var PATTERN_ERROR = 'Pattern error', REQUIRED_ERROR = 'Required error',
       VALID_DATA = '1234', INVALID_DATA = '123';
 
@@ -39,35 +42,30 @@ describe('Form Policy Service', function() {
       'text-errors="[\'someData\']" ' +
       '></error-container>' +
       '</form>';
-    var elem, errorDiv, inputElem = 'An error occurred';
+    var errorDiv, inputElem = 'An error occurred';
 
 
-    function compileFieldTemplate($c, $r, htmlStr) {
-      $compile = $c;
-      scope = $r.$new();
+    //function compileFieldTemplate($c, $r, htmlStr) {
+    //  $compile = $c;
+    //  scope = $r.$new();
+    //
+    //  elem = angular.element(htmlStr);
+    //  $compile(elem)(scope);
+    //  scope.$digest();
+    //}
+    //
 
-      scope.returnFalse = function() { return false; };
-
-      elem = angular.element(htmlStr);
-      $compile(elem)(scope);
-      scope.$digest();
-
+    beforeEach(function() {
+      elem = compileElement(elementText);
       errorDiv = elem.find('div').eq(0);
       inputElem = elem.find('input');
-    }
-
-    // beforeEach(angular.mock.module('form.controls.forminput.template'));
-    beforeEach(function() {
-
-
-      inject(function($compile, $rootScope) {
-        compileFieldTemplate($compile, $rootScope, elementText);
-      });
     });
 
 
 
     it('should show errors when the field loses focus, but after the form is submitted, it should show the errors immediately', function() {
+
+
       // Initially, there are no errors
       expect(errorDiv.find('div').length).toEqual(0);
       expect(errorDiv.find('div').find('span').text()).toEqual('');
@@ -145,6 +143,20 @@ describe('Form Policy Service', function() {
         elem = compileElement('<input type="text">');
       }
       expect(shouldWork).not.toThrow();
+    });
+
+    // We should check what happens when: multiple form elements with the same name, destroying form element...
+  });
+
+
+  describe('with a custom form-policy', function() {
+
+    it('should extend the existing form policy with a custom form policy when one is supplied', function() {
+      scope.myPolicy = {foo: 'bar', extendWith: {car: 'this too'}};
+      var elem = compileElement('<form form-policy="myPolicy"></form>');
+      var formController = elem.controller('form');
+      expect(formController._policy.foo).toEqual('bar');
+      expect(formController._policy.extendWith).toEqual({car: 'this too'});
     });
 
     // We should check what happens when: multiple form elements with the same name, destroying form element...

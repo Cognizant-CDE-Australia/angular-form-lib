@@ -1,13 +1,13 @@
 {
   "version": "0.6.1",
   "repository": {
-    "host": "//github.com/Odecee/angular-form-lib/",
+    "host": "//github.com/odecee/angular-form-lib/",
     "branch": "blob/master/"
   },
   "sitemap": [
     {
       "title": "Demo",
-      "template": "views/ngFormLib/controls/common/docs/formControlsDemos.docs.html",
+      "template": "<div form-controls-demos-docs></div>",
       "href": "#formDemos",
       "subSection": [
         {
@@ -25,29 +25,33 @@
         {
           "title": "Repeating Form",
           "href": "#formDemo4"
+        },
+        {
+          "title": "Dynamic Form",
+          "href": "#formDemo5"
         }
       ]
     },
     {
       "title": "Controls Common",
-      "template": "views/ngFormLib/controls/common/docs/formControlsCommon.docs.html",
+      "template": "<div form-controls-common-docs></div>",
       "href": "#formControls",
       "subSection": []
     },
     {
       "title": "Controls Service",
-      "template": "views/ngFormLib/controls/common/docs/formControlsService.docs.html",
-      "href": "#formControlsService",
+      "template": "<div form-control-service-docs></div>",
+      "href": "#formControlService",
       "subSection": [
         {
           "title": "Options",
-          "href": "#formControlsServiceOptions"
+          "href": "#formControlServiceOptions"
         }
       ]
     },
     {
       "title": "Form Policy",
-      "template": "views/ngFormLib/policy/docs/formPolicy.docs.html",
+      "template": "<div form-policy-docs></div>",
       "href": "#formPolicy",
       "subSection": [
         {
@@ -67,7 +71,7 @@
     },
     {
       "title": "Form Submit",
-      "template": "views/ngFormLib/controls/formSubmit/docs/formSubmit.docs.html",
+      "template": "<div form-submit-docs></div>",
       "href": "#formSubmit",
       "subSection": [
         {
@@ -82,7 +86,7 @@
     },
     {
       "title": "Form Reset",
-      "template": "views/ngFormLib/controls/formReset/docs/formReset.docs.html",
+      "template": "<div form-reset-docs></div>",
       "href": "#formReset",
       "subSection": [
         {
@@ -97,7 +101,7 @@
     },
     {
       "title": "Input",
-      "template": "views/ngFormLib/controls/formInput/docs/formInput.docs.html",
+      "template": "<div form-input-docs></div>",
       "href": "#formInput",
       "subSection": [
         {
@@ -112,7 +116,7 @@
     },
     {
       "title": "Checkbox",
-      "template": "views/ngFormLib/controls/formCheckbox/docs/formCheckbox.docs.html",
+      "template": "<div form-checkbox-docs></div>",
       "href": "#formCheckbox",
       "subSection": [
         {
@@ -126,8 +130,23 @@
       ]
     },
     {
+      "title": "Date",
+      "template": "<div form-date-docs></div>",
+      "href": "#formDate",
+      "subSection": [
+        {
+          "title": "Examples",
+          "href": "#formDateExamples"
+        },
+        {
+          "title": "Usage",
+          "href": "#formDateUsage"
+        }
+      ]
+    },
+    {
       "title": "Radio Button",
-      "template": "views/ngFormLib/controls/formRadioButton/docs/formRadioButton.docs.html",
+      "template": "<div form-radio-button-docs></div>",
       "href": "#formRadioButton",
       "subSection": [
         {
@@ -142,7 +161,7 @@
     },
     {
       "title": "Select",
-      "template": "views/ngFormLib/controls/formSelect/docs/formSelect.docs.html",
+      "template": "<div form-select-docs></div>",
       "href": "#formSelect",
       "subSection": [
         {
@@ -156,23 +175,8 @@
       ]
     },
     {
-      "title": "Date",
-      "template": "views/ngFormLib/controls/formDate/docs/formDate.docs.html",
-      "href": "#formDate",
-      "subSection": [
-        {
-          "title": "Examples",
-          "href": "#formDateExamples"
-        },
-        {
-          "title": "Usage",
-          "href": "#formDateUsage"
-        }
-      ]
-    },
-    {
       "title": "Error Message",
-      "template": "views/ngFormLib/controls/errorMessageContainer/docs/errorMessageContainer.docs.html",
+      "template": "<div error-message-container-docs></div>",
       "href": "#errorMessageContainer",
       "subSection": [
         {
@@ -187,7 +191,7 @@
     },
     {
       "title": "Required",
-      "template": "views/ngFormLib/controls/requiredMarker/docs/requiredMarker.docs.html",
+      "template": "<div required-marker-docs></div>",
       "href": "#requiredMarker",
       "subSection": [
         {

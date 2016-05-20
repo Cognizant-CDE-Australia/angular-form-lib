@@ -1,15 +1,19 @@
-describe('when I use the form select it', function() {
-  'use strict';
+import componentUnderTest from '../FormSelect';
+
+describe('Form Select directive', function() {
 
   var compileElement, scope, elem;
 
   beforeEach(function() {
-    angular.mock.module('ngFormLib.controls.formSelect');
+    angular.mock.module(componentUnderTest);
 
-    inject(function(_$compile_, $rootScope) {
+    angular.mock.inject(($compile, $rootScope) => {
       scope = $rootScope.$new();
+
       compileElement = function(html) {
-        return _$compile_(html)(scope);
+        var element = $compile(html)(scope);
+        scope.$digest();
+        return element;
       };
     });
   });
@@ -17,7 +21,6 @@ describe('when I use the form select it', function() {
 
   it('should create a select dropdown with the minimum markup', function() {
     elem = compileElement('<form-select label="sel" uid="sel" name="select"></form-select>');
-    scope.$digest();
 
     expect(elem.find('select')[0].outerHTML).toEqual('<select class="form-control" id="sel" name="select" ng-required="false" aria-required="false"></select>');
     expect(elem.find('select').length).toEqual(1);
@@ -26,9 +29,8 @@ describe('when I use the form select it', function() {
 
   it('should create a select dropdown with a placeholder, if the placeholder attribute is specified', function() {
     elem = compileElement('<form-select label="sel" uid="sel" name="select" placeholder="Select an item"></form-select>');
-    scope.$digest();
 
-    expect(elem.find('select').find('option')[0].outerHTML).toEqual('<option translate="" value="" class="ng-scope">Select an item</option>');
+    expect(elem.find('select').find('option')[0].outerHTML).toEqual('<option translate="" value="">Select an item</option>');
   });
 
 
@@ -37,7 +39,6 @@ describe('when I use the form select it', function() {
     var errorNoLabel = 'The ' + controlName + ' component requires a label attribute.';
     var exceptionFn = function(html) {
       compileElement(html);
-      scope.$digest();
     };
 
     var testData = [

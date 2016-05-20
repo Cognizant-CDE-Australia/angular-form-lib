@@ -1,16 +1,19 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
+import FormLibCommon from '../../common';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.formDate.docs.formDate', [FormLibCommon]);
 
-  mod.controller('FormDateDemoController', function() {
-    var vm = this;
+export default mod.name;
 
-    vm.titleData = [
-      {label: 'Dr'},
-      {label: 'Mr'},
-      {label: 'Ms'}
-    ];
-  });
+mod.directive('formDateDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'FormDateDocsController',
+    template: require('./formDate.docs.html')
+  }
+});
 
-})(window, window.angular);
+
+mod.controller('FormDateDocsController', ['ngFormLibDateUtil', function(DateUtil) {
+  this.date1 = DateUtil.getToday();
+}]);

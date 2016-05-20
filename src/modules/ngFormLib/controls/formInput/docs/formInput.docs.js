@@ -1,16 +1,12 @@
-(function(window, angular) {
-  'use strict';
+import angular from 'angular';
 
-  var mod = angular.module('ngFormLibDocs');
+const mod = angular.module('ngFormLibDocs.controls.formInput.docs.formInput', []);
 
-  mod.controller('FormInputDemoController', function() {
-    var vm = this;
+export default mod.name;
 
-    vm.titleData = [
-      {label: 'Dr'},
-      {label: 'Mr'},
-      {label: 'Ms'}
-    ];
-  });
-
-})(window, window.angular);
+mod.directive('formInputDocs', function() {
+  return {
+    restrict: 'A',
+    template: require('./formInput.docs.html')
+  }
+});

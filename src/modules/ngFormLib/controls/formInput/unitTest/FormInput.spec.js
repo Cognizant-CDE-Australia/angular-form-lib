@@ -1,16 +1,19 @@
-'use strict';
+import componentUnderTest from '../FormInput';
 
 describe('Form Input Directive', function() {
 
-  var compileElement, scope, elem;
+  let compileElement, scope, elem;
 
   beforeEach(function() {
-    angular.mock.module('ngFormLib.controls.formInput');
+    angular.mock.module(componentUnderTest);
 
-    inject(function(_$compile_, $rootScope) {
+    angular.mock.inject(($compile, $rootScope) => {
       scope = $rootScope.$new();
+
       compileElement = function(html) {
-        return _$compile_(html)(scope);
+        var element = $compile(html)(scope);
+        scope.$digest();
+        return element;
       };
     });
   });
@@ -18,7 +21,6 @@ describe('Form Input Directive', function() {
 
   it('should create a form input element with the minimum markup', function() {
     elem = compileElement('<form name="frm"><form-input uid="fld" name="fldName" label="hi" input-type="text"></form>');
-    scope.$digest();
 
     expect(elem.html()).toEqual('<div class="form-group"><label class="control-label" for="fld">hi<span class="required ng-isolate-scope ng-hide" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" required-marker="" hide="!(false)"></span></label>' +
                     '<div class="control-row">' +
@@ -32,7 +34,6 @@ describe('Form Input Directive', function() {
     scope.some = {value: ''};
 
     elem = compileElement('<form name="frm"><form-input uid="fld" name="fldName" label="hi" input-type="text" required="some.value"></form>');
-    scope.$digest();
 
     // Initialy the required marker is not showing and the input is not required
     expect(elem.find('label')[0].outerHTML).toEqual('<label class="control-label" for="fld">hi<span class="required ng-isolate-scope ng-hide" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" required-marker="" hide="!(some.value)"></span></label>');
@@ -57,7 +58,6 @@ describe('Form Input Directive', function() {
 
   it('should hide the label if the label should not be shown', function() {
     elem = compileElement('<form name="frm"><form-input uid="fld" name="fldName" label="hi" hide-label="true" input-type="text" required="some.value"></form>');
-    scope.$digest();
 
     expect(elem.find('label').hasClass('sr-only')).toEqual(true);
   });
@@ -65,21 +65,21 @@ describe('Form Input Directive', function() {
 
   it('should create a form input element and apply all ff- prefixed attributes to the <input element (except for the type attribute, which is read-only and must come from the template)', function() {
     elem = compileElement('<form-input uid="fld" name="name" label="Some field" input-type="text" ff-a="1" ff-b="true" ff-maxlength="8" ff-class="newClass">');
-    scope.$digest();
 
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control newClass" id="fld" name="name" a="1" b="true" maxlength="8" ng-required="false" aria-required="false">');
   });
 
 
-  it('should allow the placeholder attribute to be specified as "placeholder" as well as via "ff-placeholder" attribute', function() {
+  it('should allow the placeholder attribute to be specified as "placeholder"', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" placeholder="direct">');
-    scope.$digest();
 
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false" placeholder="direct">');
+  });
 
+
+  it('should allow the placeholder attribute to be specified as "ff-placeholder" too', function() {
     // Now use ff-placeholder
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" ff-placeholder="indirect">');
-    scope.$digest();
 
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control" id="fld" name="fld" placeholder="indirect" ng-required="false" aria-required="false">');
   });
@@ -87,7 +87,6 @@ describe('Form Input Directive', function() {
 
   it('should support input-prefix to add a Bootstrap input group addon before the field', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-prefix="AUD">');
-    scope.$digest();
 
     expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-addon">AUD</span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"></div>');
   });
@@ -95,7 +94,6 @@ describe('Form Input Directive', function() {
 
   it('should support input-suffix to add a Bootstrap input group addon after the field', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-suffix="per hour">');
-    scope.$digest();
 
     expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-addon">per hour</span></div>');
   });
@@ -103,7 +101,6 @@ describe('Form Input Directive', function() {
 
   it('should support both input-prefix and input-suffix to add a Bootstrap input group addons before and after the field', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-prefix="$" input-suffix="per hour">');
-    scope.$digest();
 
     expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-addon">$</span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-addon">per hour</span></div>');
   });
@@ -114,7 +111,6 @@ describe('Form Input Directive', function() {
     var errorNoLabel = 'The ' + controlName + ' component requires a label attribute.';
     var exceptionFn = function(html) {
       compileElement(html);
-      scope.$digest();
     };
 
     var testData = [
@@ -157,7 +153,6 @@ describe('Form Input Directive', function() {
     it('should generate valid IDs and names using $index', function() {
       scope.items = ['a', 'b', 'c'];
       elem = compileElement('<form name="frm"><div ng-repeat="item in items"><form-input uid="fld{{$index + item}}" name="fldName{{$index}}" label="hi {{item}}" input-type="text"></div></form>');
-      scope.$digest();
 
       expect(elem.find('label').eq(0).attr('for')).toEqual('fld0a');
       expect(elem.find('label').eq(1).attr('for')).toEqual('fld1b');

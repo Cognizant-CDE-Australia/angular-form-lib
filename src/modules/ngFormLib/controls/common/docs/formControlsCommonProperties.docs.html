@@ -58,14 +58,16 @@
   <td>field-errors</td>
   <td>object</td>
   <td></td>
-  <td>A key-value pair object linking an error to a message. Error messages can be language-resource-keys.</td>
+  <td>A key-value pair object linking an error to a message. The value can be a language-resource-key if `angular-translate` is loaded.</td>
 </tr>
 <tr>
   <td>text-errors</td>
   <td>array</td>
   <td></td>
   <td>An array of scope-properties to watch for "truthiness". E.g. For `text-errors="['scopeProp']"`, the text-value of `scope.scopeProp` will be
-    displayed when the value is "truthy" (typically a non empty string). This property is useful for handling error messages returned from calling APIs.</td>
+    displayed when the value is "truthy" (typically a non empty string).
+    This property is useful for handling error messages returned from calling APIs.
+    The scope value can be a language-resource-key if <code>angular-translate</code> is loaded.</td>
 </tr>
 <tr>
   <td>ff-ng-model</td>
@@ -83,6 +85,6 @@
 <tr>
   <td>template</td>
   <td>URL</td>
-  <td>See <a ahref="#formControlsService">Form Controls Service options</a></td>
-  <td>The HTML template to use for the control. The default value can be overridden on the element, or globally by setting the default value in the <a href="#formControlsService">formControlsService</a></td>
+  <td>See <a ahref="#formControlServiceOptions">Form Controls Service options</a></td>
+  <td>The HTML template to use for the control. The default value can be overridden on the element, or globally by setting the default value in the <a ahref="#formControlService">FormControlService</a></td>
 </tr>

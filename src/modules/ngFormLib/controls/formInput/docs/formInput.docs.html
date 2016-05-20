@@ -1,4 +1,4 @@
-<div class="bs-docs-section" ng-controller="FormInputDemoController as ctrl">
+<div class="bs-docs-section">
 
   <div class="page-header">
     <h1 id="formInput">Form Input <a class="small" href="{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formInput/FormInput.js" target="_blank">FormInput.js</a>
@@ -14,8 +14,8 @@
 
   <div class="callout callout-danger">
     <h4>Plugin dependency</h4>
-    <p>Form Input requires the <a href="#formControlsService">form controls service module</a>, the <a href="#fieldErrorController">field error controller module</a>
-      , the <a href="#errorMessageContainer">error message container module</a> to be loaded.</p>
+    <p>Form Input requires the <a ahref="#formControlService" use-hash="true" scroll-offset="50">FormControlService module</a>, the <a href="#fieldErrorController">field error controller module</a>
+      , the <a ahref="#errorMessageContainer">error message container module</a> to be loaded.</p>
   </div>
 
   <h2 id="formInputExamples">Examples</h2>
@@ -98,7 +98,7 @@
           <td>Placeholder text that appears inside the input element when there is no existing value. Alias for <code>ff-placeholder</code>.</td>
         </tr>
       </tbody>
-      <tbody ng-include="'views/ngFormLib/controls/common/docs/formControlsCommonProperties.docs.html'"></tbody>
+      <tbody form-controls-common-properties-docs></tbody>
     </table>
   </div>
 </div>

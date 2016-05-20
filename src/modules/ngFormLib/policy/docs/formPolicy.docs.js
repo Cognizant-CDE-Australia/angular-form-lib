@@ -1,21 +1,30 @@
-(function(angular) {
-  'use strict';
+import angular from 'angular';
 
-  angular.module('ngFormLibDocs')
+const mod = angular.module('ngFormLibDocs.policy.docs.formPolicy', []);
 
-    .controller('FormPolicyDemoCtrl', ['formPolicyCheckForStateChangesLibrary', function(formPolicyCheckForStateChangesLibrary) {
+export default mod.name;
 
-      var vm = this;
+mod.directive('formPolicyDocs', function() {
+  return {
+    restrict: 'A',
+    controller: 'FormPolicyDemoCtrl',
+    template: require('./formPolicy.docs.html')
+  }
+});
 
-      vm.titleData = [
-        {label: 'Dr'},
-        {label: 'Mr'},
-        {label: 'Ms'}
-      ];
 
-      vm.myCustomPolicy = {
-        checkForStateChanges: formPolicyCheckForStateChangesLibrary.onChange
-      };
+mod.controller('FormPolicyDemoCtrl', ['formPolicyCheckForStateChangesLibrary', function(formPolicyCheckForStateChangesLibrary) {
+  var vm = this;
 
-    }]);
-})(window.angular);
+  vm.titleData = [
+    {label: 'Dr'},
+    {label: 'Mr'},
+    {label: 'Ms'}
+  ];
+
+  vm.myCustomPolicy = {
+    checkForStateChanges: formPolicyCheckForStateChangesLibrary.onChange
+  };
+
+}]);
+
