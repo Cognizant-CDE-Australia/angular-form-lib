@@ -8052,7 +8052,7 @@ webpackJsonp([1],[
 /* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__.p + "/assets/config/docsConfig.json";
+	module.exports = __webpack_require__.p + "assets/config/docsConfig.json";
 
 /***/ },
 /* 59 */
@@ -8206,4 +8206,4 @@ webpackJsonp([1],[
 
 /***/ }
 ]);
-//# sourceMappingURL=docs.d1b4e884.js.map
+//# sourceMappingURL=docs.40d310ac.js.map
