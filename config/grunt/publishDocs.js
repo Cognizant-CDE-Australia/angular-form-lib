@@ -9,7 +9,11 @@ module.exports = function (grunt) {
         message: 'docs(v<%= PKG.version %>): Update documentation',
         base: 'dist',
         push: true,
-        branch: 'gh-pages'
+        branch: 'gh-pages',
+        user: {
+          name: 'Brett Uglow',
+          email: 'buglow@odecee.com.au'
+        }
       },
       src: ['**']
     }
