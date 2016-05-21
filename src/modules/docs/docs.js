@@ -63,7 +63,7 @@ mod.controller('MainController', ['$http', function($http) {
   var vm = this; // view-model
 
   // Fetch the documentation config and store it on the rootScope (for laughs :)
-  let fileName = require('file?name=/assets/config/[name].[ext]!./assets/config/docsConfig.json');
+  let fileName = require('file?name=assets/config/[name].[ext]!./assets/config/docsConfig.json');
   $http.get(fileName).then(function(result) {
     vm.DOC_CONFIG = result.data;
     vm.REPO_HOST = result.data.repository.host;
