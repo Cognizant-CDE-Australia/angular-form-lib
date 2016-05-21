@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0-semantically-released",
+  "version": "1.0.2",
   "repository": {
     "host": "//github.com/odecee/angular-form-lib/",
     "branch": "blob/master/"

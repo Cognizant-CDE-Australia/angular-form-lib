@@ -2,11 +2,10 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(40);
-	__webpack_require__(32);
-	__webpack_require__(33);
+	__webpack_require__(38);
 	__webpack_require__(55);
-	module.exports = __webpack_require__(56);
+	__webpack_require__(53);
+	module.exports = __webpack_require__(54);
 
 
 /***/ },
@@ -881,11 +880,6 @@ webpackJsonp([1],[
 	    expectedTemplateElements: ['input', 'label', 'div'],
 	    expectedAttributes: [],
 	    configFn: function configFn(tElement, tAttr, id, name, inputElem) {
-	      // Move the class attribute from the outer-DIV to the checkbox DIV (special case)
-	      var checkboxDiv = tElement.find('div');
-	      checkboxDiv.addClass(tElement.attr('class'));
-	      tElement.removeAttr('class');
-	
 	      formControlService.createErrorFeatures(tElement, inputElem, name, '', tAttr.fieldErrors, tAttr.textErrors);
 	      formControlService.buildNgClassExpression(inputElem, inputElem); // Put the ng-class onto the input element itself, as this makes styling easier
 	    }
@@ -1803,7 +1797,6 @@ webpackJsonp([1],[
 	          var elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
 	          var firstElement;
 	          _angular2.default.forEach(elems, function (elem) {
-	            console.log(elem.getBoundingClientRect());
 	            if (elem.getBoundingClientRect().top && !firstElement) {
 	              firstElement = elem;
 	            }
@@ -2111,21 +2104,9 @@ webpackJsonp([1],[
 /***/ },
 /* 30 */,
 /* 31 */,
-/* 32 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 34 */,
-/* 35 */,
-/* 36 */
+/* 32 */,
+/* 33 */,
+/* 34 */
 /***/ function(module, exports) {
 
 	/**
@@ -7145,8 +7126,8 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 37 */,
-/* 38 */
+/* 35 */,
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7159,59 +7140,59 @@ webpackJsonp([1],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _formControlsCommon = __webpack_require__(42);
+	var _formControlsCommon = __webpack_require__(40);
 	
 	var _formControlsCommon2 = _interopRequireDefault(_formControlsCommon);
 	
-	var _formControlsCommonProperties = __webpack_require__(43);
+	var _formControlsCommonProperties = __webpack_require__(41);
 	
 	var _formControlsCommonProperties2 = _interopRequireDefault(_formControlsCommonProperties);
 	
-	var _formControlsDemos = __webpack_require__(44);
+	var _formControlsDemos = __webpack_require__(42);
 	
 	var _formControlsDemos2 = _interopRequireDefault(_formControlsDemos);
 	
-	var _formControlService = __webpack_require__(41);
+	var _formControlService = __webpack_require__(39);
 	
 	var _formControlService2 = _interopRequireDefault(_formControlService);
 	
-	var _formPolicy = __webpack_require__(54);
+	var _formPolicy = __webpack_require__(52);
 	
 	var _formPolicy2 = _interopRequireDefault(_formPolicy);
 	
-	var _formSubmit = __webpack_require__(52);
+	var _formSubmit = __webpack_require__(50);
 	
 	var _formSubmit2 = _interopRequireDefault(_formSubmit);
 	
-	var _formReset = __webpack_require__(50);
+	var _formReset = __webpack_require__(48);
 	
 	var _formReset2 = _interopRequireDefault(_formReset);
 	
-	var _formInput = __webpack_require__(48);
+	var _formInput = __webpack_require__(46);
 	
 	var _formInput2 = _interopRequireDefault(_formInput);
 	
-	var _formCheckbox = __webpack_require__(46);
+	var _formCheckbox = __webpack_require__(44);
 	
 	var _formCheckbox2 = _interopRequireDefault(_formCheckbox);
 	
-	var _formRadioButton = __webpack_require__(49);
+	var _formRadioButton = __webpack_require__(47);
 	
 	var _formRadioButton2 = _interopRequireDefault(_formRadioButton);
 	
-	var _formSelect = __webpack_require__(51);
+	var _formSelect = __webpack_require__(49);
 	
 	var _formSelect2 = _interopRequireDefault(_formSelect);
 	
-	var _formDate = __webpack_require__(47);
+	var _formDate = __webpack_require__(45);
 	
 	var _formDate2 = _interopRequireDefault(_formDate);
 	
-	var _errorMessageContainer = __webpack_require__(45);
+	var _errorMessageContainer = __webpack_require__(43);
 	
 	var _errorMessageContainer2 = _interopRequireDefault(_errorMessageContainer);
 	
-	var _requiredMarker = __webpack_require__(53);
+	var _requiredMarker = __webpack_require__(51);
 	
 	var _requiredMarker2 = _interopRequireDefault(_requiredMarker);
 	
@@ -7227,7 +7208,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 39 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7244,9 +7225,9 @@ webpackJsonp([1],[
 	
 	var _angularAnimate2 = _interopRequireDefault(_angularAnimate);
 	
-	__webpack_require__(36);
+	__webpack_require__(34);
 	
-	var _highlightPack = __webpack_require__(34);
+	var _highlightPack = __webpack_require__(32);
 	
 	var _highlightPack2 = _interopRequireDefault(_highlightPack);
 	
@@ -7256,7 +7237,7 @@ webpackJsonp([1],[
 	
 	var _angularTranslate2 = _interopRequireDefault(_angularTranslate);
 	
-	var _docFixtures = __webpack_require__(38);
+	var _docFixtures = __webpack_require__(36);
 	
 	var _docFixtures2 = _interopRequireDefault(_docFixtures);
 	
@@ -7487,7 +7468,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 40 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7500,7 +7481,7 @@ webpackJsonp([1],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _docs = __webpack_require__(39);
+	var _docs = __webpack_require__(37);
 	
 	var _docs2 = _interopRequireDefault(_docs);
 	
@@ -7509,15 +7490,10 @@ webpackJsonp([1],[
 	var mod = _angular2.default.module('ngFormLibDocs', [_docs2.default]);
 	
 	exports.default = mod.name;
-	
-	
-	!/* require.ensure */(function (require) {
-	  __webpack_require__(33);
-	}(__webpack_require__));
 	module.exports = exports['default'];
 
 /***/ },
-/* 41 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7557,7 +7533,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 42 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7586,7 +7562,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 43 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7615,7 +7591,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 44 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7672,7 +7648,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 45 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7713,7 +7689,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 46 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7749,7 +7725,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 47 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7787,7 +7763,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 48 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7816,7 +7792,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 49 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7856,7 +7832,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 50 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7898,7 +7874,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 51 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7934,7 +7910,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 52 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7972,7 +7948,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 53 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8008,7 +7984,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 54 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8048,18 +8024,25 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
+/* 53 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 54 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
 /* 55 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 56 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
+/* 56 */,
 /* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -8087,7 +8070,7 @@ webpackJsonp([1],[
 /* 61 */
 /***/ function(module, exports) {
 
-	module.exports = "<footer class=\"bs-footer\">\n  <p class=\"pull-right\"><a href=\"#\">Back to top</a></p>\n  <p>Documentation based upon <a href=\"http://http://mgcrea.github.io/angular-strap\" target=\"_blank\">AngularStrap</a> created by <a href=\"//plus.google.com/+OlivierLouvignes/posts?rel=author\" target=\"_blank\">Olivier Louvignes</a>.</p>\n  <p>Using <a href=\"http://twitter.github.com/bootstrap\" target=\"_blank\">Twitter Bootstrap</a> and the <a href=\"css/docs.css\" target=\"_blank\">Bootstrap's docs styles</a> designed and built by <a href=\"http://twitter.com/mdo\" target=\"_blank\">@mdo</a> and <a href=\"http://twitter.com/fat\" target=\"_blank\">@fat</a>.</p>\n  <p>Code licensed under <a href=\"{{mainCtrl.REPO}}LICENSE.md\" target=\"_blank\">The MIT License</a>, documentation under <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0</a>.</p>\n  <ul class=\"footer-links\">\n    <li><a href=\"{{mainCtrl.REPO_HOST}}issues?state=open\">Issues</a>\n    </li>\n    <li class=\"muted\">·</li>\n    <li><a href=\"{{mainCtrl.REPO_HOST}}wiki\">Roadmap and changelog</a>\n    </li>\n    <li class=\"muted\">·</li>\n      <li><a href=\"{{mainCtrl.REPO_HOST}}releases\">Releases</a>\n    </li>\n  </ul>\n</footer>\n";
+	module.exports = "<footer class=\"bs-footer\">\n  <p class=\"pull-right\"><a href=\"#\">Back to top</a></p>\n  <p>Documentation based upon <a href=\"http://http://mgcrea.github.io/angular-strap\" target=\"_blank\">AngularStrap</a> created by <a href=\"//plus.google.com/+OlivierLouvignes/posts?rel=author\" target=\"_blank\">Olivier Louvignes</a>.</p>\n  <p>Using <a href=\"http://twitter.github.com/bootstrap\" target=\"_blank\">Twitter Bootstrap</a> and the <a href=\"css/doc.css\" target=\"_blank\">Bootstrap's docs styles</a> designed and built by <a href=\"http://twitter.com/mdo\" target=\"_blank\">@mdo</a> and <a href=\"http://twitter.com/fat\" target=\"_blank\">@fat</a>.</p>\n  <p>Code licensed under <a href=\"{{mainCtrl.REPO}}LICENSE.md\" target=\"_blank\">The MIT License</a>, documentation under <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0</a>.</p>\n  <ul class=\"footer-links\">\n    <li><a href=\"{{mainCtrl.REPO_HOST}}issues?state=open\">Issues</a>\n    </li>\n    <li class=\"muted\">·</li>\n    <li><a href=\"{{mainCtrl.REPO_HOST}}wiki\">Roadmap and changelog</a>\n    </li>\n    <li class=\"muted\">·</li>\n      <li><a href=\"{{mainCtrl.REPO_HOST}}releases\">Releases</a>\n    </li>\n  </ul>\n</footer>\n";
 
 /***/ },
 /* 62 */
@@ -8135,7 +8118,7 @@ webpackJsonp([1],[
 /* 69 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormControlsDemosController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formDemos\">Demos</h1>\n  </div>\n\n  <h2 id=\"formDemo1\">Standard form</h2>\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"formDemo1\" class=\"form\" novalidate form-submit=\"\">\n      <fieldset>\n        \n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"formDemo1_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"formDemo1_fldTitle\" name=\"formDemo1_fldTitle\" ng-model=\"ctrl.formDemo1.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"formDemo1_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        \n        <div form-input uid=\"formDemo1_fldName\" name=\"formDemo1_fldName\" label=\"Name\" label-suffix=\"(40 chars)\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo1.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-checkbox uid=\"formDemo1_fld3\" name=\"formDemo1_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo1.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <div form-input uid=\"formDemo1_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo1.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo1_fld{{$index}}\" name=\"formDemo1_group1\" ff-ng-model=\"ctrl.formDemo1.group1\" ff-ng-value=\"$index\" required=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo1_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo1\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo2\">Horizontal Form</h2>\n\n  <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-horizontal\"</code>\n    as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo2\" class=\"form form-horizontal\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo2_fld1\" name=\"formDemo2_fld1\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo2.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-select uid=\"formDemo2_fld2\" name=\"formDemo2_fld2\" label=\"Common field\" required=\"true\" ff-ng-model=\"ctrl.formDemo2.fld2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formDemo2_fld3\" name=\"formDemo2_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo2.fld2_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <div form-input uid=\"formDemo2_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo2.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo2_fld{{$index}}\" name=\"formDemo2_group1\" ff-ng-model=\"ctrl.formDemo2.group1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo2_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <div class=\"button-row\">\n          <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo2\">Reset</button>\n        </div>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo3\">Inline Form</h2>\n  <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-inline\"</code>\n    as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo3\" class=\"form form-inline\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo3_fld1\" name=\"formDemo3_fld1\" label=\"Nick Name\" hide-label=\"true\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo3.fld1\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" ff-placeholder=\"Enter Nick Name\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-input uid=\"formDemo3_fld4\" label=\"Income\" hide-label=\"true\" required=\"true\" ff-style=\"width:40px\" input-type=\"text\" input-prefix=\"$\" ff-ng-model=\"ctrl.formDemo3.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <div form-select uid=\"formDemo3_fld2\" name=\"formDemo3_fld2\" label=\"Common field\" hide-label=\"true\" required=\"true\" ff-ng-model=\"ctrl.formDemo3.fld2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" placeholder=\"Enter Title\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formDemo3_fld3\" name=\"formDemo3_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo3.fld3\" hide-required-indicator=\"true\" field-errors=\"{required: 'You must agree'}\">I agree</div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <span ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo3_fld{{$index}}\" name=\"formDemo3_group1\" ff-ng-model=\"ctrl.formDemo3.group1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n          </span>\n          <div error-container field-name=\"formDemo3_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo3\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo4\">Form with repeating sections</h2>\n\n  <p>This is probably as complex as it gets - a horizontal-form with a repeating inline-form.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <style>[name=formDemo4] .form-inline .form-group{margin-right:0}[name=formDemo4] .form-inline .control-label{display:none}[name=formDemo4] .form-inline .control-row{width:auto;padding:0;margin-left:15px}[name=formDemo4] .form-inline .form-group-checkbox,[name=formDemo4] .form-inline .form-group-radio{margin-left:0;width:auto;float:none}[name=formDemo4] .form-inline .btn{margin-bottom:15px}</style>\n    <form name=\"formDemo4\" class=\"form form-horizontal\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo4_fld1\" name=\"formDemo4_fld1\" label=\"Last Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo4.name\" ff-maxlength=\"40\" field-errors=\"{required: 'Last name is required'}\"></div>\n\n        <div form-select uid=\"formDemo4_fld2\" name=\"formDemo4_fld2\" label=\"Type\" required=\"true\" placeholder=\"Select Title\" ff-ng-model=\"ctrl.formDemo4.title\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div class=\"form-group\">\n          <label class=\"control-label\">Education History</label>\n\n          <div class=\"control-row\">\n            <div ng-repeat=\"school in ctrl.formDemo4.education\" class=\"form form-inline\" ng-init=\"schoolIndex = $index\">\n              <div ng-form=\"formDemo4_subform\">\n                <div form-input uid=\"formDemo4_subform{{$index}}_fld1\" name=\"formDemo4_subform_fld1\" label=\"School\" hide-label=\"true\" required=\"true\" input-type=\"text\" ff-placeholder=\"School Name\" ff-ng-model=\"school.name\" ff-maxlength=\"30\" ff-style=\"width: 100px\" field-errors=\"{required: 'School name is required'}\"></div>\n\n                <div form-input uid=\"formDemo4_subform{{$index}}_fld4\" label=\"Income\" hide-label=\"true\" required=\"true\" ff-style=\"width:40px\" input-type=\"text\" input-prefix=\"$\" ff-ng-model=\"school.income\" field-errors=\"{required: 'Income is required'}\"></div>\n\n                <div form-select uid=\"formDemo4_subform{{$index}}_fld2\" name=\"formDemo4_subform_fld2\" label=\"Type\" hide-label=\"true\" required=\"true\" placeholder=\"School Type\" ff-ng-model=\"school.type\" ff-ng-options=\"item.label for item in ctrl.schoolData track by item.label\" field-errors=\"{required: 'Type is required'}\"></div>\n\n                <div form-checkbox uid=\"formDemo4_subform{{$index}}_fld3\" name=\"formDemo4_subform_fld3\" required=\"true\" ff-ng-model=\"school.isCoEd\" field-errors=\"{required: 'Uniforms are required'}\">Uniform</div>\n\n\n                <fieldset class=\"form-group form-group-radio\">\n                  <span ng-repeat=\"item in ctrl.titleData\">\n                    <div form-radio-button uid=\"formDemo4_subform{{schoolIndex}}_fld4_{{$index}}\" name=\"formDemo4_subform_group{{schoolIndex}}\" ff-ng-model=\"school.title\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n                  </span>\n                  <div error-container field-name=\"formDemo4_subform_group{{schoolIndex}}\" field-errors=\"{required: 'Please select an option'}\"></div>\n                </fieldset>\n\n                <button type=\"button\" class=\"btn btn-success\" ng-click=\"ctrl.addSchool()\" ng-if=\"$last\">+</button>\n\n              </div>\n            </div>\n          </div>\n        </div>\n\n\n        <div class=\"button-row\">\n          <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo4\">Reset</button>\n        </div>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo5\">Child forms that are conditionally shown</h2>\n\n  <div class=\"callout callout-info\">\n    <h4>Focus management</h4>\n    <p>The default <code>behaviourOnStateChange</code> policy correctly sets the focus to the top-most field that contains an error, making it easy for users to find and fix the problem.</p>\n  </div>\n\n  <div class=\"callout callout-warning\">\n    <h4><code>ng-if</code> versus <code>ng-show/ng-hide</code></h4>\n    <p>Use <code>ng-if</code> instead of <code>ng-show/ng-hide</code> when dynamically showing form elements. <code>ng-show/hide</code> keeps the form field in the DOM\n    which means that the <code>ngModelController</code> of each hidden field is <strong>still attached to the <code>ngModelController</code> of the form</strong>. This\n    causes problems when trying to submit the form, as the form will contain an error, but the field with the error is not visible!</p>\n\n    <p>Using <code>ng-if</code> prevents this issue from occurring, as <code>ng-if</code> removes the hidden form elements from the DOM,\n    which detaches them from the form's <code>ngModelController</code>.</p>\n  </div>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo1\" class=\"form\" novalidate form-submit=\"ctrl.submit()\">\n      <fieldset>\n\n        <label><input type=\"checkbox\" ng-model=\"ctrl.toggleChildForm\">Toggle child form</label>\n\n        \n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"formDemo1_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"formDemo1_fldTitle\" name=\"formDemo1_fldTitle\" ng-model=\"ctrl.formDemo1.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"formDemo1_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        <div form-checkbox uid=\"formDemo1_fld3\" name=\"formDemo1_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo1.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <ng-form name=\"formDemo1_subform\" ng-if=\"!ctrl.toggleChildForm\">\n          <div form-input uid=\"formDemo1_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo1.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n        </ng-form>\n\n        \n        <div form-input uid=\"formDemo1_fldName\" name=\"formDemo1_fldName\" label=\"Name\" label-suffix=\"(40 chars)\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo1.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo1_fld{{$index}}\" name=\"formDemo1_group1\" ff-ng-model=\"ctrl.formDemo1.group1\" ff-ng-value=\"$index\" required=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo1_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo1\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormControlsDemosController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formDemos\">Demos</h1>\n  </div>\n\n  <h2 id=\"formDemo1\">Standard form</h2>\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"formDemo1\" class=\"form\" novalidate form-submit=\"\">\n      <fieldset>\n        \n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"formDemo1_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"formDemo1_fldTitle\" name=\"formDemo1_fldTitle\" ng-model=\"ctrl.formDemo1.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"formDemo1_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        \n        <div form-input uid=\"formDemo1_fldName\" name=\"formDemo1_fldName\" label=\"Name\" label-suffix=\"(40 chars)\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo1.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-checkbox uid=\"formDemo1_fld3\" name=\"formDemo1_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo1.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <div form-input uid=\"formDemo1_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo1.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo1_fld{{$index}}\" name=\"formDemo1_group1\" ff-ng-model=\"ctrl.formDemo1.group1\" ff-ng-value=\"$index\" required=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo1_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo1\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo2\">Horizontal Form</h2>\n\n  <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-horizontal\"</code>\n    as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo2\" class=\"form form-horizontal\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo2_fld1\" name=\"formDemo2_fld1\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo2.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-select uid=\"formDemo2_fld2\" name=\"formDemo2_fld2\" label=\"Common field\" required=\"true\" ff-ng-model=\"ctrl.formDemo2.fld2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formDemo2_fld3\" name=\"formDemo2_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo2.fld2_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <div form-input uid=\"formDemo2_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo2.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo2_fld{{$index}}\" name=\"formDemo2_group1\" ff-ng-model=\"ctrl.formDemo2.group1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo2_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <div class=\"button-row\">\n          <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo2\">Reset</button>\n        </div>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo3\">Inline Form</h2>\n  <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-inline\"</code>\n    as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo3\" class=\"form form-inline\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo3_fld1\" name=\"formDemo3_fld1\" label=\"Nick Name\" hide-label=\"true\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo3.fld1\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" ff-placeholder=\"Enter Nick Name\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-input uid=\"formDemo3_fld4\" label=\"Income\" hide-label=\"true\" required=\"true\" ff-style=\"width:40px\" input-type=\"text\" input-prefix=\"$\" ff-ng-model=\"ctrl.formDemo3.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <div form-select uid=\"formDemo3_fld2\" name=\"formDemo3_fld2\" label=\"Common field\" hide-label=\"true\" required=\"true\" ff-ng-model=\"ctrl.formDemo3.fld2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" placeholder=\"Enter Title\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formDemo3_fld3\" name=\"formDemo3_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo3.fld3\" hide-required-indicator=\"true\" field-errors=\"{required: 'You must agree'}\">I agree</div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <span ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo3_fld{{$index}}\" name=\"formDemo3_group1\" ff-ng-model=\"ctrl.formDemo3.group1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n          </span>\n          <div error-container field-name=\"formDemo3_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo3\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo4\">Form with repeating sections</h2>\n\n  <p>This is probably as complex as it gets - a horizontal-form with a repeating inline-form.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <style>[name=formDemo4] .form-inline .form-group{margin-right:0}[name=formDemo4] .form-inline .control-label{display:none}[name=formDemo4] .form-inline .control-row{width:auto;padding:0;margin-left:15px}[name=formDemo4] .form-inline .form-group-checkbox,[name=formDemo4] .form-inline .form-group-radio{margin-left:0;width:auto;float:none}[name=formDemo4] .form-inline .btn{margin-bottom:15px}</style>\n    <form name=\"formDemo4\" class=\"form form-horizontal\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo4_fld1\" name=\"formDemo4_fld1\" label=\"Last Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo4.name\" ff-maxlength=\"40\" field-errors=\"{required: 'Last name is required'}\"></div>\n\n        <div form-select uid=\"formDemo4_fld2\" name=\"formDemo4_fld2\" label=\"Type\" required=\"true\" placeholder=\"Select Title\" ff-ng-model=\"ctrl.formDemo4.title\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div class=\"form-group\">\n          <label class=\"control-label\">Education History</label>\n\n          <div class=\"control-row\">\n            <div ng-repeat=\"school in ctrl.formDemo4.education\" class=\"form form-inline\" ng-init=\"schoolIndex = $index\">\n              <div ng-form=\"formDemo4_subform\">\n                <div form-input uid=\"formDemo4_subform{{$index}}_fld1\" name=\"formDemo4_subform_fld1\" label=\"School\" hide-label=\"true\" required=\"true\" input-type=\"text\" ff-placeholder=\"School Name\" ff-ng-model=\"school.name\" ff-maxlength=\"30\" ff-style=\"width: 100px\" field-errors=\"{required: 'School name is required'}\"></div>\n\n                <div form-input uid=\"formDemo4_subform{{$index}}_fld4\" label=\"Income\" hide-label=\"true\" required=\"true\" ff-style=\"width:40px\" input-type=\"text\" input-prefix=\"$\" ff-ng-model=\"school.income\" field-errors=\"{required: 'Income is required'}\"></div>\n\n                <div form-select uid=\"formDemo4_subform{{$index}}_fld2\" name=\"formDemo4_subform_fld2\" label=\"Type\" hide-label=\"true\" required=\"true\" placeholder=\"School Type\" ff-ng-model=\"school.type\" ff-ng-options=\"item.label for item in ctrl.schoolData track by item.label\" field-errors=\"{required: 'Type is required'}\"></div>\n\n                <div form-checkbox uid=\"formDemo4_subform{{$index}}_fld3\" name=\"formDemo4_subform_fld3\" required=\"true\" ff-ng-model=\"school.isCoEd\" field-errors=\"{required: 'Uniforms are required'}\">Uniform</div>\n\n\n                <fieldset class=\"form-group form-group-radio\">\n                  <span ng-repeat=\"item in ctrl.titleData\">\n                    <div form-radio-button uid=\"formDemo4_subform{{schoolIndex}}_fld4_{{$index}}\" name=\"formDemo4_subform_group{{schoolIndex}}\" ff-ng-model=\"school.title\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n                  </span>\n                  <div error-container field-name=\"formDemo4_subform_group{{schoolIndex}}\" field-errors=\"{required: 'Please select an option'}\"></div>\n                </fieldset>\n\n                <button type=\"button\" class=\"btn btn-success\" ng-click=\"ctrl.addSchool()\" ng-if=\"$last\">+</button>\n\n              </div>\n            </div>\n          </div>\n        </div>\n\n\n        <div class=\"button-row\">\n          <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo4\">Reset</button>\n        </div>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo5\">Child forms that are conditionally shown</h2>\n\n  <div class=\"callout callout-info\">\n    <h4>Focus management</h4>\n    <p>The default <code>behaviourOnStateChange</code> policy correctly sets the focus to the top-most field that contains an error, making it easy for users to find and fix the problem.</p>\n  </div>\n\n  <div class=\"callout callout-warning\">\n    <h4><code>ng-if</code> versus <code>ng-show/ng-hide</code></h4>\n    <p>Use <code>ng-if</code> instead of <code>ng-show/ng-hide</code> when dynamically showing form elements. <code>ng-show/hide</code> keeps the form field in the DOM\n    which means that the <code>ngModelController</code> of each hidden field is <strong>still attached to the <code>ngModelController</code> of the form</strong>. This\n    causes problems when trying to submit the form, as the form will contain an error, but the field with the error is not visible!</p>\n\n    <p>Using <code>ng-if</code> prevents this issue from occurring, as <code>ng-if</code> removes the hidden form elements from the DOM,\n    which detaches them from the form's <code>ngModelController</code>.</p>\n  </div>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo5\" class=\"form\" novalidate form-submit=\"ctrl.submit()\">\n      <fieldset>\n\n        <div form-checkbox uid=\"formDemo5_toggle\" name=\"formDemo5_toggle\" ff-ng-model=\"ctrl.toggleChildForm\"><strong>Toggle child form</strong></div>\n\n        \n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"formDemo5_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"formDemo5_fldTitle\" name=\"formDemo5_fldTitle\" ng-model=\"ctrl.formDemo5.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"formDemo5_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        <div form-checkbox uid=\"formDemo5_fld3\" name=\"formDemo5_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo5.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <ng-form name=\"formDemo5_subform\" ng-if=\"!ctrl.toggleChildForm\">\n          <div form-input uid=\"formDemo5_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo5.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n        </ng-form>\n\n        \n        <div form-input uid=\"formDemo5_fldName\" name=\"formDemo5_fldName\" label=\"Name\" label-suffix=\"(40 chars)\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo5.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo5_fld{{$index}}\" name=\"formDemo5_group1\" ff-ng-model=\"ctrl.formDemo5.group1\" ff-ng-value=\"$index\" required=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo5_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo5\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n</div>\n";
 
 /***/ },
 /* 70 */
@@ -8147,7 +8130,7 @@ webpackJsonp([1],[
 /* 71 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormCheckboxDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formCheckbox\">Form Checkbox <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formCheckbox/FormCheckbox.js\" target=\"_blank\">FormCheckbox.js</a>\n    </h1>\n    <code>ngFormLib.controls.formCheckbox</code>\n  </div>\n\n  <p>The Form Checkbox directive acts like a macro in that it expands into a <code>&lt;label&gt;</code>,<code>&lt;input type=\"checkbox\"&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>FormCheckbox requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a ahref=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the <a href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formCheckbox/template/FormCheckboxTemplate.html\" target=\"_blank\">FormCheckboxTemplate.html</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"formCheckboxExamples\">Examples</h2>\n  <p>Use <code>form-checkbox</code> to create a complete HTML structure containing a <code>label</code> and <code>input type=\"checkbox\"</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formCheckbox1\" class=\"form\" novalidate form-submit>\n\n      <div form-checkbox uid=\"formCheckbox1_fld1\" name=\"formCheckbox1_fld1\" required=\"true\" ff-ng-model=\"ctrl.data.fld1\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld2\" name=\"formCheckbox1_fld2\" ff-ng-model=\"ctrl.data.fld2\" ff-ng-true-value=\"'dog'\" ff-ng-false-value=\"'cat'\">Optional Checkbox with value: {{ctrl.data.fld2}}</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld3\" name=\"formCheckbox1_fld3\" class=\"image-checkbox\" ff-ng-model=\"ctrl.data.fld3\">Styled accessible checkbox</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld4\" name=\"formCheckbox1_fld4\" class=\"image-checkbox\" ff-ng-disabled=\"ctrl.data.fld3\" ff-ng-model=\"ctrl.data.fld4\">Occassionally disabled checkbox</div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formCheckboxUsage\">Usage</h2>\n  <p>Add the <code>form-check</code> directive to an element, and supply a label as the content of the element (see example above).</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>ff-ng-true-value</td>\n          <td>expression</td>\n          <td></td>\n          <td>The value to use in the model-value when the checkbox is checked.</td>\n        </tr>\n        <tr>\n          <td>ff-ng-false-value</td>\n          <td>expression</td>\n          <td></td>\n          <td>The value to use in the model-value when the checkbox is not checked.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormCheckboxDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formCheckbox\">Form Checkbox <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formCheckbox/FormCheckbox.js\" target=\"_blank\">FormCheckbox.js</a>\n    </h1>\n    <code>ngFormLib.controls.formCheckbox</code>\n  </div>\n\n  <p>The Form Checkbox directive acts like a macro in that it expands into a <code>&lt;label&gt;</code>,<code>&lt;input type=\"checkbox\"&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>FormCheckbox requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a ahref=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the <a href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formCheckbox/template/FormCheckboxTemplate.html\" target=\"_blank\">FormCheckboxTemplate.html</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"formCheckboxExamples\">Examples</h2>\n  <p>Use <code>form-checkbox</code> to create a complete HTML structure containing a <code>label</code> and <code>input type=\"checkbox\"</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formCheckbox1\" class=\"form\" novalidate form-submit>\n\n      <div form-checkbox uid=\"formCheckbox1_fld1\" name=\"formCheckbox1_fld1\" required=\"true\" ff-ng-model=\"ctrl.data.fld1\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld2\" name=\"formCheckbox1_fld2\" ff-ng-model=\"ctrl.data.fld2\" ff-ng-true-value=\"'dog'\" ff-ng-false-value=\"'cat'\">Optional Checkbox with value: {{ctrl.data.fld2}}</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld3\" name=\"formCheckbox1_fld3\" class=\"image-checkbox\" required=\"true\" field-errors=\"{required: 'You must agree'}\" ff-ng-model=\"ctrl.data.fld3\">Styled accessible checkbox</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld4\" name=\"formCheckbox1_fld4\" class=\"image-checkbox\" ff-ng-disabled=\"ctrl.data.fld3\" ff-ng-model=\"ctrl.data.fld4\">Occassionally disabled checkbox</div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formCheckboxUsage\">Usage</h2>\n  <p>Add the <code>form-check</code> directive to an element, and supply a label as the content of the element (see example above).</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>ff-ng-true-value</td>\n          <td>expression</td>\n          <td></td>\n          <td>The value to use in the model-value when the checkbox is checked.</td>\n        </tr>\n        <tr>\n          <td>ff-ng-false-value</td>\n          <td>expression</td>\n          <td></td>\n          <td>The value to use in the model-value when the checkbox is not checked.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
 /* 72 */
@@ -8223,4 +8206,4 @@ webpackJsonp([1],[
 
 /***/ }
 ]);
-//# sourceMappingURL=docs.ef79e683.js.map
+//# sourceMappingURL=docs.d1b4e884.js.map

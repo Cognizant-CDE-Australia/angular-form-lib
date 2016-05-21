@@ -933,11 +933,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    expectedTemplateElements: ['input', 'label', 'div'],
 	    expectedAttributes: [],
 	    configFn: function configFn(tElement, tAttr, id, name, inputElem) {
-	      // Move the class attribute from the outer-DIV to the checkbox DIV (special case)
-	      var checkboxDiv = tElement.find('div');
-	      checkboxDiv.addClass(tElement.attr('class'));
-	      tElement.removeAttr('class');
-	
 	      formControlService.createErrorFeatures(tElement, inputElem, name, '', tAttr.fieldErrors, tAttr.textErrors);
 	      formControlService.buildNgClassExpression(inputElem, inputElem); // Put the ng-class onto the input element itself, as this makes styling easier
 	    }
@@ -1855,7 +1850,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
 	          var firstElement;
 	          _angular2.default.forEach(elems, function (elem) {
-	            console.log(elem.getBoundingClientRect());
 	            if (elem.getBoundingClientRect().top && !firstElement) {
 	              firstElement = elem;
 	            }
