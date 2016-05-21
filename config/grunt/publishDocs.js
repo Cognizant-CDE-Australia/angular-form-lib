@@ -13,7 +13,9 @@ module.exports = function (grunt) {
         user: {
           name: 'Brett Uglow',
           email: 'buglow@odecee.com.au'
-        }
+        },
+        repo: 'https://' + process.env.GH_TOKEN + '@github.com/odecee/angular-form-lib.git',
+        silent: true
       },
       src: ['**']
     }
