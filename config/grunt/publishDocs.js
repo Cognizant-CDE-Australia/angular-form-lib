@@ -6,13 +6,13 @@ module.exports = function (grunt) {
     'gh-pages': {
       options: {
         tag: 'v<%= PKG.version %>_doc',
-        message: 'docs(v<%= PKG.version %>): Update documentation',
+        message: 'docs(github): Update documentation for v<%= PKG.version %>',
         base: 'dist',
         push: true,
         branch: 'gh-pages',
         user: {
-          name: 'Brett Uglow',
-          email: 'buglow@odecee.com.au'
+          name: 'TravisCI',
+          email: 'fake-email@travisci.com'
         },
         repo: 'https://' + process.env.GH_TOKEN + '@github.com/odecee/angular-form-lib.git',
         silent: true
