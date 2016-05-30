@@ -77,6 +77,13 @@ describe('Form Input Directive', function() {
   });
 
 
+  it('should show a label-suffix when one is provided AND show the required indicator at the same time', function() {
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" label-suffix="(please)" required="true">');
+
+    expect(elem.find('label')[0].outerHTML).toEqual('<label class="control-label" for="fld">label&nbsp;(please)<span class="required ng-isolate-scope" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" required-marker="" hide="!(true)"></span></label>');
+  });
+
+
   it('should allow the placeholder attribute to be specified as "ff-placeholder" too', function() {
     // Now use ff-placeholder
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" ff-placeholder="indirect">');

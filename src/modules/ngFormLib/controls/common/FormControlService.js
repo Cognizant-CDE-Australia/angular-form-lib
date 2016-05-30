@@ -207,13 +207,14 @@ mod.provider('formControlService', function() {
         if (hideLabelExpr) {
           labelElem.attr('ng-class', '{\'sr-only\': ' + hideLabelExpr + '}');
         }
-        if (!hideRequiredIndicator) {
-          labelElem.append('<span required-marker hide="!(' + required + ')"></span>');
-        }
         // Some labels have suffix text - text that helps with describing the label, but isn't really the label text.
         // E.g. Amount ($AUD)
         if (labelSuffix) {
-          labelElem.text(labelElem.text() + ' ' + service.translate(labelSuffix));
+          labelElem.append('&nbsp;' + service.translate(labelSuffix));
+        }
+
+        if (!hideRequiredIndicator) {
+          labelElem.append('<span required-marker hide="!(' + required + ')"></span>');
         }
       },
 
