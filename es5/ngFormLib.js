@@ -209,7 +209,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          fieldLabel = attr.fieldLabel || '',
 	          formController = controllers[0],
 	          formName = formController.$name,
-	          formField = formName + '.' + fieldName,
+	          formField = formName + '["' + fieldName + '"]',
 	          fieldErrors = scope.$eval(attr.fieldErrors || []),
 	          // You can escape interpolation brackets inside strings by doing  \{\{   - wow!
 	      textErrors = scope.$eval(attr.textErrors || []);
@@ -505,13 +505,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (hideLabelExpr) {
 	          labelElem.attr('ng-class', '{\'sr-only\': ' + hideLabelExpr + '}');
 	        }
-	        if (!hideRequiredIndicator) {
-	          labelElem.append('<span required-marker hide="!(' + required + ')"></span>');
-	        }
 	        // Some labels have suffix text - text that helps with describing the label, but isn't really the label text.
 	        // E.g. Amount ($AUD)
 	        if (labelSuffix) {
-	          labelElem.text(labelElem.text() + ' ' + service.translate(labelSuffix));
+	          labelElem.append('&nbsp;' + service.translate(labelSuffix));
+	        }
+	
+	        if (!hideRequiredIndicator) {
+	          labelElem.append('<span required-marker hide="!(' + required + ')"></span>');
 	        }
 	      },
 	
@@ -827,10 +828,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  function setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name) {
 	    // Using the form policy, determine when to show errors for this field
-	    var formPolicy = formController._policy,
-	        formName = formController.$name,
-	        fieldName = formName + '.' + name,
-	        stateConditions = formPolicy.stateDefinitions(formName, fieldName);
+	    var formPolicy = formController._policy;
+	    var formName = formController.$name;
+	    var fieldName = formName + '["' + name + '"]';
+	    var stateConditions = formPolicy.stateDefinitions(formName, fieldName);
 	
 	    formPolicy.checkForStateChanges(formController._scope, element, name, stateConditions, ngModelController, formController);
 	  }
@@ -856,7 +857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	
 	        // When the error-showing flag changes, update the field style
-	        formController._scope.$watch(formName + '.' + name + '.fieldState', function (fieldState) {
+	        formController._scope.$watch(formName + '["' + name + '"].fieldState', function (fieldState) {
 	          updateAriaFeatures(fieldState, element, formName, name);
 	          updateElementStyle(fieldState, formGroupElement, formController._policy);
 	
