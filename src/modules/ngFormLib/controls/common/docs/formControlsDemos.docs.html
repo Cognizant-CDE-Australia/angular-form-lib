@@ -21,7 +21,7 @@
         </div>
 
         <!-- ...or can use the form-xxx directives to generate everything instead! -->
-        <div form-input uid="formDemo1_fldName" name="formDemo1_fldName" label="Name" label-suffix="(40 chars)" required="true"
+        <div form-input uid="formDemo1-fieldName-with-hypens" label="Name" label-suffix="(40 chars)" required="true"
              input-type="text" ff-ng-model="ctrl.formDemo1.name" ff-maxlength="40" ff-ng-pattern="/^[a-zA-Z0-9 \-.']+$/"
              field-errors="{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}"
             ></div>
@@ -31,7 +31,7 @@
              field-errors="{required: 'You must agree'}"
             >You are required to agree to this</div>
 
-        <div form-input uid="formDemo1_fld4" label="Income" required="true"
+        <div form-input uid="formDemo1-with.dots" label="Income" required="true"
              input-type="text" input-prefix="$" input-suffix="per month" ff-ng-model="ctrl.formDemo1.fld4"
              field-errors="{required: 'Income is required'}"
             ></div>
@@ -65,7 +65,7 @@
              field-errors="{required: 'Last name is required', pattern: 'Please enter a valid last name'}"
             ></div>
 
-        <div form-select uid="formDemo2_fld2" name="formDemo2_fld2" label="Common field" required="true"
+        <div form-select uid="formDemo2_fld2-weird.title" label="Common field" required="true"
              ff-ng-model="ctrl.formDemo2.fld2" ff-ng-options="item.label for item in ctrl.titleData track by item.label"
              field-errors="{required: 'Title is required'}"
             ></div>

@@ -127,7 +127,7 @@ mod.directive('errorContainer', ['$compile', 'formControlService', function($com
         fieldLabel = attr.fieldLabel || '',
         formController = controllers[0],
         formName = formController.$name,
-        formField = formName + '.' + fieldName,
+        formField = formName + '["' + fieldName + '"]',
         fieldErrors = scope.$eval(attr.fieldErrors || []),  // You can escape interpolation brackets inside strings by doing  \{\{   - wow!
         textErrors = scope.$eval(attr.textErrors || []);
 
