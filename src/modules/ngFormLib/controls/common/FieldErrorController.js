@@ -46,10 +46,10 @@ mod.directive('fieldErrorController', ['formControlService', '$timeout', functio
 
   function setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name) {
     // Using the form policy, determine when to show errors for this field
-    var formPolicy = formController._policy,
-      formName = formController.$name,
-      fieldName = formName + '.' + name,
-      stateConditions = formPolicy.stateDefinitions(formName, fieldName);
+    let formPolicy = formController._policy;
+    let formName = formController.$name;
+    let fieldName = formName + '["' + name + '"]';
+    let stateConditions = formPolicy.stateDefinitions(formName, fieldName);
 
     formPolicy.checkForStateChanges(formController._scope, element, name, stateConditions, ngModelController, formController);
   }
@@ -76,7 +76,7 @@ mod.directive('fieldErrorController', ['formControlService', '$timeout', functio
         }
 
         // When the error-showing flag changes, update the field style
-        formController._scope.$watch(formName + '.' + name + '.fieldState', function(fieldState) {
+        formController._scope.$watch(formName + '["' + name + '"].fieldState', function(fieldState) {
           updateAriaFeatures(fieldState, element, formName, name);
           updateElementStyle(fieldState, formGroupElement, formController._policy);
 

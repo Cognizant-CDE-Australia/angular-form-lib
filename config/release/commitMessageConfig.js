@@ -1,5 +1,21 @@
 'use strict';
 
+const featFixScopes = [
+  {name: 'a11y'},
+  {name: 'controls'},
+  {name: 'errorMessage'},
+  {name: 'formCheckbox'},
+  {name: 'formDate'},
+  {name: 'formControlService'},
+  {name: 'formRadioButton'},
+  {name: 'formInput'},
+  {name: 'formReset'},
+  {name: 'formSelect'},
+  {name: 'formSubmit'},
+  {name: 'policy'},
+  {name: 'requiredMarker'}
+];
+
 module.exports = {
 
   types: [
@@ -11,31 +27,22 @@ module.exports = {
     {value: 'perf',     name: 'perf:     A code change that improves performance'},
     {value: 'test',     name: 'test:     Adding missing tests'},
     {value: 'chore',    name: 'chore:    Changes to the build process or auxiliary tools\n            and libraries such as documentation generation'},
-    {value: 'revert',   name: 'revert:   Revert to a commit'},
     {value: 'WIP',      name: 'WIP:      Work in progress'}
   ],
 
-  scopes: [
-    {name: 'accounts'},
-    {name: 'admin'},
-    {name: 'exampleScope'},
-    {name: 'changeMe'}
-  ],
-
   // it needs to match the value for field type. Eg.: 'fix'
-  /*
-   scopeOverrides: {
-   fix: [
+  scopeOverrides: {
+    feat: featFixScopes,
+    fix: featFixScopes,
+    docs: featFixScopes.concat(['readme', 'site']),
+    style: featFixScopes,
+    refactor: featFixScopes,
+    perf: featFixScopes,
+    test: featFixScopes,
+    chore: ['build']
+  },
 
-   {name: 'merge'},
-   {name: 'style'},
-   {name: 'e2eTest'},
-   {name: 'unitTest'}
-   ]
-   },
-   */
 
-  allowCustomScopes: true,
+  allowCustomScopes: false,
   allowBreakingChanges: ['feat', 'fix']
-
 };
