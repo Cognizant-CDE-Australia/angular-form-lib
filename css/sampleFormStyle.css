@@ -128,11 +128,14 @@
 .col-sm-12,
 .col-md-12,
 .col-lg-12,
-.form-horizontal *:not(.form-inline) .control-label,
-.form-horizontal *:not(.form-inline) .control-row,
-.form-horizontal *:not(.form-inline) .form-group-checkbox,
-.form-horizontal *:not(.form-inline) .form-group-radio,
-.form-horizontal *:not(.form-inline) .button-row {
+.form-horizontal .control-label,
+.form-horizontal .control-row,
+.form-horizontal .form-group-checkbox,
+.form-horizontal .form-group-radio,
+.form-horizontal .button-row,
+.form-horizontal .form-inline .form-group-checkbox,
+.form-horizontal .form-inline .form-group-radio,
+.form-horizontal .form-inline .button-row {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -318,11 +321,14 @@
   .col-sm-10,
   .col-sm-11,
   .col-sm-12,
-  .form-horizontal *:not(.form-inline) .control-label,
-  .form-horizontal *:not(.form-inline) .control-row,
-  .form-horizontal *:not(.form-inline) .form-group-checkbox,
-  .form-horizontal *:not(.form-inline) .form-group-radio,
-  .form-horizontal *:not(.form-inline) .button-row {
+  .form-horizontal .control-label,
+  .form-horizontal .control-row,
+  .form-horizontal .form-group-checkbox,
+  .form-horizontal .form-group-radio,
+  .form-horizontal .button-row,
+  .form-horizontal .form-inline .form-group-checkbox,
+  .form-horizontal .form-inline .form-group-radio,
+  .form-horizontal .form-inline .button-row {
     float: left;
   }
   .col-sm-12 {
@@ -335,10 +341,13 @@
     width: 83.33333333333334%;
   }
   .col-sm-9,
-  .form-horizontal *:not(.form-inline) .control-row,
-  .form-horizontal *:not(.form-inline) .form-group-checkbox,
-  .form-horizontal *:not(.form-inline) .form-group-radio,
-  .form-horizontal *:not(.form-inline) .button-row {
+  .form-horizontal .control-row,
+  .form-horizontal .form-group-checkbox,
+  .form-horizontal .form-group-radio,
+  .form-horizontal .button-row,
+  .form-horizontal .form-inline .form-group-checkbox,
+  .form-horizontal .form-inline .form-group-radio,
+  .form-horizontal .form-inline .button-row {
     width: 75%;
   }
   .col-sm-8 {
@@ -357,7 +366,7 @@
     width: 33.33333333333333%;
   }
   .col-sm-3,
-  .form-horizontal *:not(.form-inline) .control-label {
+  .form-horizontal .control-label {
     width: 25%;
   }
   .col-sm-2 {
@@ -472,9 +481,12 @@
     margin-left: 33.33333333333333%;
   }
   .col-sm-offset-3,
-  .form-horizontal *:not(.form-inline) .form-group-checkbox,
-  .form-horizontal *:not(.form-inline) .form-group-radio,
-  .form-horizontal *:not(.form-inline) .button-row {
+  .form-horizontal .form-group-checkbox,
+  .form-horizontal .form-group-radio,
+  .form-horizontal .button-row,
+  .form-horizontal .form-inline .form-group-checkbox,
+  .form-horizontal .form-inline .form-group-radio,
+  .form-horizontal .form-inline .button-row {
     margin-left: 25%;
   }
   .col-sm-offset-2 {
@@ -871,19 +883,33 @@ label > .required:after,
 .checkbox-inline input[type="checkbox"] {
   margin-left: 0px;
 }
-.form-horizontal *:not(.form-inline) .form-group-checkbox,
-.form-horizontal *:not(.form-inline) .form-group-radio,
-.form-horizontal *:not(.form-inline) .button-row {
+.form-horizontal .button-row {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+@media (min-width: 768px) {
+  .form-horizontal .button-row {
+    margin-left: 25%;
+  }
+}
+.form-horizontal .form-group-checkbox,
+.form-horizontal .form-group-radio,
+.form-horizontal .button-row {
+  margin-bottom: 15px;
+}
+@media (min-width: 768px) {
+  .form-horizontal .form-group-checkbox,
+  .form-horizontal .form-group-radio,
+  .form-horizontal .button-row {
+    padding-left: 7px;
+  }
+}
+.form-horizontal .form-inline .form-group-checkbox,
+.form-horizontal .form-inline .form-group-radio,
+.form-horizontal .form-inline .button-row {
   margin-bottom: 15px;
   padding-left: 0;
   padding-right: 0;
-}
-@media (min-width: 768px) {
-  .form-horizontal *:not(.form-inline) .form-group-checkbox,
-  .form-horizontal *:not(.form-inline) .form-group-radio,
-  .form-horizontal *:not(.form-inline) .button-row {
-    padding-left: 7px;
-  }
 }
 .form-inline .form-group,
 .form-inline .form-group-checkbox,

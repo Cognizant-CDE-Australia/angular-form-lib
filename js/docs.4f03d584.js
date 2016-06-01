@@ -2,10 +2,10 @@ webpackJsonp([1],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(38);
-	__webpack_require__(55);
-	__webpack_require__(53);
-	module.exports = __webpack_require__(54);
+	__webpack_require__(39);
+	__webpack_require__(56);
+	__webpack_require__(54);
+	module.exports = __webpack_require__(55);
 
 
 /***/ },
@@ -33,49 +33,31 @@ webpackJsonp([1],[
 	
 	exports.default = mod.name;
 	
-	//angular.module('ngFormLib.controls.errorMessageContainer', ['pascalprecht.translate'])
-	
 	/**
 	 * This directive is really a FIELD error message container - it is designed to work with fields exclusively
 	 */
 	
 	mod.directive('errorContainer', ['$compile', 'formControlService', function ($compile, formControlService) {
 	
-	  function translateError(errorMessage, fieldLabel) {
-	    var firstLetterIsAVowel = fieldLabel ? 'aeiou'.indexOf(fieldLabel[0].toLowerCase()) !== -1 : undefined;
-	    return formControlService.translate(errorMessage, { pronoun: firstLetterIsAVowel ? 'an' : 'a', fieldLabel: fieldLabel });
-	  }
-	
-	  function ErrorController(element) {
-	    var errors = [],
-	        ariaElement = element;
+	  function ErrorController(ariaElement, a11yPolicy) {
+	    var errors = {};
 	
 	    return {
 	      addError: function addError(errorType, errorMessage, fieldLabel) {
 	        errors[errorType] = translateError(errorMessage, fieldLabel);
 	      },
-	
 	      removeError: function removeError(errorType) {
-	        delete errors[errorType];
+	        return delete errors[errorType];
 	      },
-	
-	      refreshErrorText: function refreshErrorText() {
-	        var str = '',
-	            i = 0;
-	        for (var type in errors) {
-	          if (errors.hasOwnProperty(type)) {
-	            str += 'Error ' + ++i + ', ' + errors[type] + ',';
-	          }
-	        }
-	
-	        if (i === 1) {
-	          str = '. There is 1 error for this field. ' + str;
-	        } else if (i > 1) {
-	          str = '. There are ' + i + ' errors for this field. ' + str;
-	        }
-	        ariaElement.text(str);
+	      updateAriaErrorElement: function updateAriaErrorElement() {
+	        return a11yPolicy.onErrorChangeBehaviour(ariaElement, errors);
 	      }
 	    };
+	  }
+	
+	  function translateError(errorMessage, fieldLabel) {
+	    var firstLetterIsAVowel = fieldLabel ? 'aeiou'.indexOf(fieldLabel[0].toLowerCase()) !== -1 : undefined;
+	    return formControlService.translate(errorMessage, { pronoun: firstLetterIsAVowel ? 'an' : 'a', fieldLabel: fieldLabel });
 	  }
 	
 	  function generateErrorTag(errorType, errorText, fieldLabel) {
@@ -85,51 +67,18 @@ webpackJsonp([1],[
 	  /**
 	   * Handle the field-based error messages
 	   */
-	  function toggleErrorVisibilityOnError(controller, formController, scope, element, watchExpr, errorType, errorText, fieldLabel) {
+	  function toggleErrorVisibilityOnError(errorController, formController, scope, element, watchExpr, errorType, errorText, fieldLabel) {
 	    //console.log('watchExpr = ' + watchExpr);
 	    formController._scope.$watch(watchExpr, function (newValue) {
 	      if (newValue) {
 	        // The error text could contain an interpolation string, so we need to compile it
 	        var val = $compile(generateErrorTag(errorType, errorText, fieldLabel))(scope);
 	        element.append(val);
-	        controller.addError(errorType, errorText, fieldLabel);
+	        errorController.addError(errorType, errorText, fieldLabel);
 	      } else {
-	        removeErrorMessage(controller, formController, element, errorType);
+	        removeErrorMessage(errorController, formController, element, errorType);
 	      }
-	      controller.refreshErrorText();
-	    });
-	  }
-	
-	  /**
-	   * Handle text errors. Text errors are associated with a scope, rather than with a field.
-	   * This means we can clear them from the scope when the field-they-are-associated-with is changed.
-	   */
-	  function toggleErrorVisibilityForTextError(errorController, formController, fieldController, scope, element, watchExpr, fieldLabel) {
-	    //console.log('Watching error: ' + watchExpr);
-	
-	    formController._scope.$watch(watchExpr, function (newValue) {
-	      // Update the validity of the field's "watchExpr" error-key to match the value of the errorText
-	      fieldController.$setValidity(watchExpr, !newValue);
-	
-	      // Remove the old error message for this same errorType first, in cases where the error message is changing.
-	      removeErrorMessage(errorController, formController, element, watchExpr);
-	
-	      if (newValue) {
-	        // No need to compile the error message as we already have its value
-	        element.append(generateErrorTag(watchExpr, newValue, fieldLabel));
-	        errorController.addError(watchExpr, newValue, fieldLabel);
-	
-	        // Turn the border red by sending a 'form-submit-attempted' event
-	        formController.setSubmitted(true);
-	      }
-	      errorController.refreshErrorText();
-	    });
-	
-	    // When the field changes, clear the errorText value
-	    fieldController.$viewChangeListeners.push(function () {
-	      if (scope.$eval(watchExpr)) {
-	        scope.$eval(watchExpr + ' = null');
-	      }
+	      errorController.updateAriaErrorElement();
 	    });
 	  }
 	
@@ -142,6 +91,39 @@ webpackJsonp([1],[
 	      }
 	    }
 	    controller.removeError(errorType);
+	  }
+	
+	  /**
+	   * Handle text errors. Text errors are associated with a scope, rather than with a field.
+	   * This means we can clear them from the scope when the field-they-are-associated-with is changed.
+	   */
+	  function toggleErrorVisibilityForTextError(errorController, formController, fieldController, scope, element, watchExpr, fieldLabel) {
+	    //console.log('Watching error: ' + watchExpr);
+	
+	    formController._scope.$watch(watchExpr, function (newValue) {
+	
+	      // Update the validity of the field's "watchExpr" error-key to match the value of the errorText
+	      fieldController.$setValidity(watchExpr, !newValue);
+	
+	      // Remove the old error message for this same errorType first, in cases where the error message is changing.
+	      removeErrorMessage(errorController, formController, element, watchExpr);
+	      if (newValue) {
+	        // No need to compile the error message as we already have its value
+	        element.append(generateErrorTag(watchExpr, newValue, fieldLabel));
+	
+	        errorController.addError(watchExpr, newValue, fieldLabel);
+	        // Turn the border red by sending a 'form-submit-attempted' event
+	        formController.setSubmitted(true);
+	      }
+	      errorController.updateAriaErrorElement();
+	    });
+	
+	    // When the field changes, clear the errorText value
+	    fieldController.$viewChangeListeners.push(function () {
+	      if (scope.$eval(watchExpr)) {
+	        scope.$eval(watchExpr + ' = null');
+	      }
+	    });
 	  }
 	
 	  return {
@@ -161,10 +143,12 @@ webpackJsonp([1],[
 	      textErrors = scope.$eval(attr.textErrors || []);
 	
 	      element.attr('id', formName + '-' + fieldName + '-errors');
-	      element.append('<span class="sr-only" aria-hidden="true" id="' + formName + '-' + fieldName + '-errors-aria"></span>');
 	
-	      var ariaElement = element.find('span'),
-	          errorController = new ErrorController(ariaElement); // new? Maybe make this the directive's controller instead
+	      // Get a reference to the form policy
+	      var a11yPolicy = formController._policy.accessibilityBehaviour;
+	      var ariaElement = a11yPolicy.createAriaErrorElement(formName, fieldName);
+	      var errorController = new ErrorController(ariaElement, a11yPolicy); // This controller contains state pertaining to this error container instance. Not a shareable controller across multiple instances.
+	      element.append(ariaElement);
 	
 	      for (var error in fieldErrors) {
 	        if (fieldErrors.hasOwnProperty(error)) {
@@ -212,7 +196,7 @@ webpackJsonp([1],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _FieldErrorController = __webpack_require__(7);
+	var _FieldErrorController = __webpack_require__(8);
 	
 	var _FieldErrorController2 = _interopRequireDefault(_FieldErrorController);
 	
@@ -220,11 +204,13 @@ webpackJsonp([1],[
 	
 	var _FormControlService2 = _interopRequireDefault(_FormControlService);
 	
-	var _RequiredMarker = __webpack_require__(16);
+	var _RequiredMarker = __webpack_require__(17);
 	
 	var _RequiredMarker2 = _interopRequireDefault(_RequiredMarker);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	//TODO: Not sure why this is here
 	
 	var mod = _angular2.default.module('ngFormLib.controls.common', [_FieldErrorController2.default, _FormControlService2.default, _RequiredMarker2.default]);
 	
@@ -245,7 +231,7 @@ webpackJsonp([1],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _Utility = __webpack_require__(6);
+	var _Utility = __webpack_require__(7);
 	
 	var _Utility2 = _interopRequireDefault(_Utility);
 	
@@ -393,8 +379,12 @@ webpackJsonp([1],[
 	      },
 	
 	      addToAttribute: function addToAttribute(element, attributeName, value) {
-	        var existingVal = element.attr(attributeName);
-	        element.attr(attributeName, (existingVal ? existingVal + ' ' : '') + value);
+	        var existingValues = element.attr(attributeName) || '';
+	
+	        // Don't add the same attribute value - remove it first before adding it back
+	        if (existingValues.split(' ').indexOf(value) === -1) {
+	          element.attr(attributeName, existingValues + (existingValues ? ' ' : '') + value);
+	        }
 	      },
 	
 	      removeFromAttribute: function removeFromAttribute(element, attributeName, value) {
@@ -427,7 +417,7 @@ webpackJsonp([1],[
 	
 	      addInputGroup: function addInputGroup(inputElem, inputGroupPrefix, inputGroupSuffix) {
 	        if (inputGroupPrefix || inputGroupSuffix) {
-	          inputElem.wrap('<div class="input-group">'); //inputElem.parent(); // This should be the 'control-row' element//wrap('<div class="input-group">');
+	          inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element//wrap('<div class="input-group">');
 	          var wrapper = inputElem.parent();
 	
 	          if (inputGroupPrefix) {
@@ -596,8 +586,96 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 5 */,
-/* 6 */
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.getAriaErrorElementId = getAriaErrorElementId;
+	
+	var _angular = __webpack_require__(1);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mod = _angular2.default.module('ngFormLib.policy.formAccessibility', []);
+	
+	exports.default = mod.name;
+	
+	
+	var ariaErrorElementSuffix = '-errors-aria';
+	var ariaErrorElementTemplate = '<span class="sr-only" aria-hidden="true"></span>';
+	
+	function createAriaErrorElement(formName, fieldName) {
+	  var elem = _angular2.default.element(ariaErrorElementTemplate);
+	  elem.attr('id', getAriaErrorElementId(formName, fieldName));
+	  return elem;
+	}
+	
+	// EXPORTED! Allows the PolicyBehaviourOnStateChange.onErrorSetAriaDescribedByToAriaErrorElement to work.
+	// Not perfect... still feels like ARIA behaviour is not in one place...
+	function getAriaErrorElementId(formName, fieldName) {
+	  return formName + '-' + fieldName + ariaErrorElementSuffix;
+	}
+	
+	function createLongErrorDescription(ariaElement, errors) {
+	  var str = '',
+	      i = 0;
+	  for (var type in errors) {
+	    if (errors.hasOwnProperty(type)) {
+	      str += 'Error ' + ++i + ', ' + errors[type] + ',';
+	    }
+	  }
+	
+	  if (i === 1) {
+	    str = '. There is 1 error for this field. ' + str;
+	  } else if (i > 1) {
+	    str = '. There are ' + i + ' errors for this field. ' + str;
+	  }
+	  ariaElement.text(str);
+	}
+	
+	function createShortErrorDescription(ariaElement, errors) {
+	  var errorMsgs = [];
+	  for (var type in errors) {
+	    if (errors.hasOwnProperty(type)) {
+	      errorMsgs.push(errors[type]);
+	    }
+	  }
+	
+	  var prefix = '';
+	  if (errorMsgs.length > 1) {
+	    prefix = errorMsgs.length + ' errors: ';
+	  }
+	  ariaElement.text(prefix + errorMsgs.join('. '));
+	}
+	
+	// Define the different display trigger implementations available
+	mod.constant('formPolicyAccessibilityLibrary', {
+	  createAriaErrorElement: createAriaErrorElement,
+	  createLongErrorDescription: createLongErrorDescription,
+	  createShortErrorDescription: createShortErrorDescription
+	});
+	
+	mod.provider('formPolicyAccessibilityBehaviour', ['formPolicyAccessibilityLibrary', function (lib) {
+	
+	  var config = this.config = {
+	    createAriaErrorElement: lib.createAriaErrorElement,
+	    onErrorChangeBehaviour: lib.createLongErrorDescription
+	  };
+	
+	  this.$get = function () {
+	    return config;
+	  };
+	}]);
+
+/***/ },
+/* 6 */,
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -714,7 +792,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -756,29 +834,12 @@ webpackJsonp([1],[
 	
 	mod.directive('fieldErrorController', ['formControlService', '$timeout', function (formControlService, $timeout) {
 	
-	  function updateAriaFeatures(fieldState, element, formName, fieldName) {
-	    element.attr('aria-invalid', fieldState === 'error');
-	    var errorElemId = formName + '-' + fieldName + '-errors-aria';
-	
-	    if (fieldState === 'error') {
-	      // Use the errorContainer's special ARIA element as the source of the error text
-	      formControlService.addToAttribute(element, 'aria-describedby', errorElemId);
-	    } else {
-	      formControlService.removeFromAttribute(element, 'aria-describedby', errorElemId);
-	    }
-	  }
-	
-	  function updateElementStyle(fieldState, element, formPolicy) {
-	    element[fieldState === 'error' ? 'addClass' : 'removeClass'](formPolicy.fieldErrorClass);
-	    element[fieldState === 'success' ? 'addClass' : 'removeClass'](formPolicy.fieldSuccessClass);
-	  }
-	
 	  function setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name) {
 	    // Using the form policy, determine when to show errors for this field
 	    var formPolicy = formController._policy;
 	    var formName = formController.$name;
 	    var fieldName = formName + '["' + name + '"]';
-	    var stateConditions = formPolicy.stateDefinitions(formName, fieldName);
+	    var stateConditions = formPolicy.stateDefinitions.create(formName, fieldName);
 	
 	    formPolicy.checkForStateChanges(formController._scope, element, name, stateConditions, ngModelController, formController);
 	  }
@@ -788,37 +849,34 @@ webpackJsonp([1],[
 	    require: ['?ngModel', '?^form', '?^formGroup'], // Require the formController controller somewhere in the parent hierarchy
 	    replace: true,
 	    link: function link(scope, element, attr, controllers) {
-	      // Tried to use a template string, but the model was not binding properly. Using $compile() works :)
-	      var ngModelController = controllers[0],
-	          formController = controllers[1],
-	          formGroupElement = (controllers[2] || {}).$element || element,
-	          // This looks for a parent directive called formGroup, which has a controller, which has an $element property
-	      name = attr.name;
+	      var ngModelController = controllers[0];
+	      var formController = controllers[1];
+	      var formGroupElement = (controllers[2] || {}).$element || element; // This looks for a parent directive called formGroup, which has a controller, which has an $element property
+	      var name = attr.name;
 	
 	      if (formController) {
-	        var formName = formController.$name,
-	            errorBehaviour = formController._applyFormBehaviourOnStateChangePolicy; // returns a function which encapsulates the form policy rules for the behaviour to apply when errors show
+	        (function () {
+	          var formName = formController.$name;
+	          var stateChangeBehaviour = formController._applyFormBehaviourOnStateChangePolicy; // returns a function which encapsulates the form policy rules for the behaviour to apply when errors show
 	
-	        if (ngModelController) {
-	          setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name);
-	        }
+	          if (ngModelController) {
+	            setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name);
+	          }
 	
-	        // When the error-showing flag changes, update the field style
-	        formController._scope.$watch(formName + '["' + name + '"].fieldState', function (fieldState) {
-	          updateAriaFeatures(fieldState, element, formName, name);
-	          updateElementStyle(fieldState, formGroupElement, formController._policy);
+	          // When the error-showing flag changes, update the field style
+	          formController._scope.$watch(formName + '["' + name + '"].fieldState', function (fieldState) {
+	            // fieldState is set to '' when the form is reset. So must respond to that too.
+	            stateChangeBehaviour.applyBehaviour(element, fieldState, false, formName, name, formGroupElement);
+	          });
 	
-	          // Apply the error behaviour behaviour
-	          errorBehaviour.applyBehaviour(element, fieldState, false);
-	        });
-	
-	        // Listen to form-submit events, to determine what to focus on too
-	        scope.$on('event:FormSubmitAttempted', function () {
-	          // Make sure that the field-level watchers have a chance to fire first, so use a timeout
-	          $timeout(function () {
-	            errorBehaviour.applyBehaviour(element, ngModelController.fieldState, true);
-	          }, 1);
-	        });
+	          // Listen to form-submit events, to determine what to focus on too
+	          scope.$on('event:FormSubmitAttempted', function () {
+	            // Make sure that the field-level watchers have a chance to fire first, so use a timeout
+	            $timeout(function () {
+	              return stateChangeBehaviour.applyBehaviour(element, ngModelController.fieldState, true, formName, name, formGroupElement);
+	            }, 1);
+	          });
+	        })();
 	      }
 	    }
 	  };
@@ -837,7 +895,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -889,12 +947,12 @@ webpackJsonp([1],[
 	
 	// Populate the template cache with the default template
 	mod.run(['$templateCache', function ($templateCache) {
-	  $templateCache.put('ngFormLib/template/formCheckbox.html', __webpack_require__(24));
+	  $templateCache.put('ngFormLib/template/formCheckbox.html', __webpack_require__(25));
 	}]);
 	module.exports = exports['default'];
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -954,9 +1012,9 @@ webpackJsonp([1],[
 	
 	// Populate the template cache with the default template
 	mod.run(['$templateCache', function ($templateCache) {
-	  $templateCache.put('ngFormLib/template/formDate.html', __webpack_require__(25));
+	  $templateCache.put('ngFormLib/template/formDate.html', __webpack_require__(26));
 	  try {
-	    $templateCache.put('datepicker/datepicker.tpl.html', __webpack_require__(23));
+	    $templateCache.put('datepicker/datepicker.tpl.html', __webpack_require__(24));
 	  } catch (err) {
 	    console.debug('angular-strap/src/datepicker/datepicker.tpl.html is not available for the formDate control');
 	  }
@@ -1051,7 +1109,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1112,7 +1170,7 @@ webpackJsonp([1],[
 	
 	// Populate the template cache with the default template
 	mod.run(['$templateCache', function ($templateCache) {
-	  $templateCache.put('ngFormLib/template/formInput.html', __webpack_require__(26));
+	  $templateCache.put('ngFormLib/template/formInput.html', __webpack_require__(27));
 	}]);
 	
 	function addPlaceholder(inputElem, placeholderText) {
@@ -1123,7 +1181,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1178,12 +1236,12 @@ webpackJsonp([1],[
 	
 	// Populate the template cache with the default template
 	mod.run(['$templateCache', function ($templateCache) {
-	  $templateCache.put('ngFormLib/template/formRadioButton.html', __webpack_require__(27));
+	  $templateCache.put('ngFormLib/template/formRadioButton.html', __webpack_require__(28));
 	}]);
 	module.exports = exports['default'];
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1250,7 +1308,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1311,12 +1369,12 @@ webpackJsonp([1],[
 	
 	// Populate the template cache with the default template
 	mod.run(['$templateCache', function ($templateCache) {
-	  $templateCache.put('ngFormLib/template/formSelect.html', __webpack_require__(28));
+	  $templateCache.put('ngFormLib/template/formSelect.html', __webpack_require__(29));
 	}]);
 	module.exports = exports['default'];
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1378,7 +1436,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1395,31 +1453,31 @@ webpackJsonp([1],[
 	
 	var _ErrorMessageContainer2 = _interopRequireDefault(_ErrorMessageContainer);
 	
-	var _FormCheckbox = __webpack_require__(8);
+	var _FormCheckbox = __webpack_require__(9);
 	
 	var _FormCheckbox2 = _interopRequireDefault(_FormCheckbox);
 	
-	var _FormDate = __webpack_require__(9);
+	var _FormDate = __webpack_require__(10);
 	
 	var _FormDate2 = _interopRequireDefault(_FormDate);
 	
-	var _FormInput = __webpack_require__(10);
+	var _FormInput = __webpack_require__(11);
 	
 	var _FormInput2 = _interopRequireDefault(_FormInput);
 	
-	var _FormRadioButton = __webpack_require__(11);
+	var _FormRadioButton = __webpack_require__(12);
 	
 	var _FormRadioButton2 = _interopRequireDefault(_FormRadioButton);
 	
-	var _FormReset = __webpack_require__(12);
+	var _FormReset = __webpack_require__(13);
 	
 	var _FormReset2 = _interopRequireDefault(_FormReset);
 	
-	var _FormSelect = __webpack_require__(13);
+	var _FormSelect = __webpack_require__(14);
 	
 	var _FormSelect2 = _interopRequireDefault(_FormSelect);
 	
-	var _FormSubmit = __webpack_require__(14);
+	var _FormSubmit = __webpack_require__(15);
 	
 	var _FormSubmit2 = _interopRequireDefault(_FormSubmit);
 	
@@ -1432,7 +1490,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1482,12 +1540,12 @@ webpackJsonp([1],[
 	
 	// Populate the template cache with the default template
 	mod.run(['$templateCache', function ($templateCache) {
-	  $templateCache.put('ngFormLib/template/requiredMarker.html', __webpack_require__(29));
+	  $templateCache.put('ngFormLib/template/requiredMarker.html', __webpack_require__(30));
 	}]);
 	module.exports = exports['default'];
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1500,15 +1558,15 @@ webpackJsonp([1],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _FormPolicy = __webpack_require__(18);
+	var _FormPolicy = __webpack_require__(19);
 	
 	var _FormPolicy2 = _interopRequireDefault(_FormPolicy);
 	
-	var _controls = __webpack_require__(15);
+	var _controls = __webpack_require__(16);
 	
 	var _controls2 = _interopRequireDefault(_controls);
 	
-	var _defaultPolicies = __webpack_require__(21);
+	var _defaultPolicies = __webpack_require__(22);
 	
 	var _defaultPolicies2 = _interopRequireDefault(_defaultPolicies);
 	
@@ -1527,7 +1585,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1553,26 +1611,38 @@ webpackJsonp([1],[
 	// It should contain the _default_ values for form policies
 	
 	mod.provider('formPolicyService', function () {
-	  var self = this,
-	      noop = _angular2.default.noop,
-	      nullBehaviourOnStateChange = function nullBehaviourOnStateChange() {
-	    return {
-	      applyBehaviour: noop,
-	      resetBehaviour: noop
-	    };
-	  },
-	      nullStateChanges = function nullStateChanges() {
-	    return {};
+	  var self = this;
+	  var noop = function noop() {};
+	  var nullBehaviourOnStateChange = {
+	    behaviour: function behaviour() {
+	      return {
+	        applyBehaviour: noop,
+	        resetBehaviour: noop
+	      };
+	    }
+	  };
+	  var nullStateDefinitions = {
+	    create: function create() {
+	      return {};
+	    },
+	    states: function states() {
+	      return {};
+	    }
+	  };
+	  var nullAccessibilityBehaviour = {
+	    createAriaErrorElement: function createAriaErrorElement() {
+	      return '';
+	    },
+	    onErrorChangeBehaviour: noop
 	  };
 	
+	  // The self.defaults property allows the formPolicy to be customised for a specific form
 	  self.defaults = {
 	    formSubmitAttemptedClass: 'form-submit-attempted',
-	    fieldErrorClass: 'has-error',
-	    fieldSuccessClass: 'has-success',
-	    behaviourOnStateChange: null, // Previously called focusBehavior
+	    accessibilityBehaviour: null,
+	    behaviourOnStateChange: null,
 	    checkForStateChanges: null,
-	    stateDefinitions: null,
-	    fieldFocusScrollOffset: 0
+	    stateDefinitions: null
 	  };
 	
 	  this.$get = ['$injector', function ($injector) {
@@ -1586,9 +1656,10 @@ webpackJsonp([1],[
 	    }
 	
 	    // Policy precedence: this.defaults, policy-value-object, noop
+	    self.defaults.accessibilityBehaviour = self.defaults.accessibilityBehaviour || getService('formPolicyAccessibilityBehaviour') || nullAccessibilityBehaviour;
 	    self.defaults.behaviourOnStateChange = self.defaults.behaviourOnStateChange || getService('formPolicyBehaviourOnStateChange') || nullBehaviourOnStateChange;
-	    self.defaults.checkForStateChanges = self.defaults.checkForStateChanges || getService('formPolicyCheckForStateChanges') || noop;
-	    self.defaults.stateDefinitions = self.defaults.stateDefinitions || getService('formPolicyStateDefinitions') || nullStateChanges;
+	    self.defaults.checkForStateChanges = self.defaults.checkForStateChanges || (getService('formPolicyCheckForStateChanges') || {}).checker || noop;
+	    self.defaults.stateDefinitions = self.defaults.stateDefinitions || getService('formPolicyStateDefinitions') || nullStateDefinitions;
 	
 	    var policyService = {
 	      getCurrentPolicy: function getCurrentPolicy() {
@@ -1632,7 +1703,7 @@ webpackJsonp([1],[
 	          }
 	
 	          // Generate the focus policy function for use by other directive
-	          formController._applyFormBehaviourOnStateChangePolicy = formController._policy.behaviourOnStateChange(formController);
+	          formController._applyFormBehaviourOnStateChangePolicy = formController._policy.behaviourOnStateChange.behaviour(formController);
 	
 	          // Add/remove a class onto the form based on the value of the formSubmitted variable
 	          formController.setSubmitted = function (value, tellNoOne) {
@@ -1724,7 +1795,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1732,29 +1803,41 @@ webpackJsonp([1],[
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.combineBehaviours = combineBehaviours;
 	
 	var _angular = __webpack_require__(1);
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	__webpack_require__(5);
+	__webpack_require__(6);
+	
+	var _FormControlService = __webpack_require__(4);
+	
+	var _FormControlService2 = _interopRequireDefault(_FormControlService);
+	
+	var _PolicyFormAccessibility = __webpack_require__(5);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// The form policy intentionally has no hard dependencies.
 	// If there are form-policy values that exist when the service is being constructed, it will use them.
 	// Otherwise it will use no-op policy functions.
-	var mod = _angular2.default.module('ngFormLib.policy.behaviourOnStateChange', ['duScroll']);
+	var mod = _angular2.default.module('ngFormLib.policy.behaviourOnStateChange', ['duScroll', _FormControlService2.default]);
 	
 	exports.default = mod.name;
 	
 	// Helper functions
 	
-	var timeoutPromise, scrollPromise;
+	var timeoutPromise = void 0,
+	    scrollPromise = void 0;
+	
+	function isElementVisible(element) {
+	  return !!element.getBoundingClientRect().top;
+	}
 	
 	function setFocusOnField($document, $timeout, duration, element, offset) {
 	  // If no offsetHeight then assume it's invisible and let the next error field take the scroll position
-	  if (element[0].offsetHeight) {
+	  if (isElementVisible(element[0])) {
 	    //console.log('Error focus set to: ' + domElement.id);
 	    $timeout.cancel(timeoutPromise);
 	    $timeout.cancel(scrollPromise); // This doesn't seem to make a difference on a Mac - user-generated scrolling does not get cancelled
@@ -1765,6 +1848,42 @@ webpackJsonp([1],[
 	    return true;
 	  }
 	  return false; // Indicate that we did NOT set the focus
+	}
+	
+	// Make this available for people that want to add behaviours:
+	function combineBehaviours(a, b) {
+	  // If 'a' is undefined, return b
+	  if (!a) {
+	    return b;
+	  }
+	
+	  return function () {
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+	
+	    var resultA = a.apply(null, args);
+	    var resultB = b.apply(null, args);
+	
+	    return {
+	      applyBehaviour: function applyBehaviour() {
+	        for (var _len2 = arguments.length, args2 = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	          args2[_key2] = arguments[_key2];
+	        }
+	
+	        resultA.applyBehaviour.apply(null, args2);
+	        resultB.applyBehaviour.apply(null, args2);
+	      },
+	      resetBehaviour: function resetBehaviour() {
+	        for (var _len3 = arguments.length, args2 = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	          args2[_key3] = arguments[_key3];
+	        }
+	
+	        resultA.resetBehaviour.apply(null, args2);
+	        resultB.resetBehaviour.apply(null, args2);
+	      }
+	    };
+	  };
 	}
 	
 	/**
@@ -1781,53 +1900,103 @@ webpackJsonp([1],[
 	 *  _applyFormFocusPolicy() should be called by the field-error-controller directive whenever the field state changes,
 	 *   and when a form-submit event occurs.
 	 */
-	mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout', 'duScrollDuration', function ($document, $timeout, duScrollDuration) {
+	mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout', 'duScrollDuration', 'formControlService', function ($document, $timeout, duScrollDuration, formControlService) {
 	
 	  // Policy implementation functions
-	  function behaviourOnErrorFocusFirstField(formController) {
+	  function onSubmitFocusFirstFieldIfError(formController) {
 	    // We want to pretend that there is a single controller for the form, for the purpose of managing the focus.
 	    // Otherwise, the main form sets the focus, then the subform (ng-form) also sets the focus
 	    var focusController = formController._parentController || formController;
 	
 	    return {
+	
 	      // This function is called by the fieldErrorController when the fieldState changes and when the form is submitted
-	      applyBehaviour: function applyBehaviour(fieldElem, fieldState, formSubmitAttempted) {
+	      applyBehaviour: function applyBehaviour(fieldElem, fieldState, formSubmitAttempted, formName, fieldName) {
 	        // Set the focus to the field if there is an error showing and a form-submit has been attempted
 	        if (fieldState === 'error' && formSubmitAttempted) {
-	          // Make sure element is the first field with an error based on DOM order
-	          var elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
-	          var firstElement;
-	          _angular2.default.forEach(elems, function (elem) {
-	            if (elem.getBoundingClientRect().top && !firstElement) {
-	              firstElement = elem;
-	            }
-	          });
-	          var isFirstElement = firstElement ? firstElement.id === fieldElem[0].id : false;
+	          var isFirstElement;
 	
-	          // ...and if the focusErrorElement is blank...
-	          if (!focusController._focusErrorElement && isFirstElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, formController._policy.fieldFocusScrollOffset)) {
-	            focusController._focusErrorElement = fieldElem;
-	          }
+	          (function () {
+	            // Make sure element is the first field with an error based on DOM order
+	            var elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
+	            var firstElement = void 0;
+	            _angular2.default.forEach(elems, function (elem) {
+	              if (isElementVisible(elem) && !firstElement) {
+	                firstElement = elem;
+	              }
+	            });
+	            isFirstElement = firstElement ? firstElement.id === fieldElem[0].id : false;
+	
+	            // ...and if the focusErrorElement is blank...
+	
+	            var scrollOffset = formController._policy.behaviourOnStateChange.fieldFocusScrollOffset;
+	            if (!focusController._focusErrorElement && isFirstElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, scrollOffset)) {
+	              focusController._focusErrorElement = fieldElem;
+	            }
+	          })();
 	        }
 	      },
+	
 	      resetBehaviour: function resetBehaviour() {
 	        focusController._focusErrorElement = null;
 	      }
 	    };
 	  }
 	
+	  function onErrorSetAriaDescribedByToAriaErrorElement(formController) {
+	    return {
+	      applyBehaviour: function applyBehaviour(fieldElem, fieldState, formSubmitAttempted, formName, fieldName) {
+	        fieldElem.attr('aria-invalid', fieldState === 'error');
+	        // Get a reference to the error element
+	        var errorElemId = (0, _PolicyFormAccessibility.getAriaErrorElementId)(formName, fieldName);
+	
+	        // Link the field to the ariaErrorElement.
+	        if (fieldState === 'error') {
+	          formControlService.addToAttribute(fieldElem, 'aria-describedby', errorElemId);
+	        } else {
+	          formControlService.removeFromAttribute(fieldElem, 'aria-describedby', errorElemId);
+	        }
+	      },
+	      resetBehaviour: function resetBehaviour() {}
+	    };
+	  }
+	
+	  function updateElementStyle(formController) {
+	    return {
+	      applyBehaviour: function applyBehaviour(fieldElem, fieldState, formSubmitAttempted, formName, fieldName, formGroupElement) {
+	        var policy = formController._policy.behaviourOnStateChange;
+	        formGroupElement[fieldState === 'error' ? 'addClass' : 'removeClass'](policy.fieldErrorClass);
+	        formGroupElement[fieldState === 'success' ? 'addClass' : 'removeClass'](policy.fieldSuccessClass);
+	      },
+	      resetBehaviour: function resetBehaviour() {}
+	    };
+	  }
+	
 	  return {
-	    onSubmitFocusFirstFieldIfError: behaviourOnErrorFocusFirstField
+	    onSubmitFocusFirstFieldIfError: onSubmitFocusFirstFieldIfError,
+	    onErrorSetAriaDescribedByToAriaErrorElement: onErrorSetAriaDescribedByToAriaErrorElement,
+	    updateElementStyle: updateElementStyle
 	  };
 	}]);
 	
-	mod.factory('formPolicyBehaviourOnStateChange', ['formPolicyBehaviourOnStateChangeLibrary', function (formPolicyBehaviourOnStateChangeLibrary) {
-	  return formPolicyBehaviourOnStateChangeLibrary.onSubmitFocusFirstFieldIfError;
-	}]);
-	module.exports = exports['default'];
+	mod.provider('formPolicyBehaviourOnStateChange', function () {
+	  var config = this.config = {
+	    behaviour: undefined,
+	    fieldErrorClass: 'has-error',
+	    fieldSuccessClass: 'has-success',
+	    fieldFocusScrollOffset: 0
+	  };
+	
+	  this.$get = ['formPolicyBehaviourOnStateChangeLibrary', function (lib) {
+	    // If the behaviour has been over-ridden, great. Otherwise this is the default.
+	    config.behaviour = config.behaviour || [lib.onSubmitFocusFirstFieldIfError, lib.onErrorSetAriaDescribedByToAriaErrorElement, lib.updateElementStyle].reduce(combineBehaviours);
+	
+	    return config;
+	  }];
+	});
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1923,14 +2092,19 @@ webpackJsonp([1],[
 	  };
 	}());
 	
-	// This 'service' is the default implementation of the check-for-errors policy
-	mod.factory('formPolicyCheckForStateChanges', ['formPolicyCheckForStateChangesLibrary', function (formPolicyCheckForStateChangesLibrary) {
-	  return formPolicyCheckForStateChangesLibrary.onBlurUntilSubmitThenOnChange;
+	mod.provider('formPolicyCheckForStateChanges', ['formPolicyCheckForStateChangesLibrary', function (lib) {
+	  var config = this.config = {
+	    checker: lib.onBlurUntilSubmitThenOnChange
+	  };
+	
+	  this.$get = function () {
+	    return config;
+	  };
 	}]);
 	module.exports = exports['default'];
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1943,27 +2117,31 @@ webpackJsonp([1],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _PolicyBehaviourOnStateChange = __webpack_require__(19);
+	var _PolicyFormAccessibility = __webpack_require__(5);
+	
+	var _PolicyFormAccessibility2 = _interopRequireDefault(_PolicyFormAccessibility);
+	
+	var _PolicyBehaviourOnStateChange = __webpack_require__(20);
 	
 	var _PolicyBehaviourOnStateChange2 = _interopRequireDefault(_PolicyBehaviourOnStateChange);
 	
-	var _PolicyCheckForStateChanges = __webpack_require__(20);
+	var _PolicyCheckForStateChanges = __webpack_require__(21);
 	
 	var _PolicyCheckForStateChanges2 = _interopRequireDefault(_PolicyCheckForStateChanges);
 	
-	var _PolicyStateDefinitions = __webpack_require__(22);
+	var _PolicyStateDefinitions = __webpack_require__(23);
 	
 	var _PolicyStateDefinitions2 = _interopRequireDefault(_PolicyStateDefinitions);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var mod = _angular2.default.module('ngFormLib.defaultPolicies', [_PolicyBehaviourOnStateChange2.default, _PolicyCheckForStateChanges2.default, _PolicyStateDefinitions2.default]);
+	var mod = _angular2.default.module('ngFormLib.defaultPolicies', [_PolicyFormAccessibility2.default, _PolicyBehaviourOnStateChange2.default, _PolicyCheckForStateChanges2.default, _PolicyStateDefinitions2.default]);
 	
 	exports.default = mod.name;
 	module.exports = exports['default'];
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2005,15 +2183,13 @@ webpackJsonp([1],[
 	  return '(' + formName + '._formSubmitAttempted || ' + fieldName + '.$dirty) && ' + fieldName + '.$invalid';
 	}
 	
-	mod.value('formPolicyErrorDefinitionLibrary', function () {
-	  return {
-	    onSubmit: errorOnSubmit,
-	    onDirty: errorOnDirty,
-	    immediately: errorImmediately,
-	    onSubmitAndDirty: errorOnSubmitAndDirty,
-	    onSubmitOrDirty: errorOnSubmitOrDirty
-	  };
-	}());
+	mod.constant('formPolicyErrorDefinitionLibrary', {
+	  onSubmit: errorOnSubmit,
+	  onDirty: errorOnDirty,
+	  immediately: errorImmediately,
+	  onSubmitAndDirty: errorOnSubmitAndDirty,
+	  onSubmitOrDirty: errorOnSubmitOrDirty
+	});
 	
 	// Success Definitions
 	function successOnSubmit(formName, fieldName) {
@@ -2036,78 +2212,86 @@ webpackJsonp([1],[
 	  return '(' + formName + '._formSubmitAttempted || ' + fieldName + '.$dirty) && ' + fieldName + '.$valid';
 	}
 	
-	mod.value('formPolicySuccessDefinitionLibrary', function () {
-	  return {
-	    onSubmit: successOnSubmit,
-	    onDirty: successOnDirty,
-	    immediately: successImmediately,
-	    onSubmitAndDirty: successOnSubmitAndDirty,
-	    onSubmitOrDirty: successOnSubmitOrDirty
+	mod.constant('formPolicySuccessDefinitionLibrary', {
+	  onSubmit: successOnSubmit,
+	  onDirty: successOnDirty,
+	  immediately: successImmediately,
+	  onSubmitAndDirty: successOnSubmitAndDirty,
+	  onSubmitOrDirty: successOnSubmitOrDirty
+	});
+	
+	mod.provider('formPolicyStateDefinitions', ['formPolicyErrorDefinitionLibrary', 'formPolicySuccessDefinitionLibrary', function (errorLib, successLib) {
+	  var config = this.config = {
+	    states: {
+	      error: errorLib.onSubmitOrDirty,
+	      success: successLib.onSubmitOrDirty
+	    }
 	  };
-	}());
 	
-	// This 'service' is the default implementation of the check-for-errors policy
-	mod.factory('formPolicyStateDefinitions', ['formPolicyErrorDefinitionLibrary', 'formPolicySuccessDefinitionLibrary', function (formPolicyErrorDefinitionLibrary, formPolicySuccessDefinitionLibrary) {
+	  config.create = function (formName, fieldName) {
+	    var result = {};
+	    for (var state in config.states) {
+	      if (config.states.hasOwnProperty(state)) {
+	        result[state] = config.states[state](formName, fieldName);
+	      }
+	    }
+	    return result;
+	  };
 	
-	  // The FieldErrorController will ask for the stateDefinitions, passing the formName and fieldName as parameters
-	  return function (formName, fieldName) {
-	    // Return an object with the stateName(key) and the stateDefinition string(value)
-	    return {
-	      'error': formPolicyErrorDefinitionLibrary.onSubmitOrDirty(formName, fieldName),
-	      'success': formPolicySuccessDefinitionLibrary.onSubmitOrDirty(formName, fieldName)
-	    };
+	  this.$get = function () {
+	    return config;
 	  };
 	}]);
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"dropdown-menu datepicker\" ng-class=\"'datepicker-mode-' + $mode\" style=\"max-width:320px\">\n<table style=\"table-layout:fixed;height:100%;width:100%\">\n  <thead>\n    <tr class=\"text-center\">\n      <th>\n        <button tabindex=\"-1\" type=\"button\" class=\"btn btn-default pull-left\" ng-click=\"$selectPane(-1)\">\n          <i class=\"{{$iconLeft}}\"></i>\n        </button>\n      </th>\n      <th colspan=\"{{ rows[0].length - 2 }}\">\n        <button tabindex=\"-1\" type=\"button\" class=\"btn btn-default btn-block text-strong\" ng-click=\"$toggleMode()\">\n          <strong style=\"text-transform:capitalize\" ng-bind=\"title\"></strong>\n        </button>\n      </th>\n      <th>\n        <button tabindex=\"-1\" type=\"button\" class=\"btn btn-default pull-right\" ng-click=\"$selectPane(+1)\">\n          <i class=\"{{$iconRight}}\"></i>\n        </button>\n      </th>\n    </tr>\n    <tr ng-show=\"showLabels\" ng-bind-html=\"labels\"></tr>\n  </thead>\n  <tbody>\n    <tr ng-repeat=\"(i, row) in rows\" height=\"{{ 100 / rows.length }}%\">\n      <td class=\"text-center\" ng-repeat=\"(j, el) in row\">\n        <button tabindex=\"-1\" type=\"button\" class=\"btn btn-default\" style=\"width:100%\" ng-class=\"{'btn-primary': el.selected, 'btn-info btn-today': el.isToday && !el.selected}\" ng-click=\"$select(el.date)\" ng-disabled=\"el.disabled\">\n          <span ng-class=\"{'text-muted': el.muted}\" ng-bind=\"el.label\"></span>\n        </button>\n      </td>\n    </tr>\n  </tbody>\n</table>\n</div>\n";
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"form-group form-group-checkbox\">\n\t<div class=\"checkbox\">\n\t\t<input type=\"checkbox\" field-error-controller>\n\t\t<label><span ng-transclude></span></label>\n\t</div>\n</div>\n";
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"form-group\"><label class=\"control-label\"></label><div class=\"control-row\"><input type=\"text\" class=\"form-control\" maxlength=\"10\" placeholder=\"dd/mm/yyyy\" bs-datepicker form-date-format mask-date-digits><span ng-transclude></span></div></div>\n";
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"form-group\"><label class=\"control-label\"></label><div class=\"control-row\"><input class=\"form-control\"><span ng-transclude></span></div></div>\n";
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports = "<div>\n\t<div class=\"radio\">\n\t\t<input type=\"radio\" field-error-controller>\n\t\t<label><span ng-transclude></span></label>\n\t</div>\n</div>\n";
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"form-group\"><label class=\"control-label\"></label><div class=\"control-row\"><select class=\"form-control\"></select></div></div>\n";
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	module.exports = "<span class=\"required\" aria-hidden=\"true\" ng-class=\"{'ng-hide': hide}\" ng-transclude></span>\n";
 
 /***/ },
-/* 30 */,
 /* 31 */,
 /* 32 */,
 /* 33 */,
-/* 34 */
+/* 34 */,
+/* 35 */
 /***/ function(module, exports) {
 
 	/**
@@ -7127,8 +7311,8 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 35 */,
-/* 36 */
+/* 36 */,
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7141,59 +7325,59 @@ webpackJsonp([1],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _formControlsCommon = __webpack_require__(40);
+	var _formControlsCommon = __webpack_require__(41);
 	
 	var _formControlsCommon2 = _interopRequireDefault(_formControlsCommon);
 	
-	var _formControlsCommonProperties = __webpack_require__(41);
+	var _formControlsCommonProperties = __webpack_require__(42);
 	
 	var _formControlsCommonProperties2 = _interopRequireDefault(_formControlsCommonProperties);
 	
-	var _formControlsDemos = __webpack_require__(42);
+	var _formControlsDemos = __webpack_require__(43);
 	
 	var _formControlsDemos2 = _interopRequireDefault(_formControlsDemos);
 	
-	var _formControlService = __webpack_require__(39);
+	var _formControlService = __webpack_require__(40);
 	
 	var _formControlService2 = _interopRequireDefault(_formControlService);
 	
-	var _formPolicy = __webpack_require__(52);
+	var _formPolicy = __webpack_require__(53);
 	
 	var _formPolicy2 = _interopRequireDefault(_formPolicy);
 	
-	var _formSubmit = __webpack_require__(50);
+	var _formSubmit = __webpack_require__(51);
 	
 	var _formSubmit2 = _interopRequireDefault(_formSubmit);
 	
-	var _formReset = __webpack_require__(48);
+	var _formReset = __webpack_require__(49);
 	
 	var _formReset2 = _interopRequireDefault(_formReset);
 	
-	var _formInput = __webpack_require__(46);
+	var _formInput = __webpack_require__(47);
 	
 	var _formInput2 = _interopRequireDefault(_formInput);
 	
-	var _formCheckbox = __webpack_require__(44);
+	var _formCheckbox = __webpack_require__(45);
 	
 	var _formCheckbox2 = _interopRequireDefault(_formCheckbox);
 	
-	var _formRadioButton = __webpack_require__(47);
+	var _formRadioButton = __webpack_require__(48);
 	
 	var _formRadioButton2 = _interopRequireDefault(_formRadioButton);
 	
-	var _formSelect = __webpack_require__(49);
+	var _formSelect = __webpack_require__(50);
 	
 	var _formSelect2 = _interopRequireDefault(_formSelect);
 	
-	var _formDate = __webpack_require__(45);
+	var _formDate = __webpack_require__(46);
 	
 	var _formDate2 = _interopRequireDefault(_formDate);
 	
-	var _errorMessageContainer = __webpack_require__(43);
+	var _errorMessageContainer = __webpack_require__(44);
 	
 	var _errorMessageContainer2 = _interopRequireDefault(_errorMessageContainer);
 	
-	var _requiredMarker = __webpack_require__(51);
+	var _requiredMarker = __webpack_require__(52);
 	
 	var _requiredMarker2 = _interopRequireDefault(_requiredMarker);
 	
@@ -7209,7 +7393,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7222,23 +7406,23 @@ webpackJsonp([1],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _angularAnimate = __webpack_require__(30);
+	var _angularAnimate = __webpack_require__(31);
 	
 	var _angularAnimate2 = _interopRequireDefault(_angularAnimate);
 	
-	__webpack_require__(34);
+	__webpack_require__(35);
 	
-	var _highlightPack = __webpack_require__(32);
+	var _highlightPack = __webpack_require__(33);
 	
 	var _highlightPack2 = _interopRequireDefault(_highlightPack);
 	
-	var _ngFormLib = __webpack_require__(17);
+	var _ngFormLib = __webpack_require__(18);
 	
-	var _angularTranslate = __webpack_require__(31);
+	var _angularTranslate = __webpack_require__(32);
 	
 	var _angularTranslate2 = _interopRequireDefault(_angularTranslate);
 	
-	var _docFixtures = __webpack_require__(36);
+	var _docFixtures = __webpack_require__(37);
 	
 	var _docFixtures2 = _interopRequireDefault(_docFixtures);
 	
@@ -7283,22 +7467,37 @@ webpackJsonp([1],[
 	}]);
 	
 	mod.config(['$translateProvider', function ($translateProvider) {
-	  var translations = __webpack_require__(80);
+	  var translations = __webpack_require__(81);
 	  $translateProvider.translations('enAU', translations);
 	  $translateProvider.preferredLanguage('enAU');
 	  $translateProvider.useSanitizeValueStrategy(null);
 	}]);
 	
 	// Set the field-error-focus-scroll-position, to allow for the website's fixed header
-	mod.config(['formPolicyServiceProvider', function (formPolicyServiceProvider) {
-	  formPolicyServiceProvider.defaults.fieldFocusScrollOffset = 80;
+	mod.config(['formPolicyBehaviourOnStateChangeProvider', function (stateChangeBehavePolicy) {
+	  stateChangeBehavePolicy.config.fieldFocusScrollOffset = 80;
+	}]);
+	
+	mod.config(['formPolicyAccessibilityBehaviourProvider', 'formPolicyAccessibilityLibrary', function (a11yPolicy, lib) {
+	  // Configure the formPolicyAccessibilityBehaviour to use the short-error version of the onErrorChangeBehaviour
+	  a11yPolicy.config.onErrorChangeBehaviour = lib.createShortErrorDescription;
+	}]);
+	
+	mod.config(['formPolicyCheckForStateChangesProvider', 'formPolicyCheckForStateChangesLibrary', function (statePolicy, lib) {
+	  // DEMO: Check for errors as soon as the control is changed
+	  //statePolicy.config.checker = lib.onChange;
+	}]);
+	
+	mod.config(['formPolicyStateDefinitionsProvider', 'formPolicyErrorDefinitionLibrary', function (stateDefs, errorLib) {
+	  // DEMO: Show errors immediately
+	  //stateDefs.config.states.error = errorLib.immediately;
 	}]);
 	
 	mod.controller('MainController', ['$http', function ($http) {
 	  var vm = this; // view-model
 	
 	  // Fetch the documentation config and store it on the rootScope (for laughs :)
-	  var fileName = __webpack_require__(58);
+	  var fileName = __webpack_require__(59);
 	  $http.get(fileName).then(function (result) {
 	    vm.DOC_CONFIG = result.data;
 	    vm.REPO_HOST = result.data.repository.host;
@@ -7312,50 +7511,50 @@ webpackJsonp([1],[
 	    restrict: 'A', // IE8 support
 	    controller: 'MainController',
 	    controllerAs: 'mainCtrl',
-	    template: __webpack_require__(60)
-	  };
-	}]);
-	
-	mod.directive('docsNavbar', [function () {
-	  __webpack_require__(57); // If the file is called *.html, it gets wrapped inside a JS module. This gives us just the HTML
-	  return {
-	    restrict: 'A', // IE8 support
-	    template: __webpack_require__(64)
-	  };
-	}]);
-	
-	mod.directive('docsHeader', [function () {
-	  return {
-	    restrict: 'A', // IE8 support
-	    template: __webpack_require__(63)
-	  };
-	}]);
-	
-	mod.directive('docsFooter', [function () {
-	  return {
-	    restrict: 'A', // IE8 support
 	    template: __webpack_require__(61)
 	  };
 	}]);
 	
-	mod.directive('docsAffixedSidenav', [function () {
-	  return {
-	    restrict: 'A', // IE8 support
-	    template: __webpack_require__(59)
-	  };
-	}]);
-	
-	mod.directive('docsSidenav', [function () {
+	mod.directive('docsNavbar', [function () {
+	  __webpack_require__(58); // If the file is called *.html, it gets wrapped inside a JS module. This gives us just the HTML
 	  return {
 	    restrict: 'A', // IE8 support
 	    template: __webpack_require__(65)
 	  };
 	}]);
 	
-	mod.directive('docsGettingStarted', [function () {
+	mod.directive('docsHeader', [function () {
+	  return {
+	    restrict: 'A', // IE8 support
+	    template: __webpack_require__(64)
+	  };
+	}]);
+	
+	mod.directive('docsFooter', [function () {
 	  return {
 	    restrict: 'A', // IE8 support
 	    template: __webpack_require__(62)
+	  };
+	}]);
+	
+	mod.directive('docsAffixedSidenav', [function () {
+	  return {
+	    restrict: 'A', // IE8 support
+	    template: __webpack_require__(60)
+	  };
+	}]);
+	
+	mod.directive('docsSidenav', [function () {
+	  return {
+	    restrict: 'A', // IE8 support
+	    template: __webpack_require__(66)
+	  };
+	}]);
+	
+	mod.directive('docsGettingStarted', [function () {
+	  return {
+	    restrict: 'A', // IE8 support
+	    template: __webpack_require__(63)
 	  };
 	}]);
 	
@@ -7469,7 +7668,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7482,7 +7681,7 @@ webpackJsonp([1],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _docs = __webpack_require__(37);
+	var _docs = __webpack_require__(38);
 	
 	var _docs2 = _interopRequireDefault(_docs);
 	
@@ -7494,7 +7693,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7518,7 +7717,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'FormControlServiceDemoCtrl',
-	    template: __webpack_require__(66)
+	    template: __webpack_require__(67)
 	  };
 	});
 	
@@ -7534,7 +7733,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7555,35 +7754,6 @@ webpackJsonp([1],[
 	
 	
 	mod.directive('formControlsCommonDocs', function () {
-	  return {
-	    restrict: 'A',
-	    template: __webpack_require__(67)
-	  };
-	});
-	module.exports = exports['default'];
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _angular = __webpack_require__(1);
-	
-	var _angular2 = _interopRequireDefault(_angular);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var mod = _angular2.default.module('ngFormLibDocs.controls.common.docs.formControlsCommonProperties', []);
-	
-	exports.default = mod.name;
-	
-	
-	mod.directive('formControlsCommonPropertiesDocs', function () {
 	  return {
 	    restrict: 'A',
 	    template: __webpack_require__(68)
@@ -7607,6 +7777,35 @@ webpackJsonp([1],[
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var mod = _angular2.default.module('ngFormLibDocs.controls.common.docs.formControlsCommonProperties', []);
+	
+	exports.default = mod.name;
+	
+	
+	mod.directive('formControlsCommonPropertiesDocs', function () {
+	  return {
+	    restrict: 'A',
+	    template: __webpack_require__(69)
+	  };
+	});
+	module.exports = exports['default'];
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _angular = __webpack_require__(1);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	var mod = _angular2.default.module('ngFormLibDocs.controls.common.docs.formControlsDemos', []);
 	
 	exports.default = mod.name;
@@ -7616,7 +7815,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'FormControlsDemosController',
-	    template: __webpack_require__(69)
+	    template: __webpack_require__(70)
 	  };
 	});
 	
@@ -7649,7 +7848,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7673,7 +7872,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'ErrorMessageContainerDemoController',
-	    template: __webpack_require__(70)
+	    template: __webpack_require__(71)
 	  };
 	});
 	
@@ -7690,7 +7889,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7714,7 +7913,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'FormCheckboxDemoController',
-	    template: __webpack_require__(71)
+	    template: __webpack_require__(72)
 	  };
 	});
 	
@@ -7726,7 +7925,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7754,7 +7953,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'FormDateDocsController',
-	    template: __webpack_require__(72)
+	    template: __webpack_require__(73)
 	  };
 	});
 	
@@ -7764,7 +7963,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7787,13 +7986,13 @@ webpackJsonp([1],[
 	mod.directive('formInputDocs', function () {
 	  return {
 	    restrict: 'A',
-	    template: __webpack_require__(73)
+	    template: __webpack_require__(74)
 	  };
 	});
 	module.exports = exports['default'];
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7817,7 +8016,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'FormRadioButtonDemoController',
-	    template: __webpack_require__(74)
+	    template: __webpack_require__(75)
 	  };
 	});
 	
@@ -7833,7 +8032,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7857,7 +8056,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'FormResetDemoController',
-	    template: __webpack_require__(75)
+	    template: __webpack_require__(76)
 	  };
 	});
 	
@@ -7875,7 +8074,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7899,7 +8098,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'FormSelectDemoController',
-	    template: __webpack_require__(76)
+	    template: __webpack_require__(77)
 	  };
 	});
 	
@@ -7911,7 +8110,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7935,7 +8134,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'FormSubmitDemoController',
-	    template: __webpack_require__(77)
+	    template: __webpack_require__(78)
 	  };
 	});
 	
@@ -7949,7 +8148,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7973,7 +8172,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'RequiredMarkerDemoController',
-	    template: __webpack_require__(78)
+	    template: __webpack_require__(79)
 	  };
 	});
 	
@@ -7985,7 +8184,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8009,7 +8208,7 @@ webpackJsonp([1],[
 	  return {
 	    restrict: 'A',
 	    controller: 'FormPolicyDemoCtrl',
-	    template: __webpack_require__(79)
+	    template: __webpack_require__(80)
 	  };
 	});
 	
@@ -8025,12 +8224,6 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 53 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
 /* 54 */
 /***/ function(module, exports) {
 
@@ -8043,146 +8236,152 @@ webpackJsonp([1],[
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 56 */,
-/* 57 */
+/* 56 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 57 */,
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "/assets/aside.html";
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "assets/config/docsConfig.json";
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"bs-sidebar hidden-print\" role=\"complementary\" data-offset-top=\"-100\" bs-affix bs-scrollspy-list docs-sidenav></div>\n";
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports) {
 
 	module.exports = "<div docs-navbar></div>\n<div docs-header></div>\n\n<div role=\"content\">\n  <div class=\"container\">\n    <main role=\"main\" class=\"main\">\n\n      <div class=\"row\">\n        <div class=\"col-md-2 hidden-sm hidden-xs\">\n          <div docs-affixed-sidenav></div>\n        </div>\n        <div class=\"col-md-10\">\n          <div docs-getting-started></div>\n          <div id=\"directives\">\n            <div ng-repeat=\"menuContent in mainCtrl.DOC_CONFIG.sitemap\" bind-compile=\"menuContent.template\"></div>\n          </div>\n          <div docs-footer></div>\n        </div>\n      </div>\n    </main>\n  </div>\n</div>\n";
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports) {
 
 	module.exports = "<footer class=\"bs-footer\">\n  <p class=\"pull-right\"><a href=\"#\">Back to top</a></p>\n  <p>Documentation based upon <a href=\"http://http://mgcrea.github.io/angular-strap\" target=\"_blank\">AngularStrap</a> created by <a href=\"//plus.google.com/+OlivierLouvignes/posts?rel=author\" target=\"_blank\">Olivier Louvignes</a>.</p>\n  <p>Using <a href=\"http://twitter.github.com/bootstrap\" target=\"_blank\">Twitter Bootstrap</a> and the <a href=\"css/doc.css\" target=\"_blank\">Bootstrap's docs styles</a> designed and built by <a href=\"http://twitter.com/mdo\" target=\"_blank\">@mdo</a> and <a href=\"http://twitter.com/fat\" target=\"_blank\">@fat</a>.</p>\n  <p>Code licensed under <a href=\"{{mainCtrl.REPO}}LICENSE.md\" target=\"_blank\">The MIT License</a>, documentation under <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0</a>.</p>\n  <ul class=\"footer-links\">\n    <li><a href=\"{{mainCtrl.REPO_HOST}}issues?state=open\">Issues</a>\n    </li>\n    <li class=\"muted\">·</li>\n    <li><a href=\"{{mainCtrl.REPO_HOST}}wiki\">Roadmap and changelog</a>\n    </li>\n    <li class=\"muted\">·</li>\n      <li><a href=\"{{mainCtrl.REPO_HOST}}releases\">Releases</a>\n    </li>\n  </ul>\n</footer>\n";
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"bs-docs-section\">\n\n  <div class=\"page-header\">\n    <h1 id=\"gettingStarted\">Getting started <a class=\"small\" href=\"{{mainCtrl.REPO}}readme.md\" target=\"_blank\">readme.md</a>\n    </h1>\n    <code>ngFormLib</code>\n  </div>\n\n  <div class=\"callout callout-info\">\n    <h4 id=\"project-history\">About the project</h4>\n    <p>Angular Form Library is a set of Angular components that allow you to configure how form validation works across your entire site,\n      plus a set of accessibility-aware input controls that are easy to integrate into your AngularJS 1.2+ application.</p>\n    <p>Designed with Bootstrap CSS styles and markup in mind, Angular Form Library can be easily customised to work with your existing\n      CSS and form markup.</p>\n  </div>\n\n  <h2 id=\"project-quickstart\">Quick Start</h2>\n  <p>Install and manage Angular Form Library with NPM.</p>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"bash\" highlight-block>\n        $ npm install angular-form-lib --save\n      </code>\n    </pre>\n  </div>\n\n\n  <p>Inject the <code>ngFormLib</code>module into your Angular application.</p>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"javascript\" highlight-block>\n        // ES5\n        angular.module('myApp', ['ngFormLib']);\n\n        // ES6 / Webpack\n        import {ngFormLib} from 'angular-form-lib';\n\n        const app = angular.module('myApp', [ngFormLib]);\n      </code>\n    </pre>\n  </div>\n\n  <p>Typically you would load both the module and the default policies into your application:</p>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"javascript\" highlight-block>\n        // ES5\n        angular.module('myApp', [\n          'ngFormLib',\n          'duScroll',   // Scrolling behaviour for when the state changes to an error and we wish to focus the field\n          'ngFormLib.policy.behaviourOnStateChange',\n          'ngFormLib.policy.checkForStateChanges',\n          'ngFormLib.policy.stateDefinitions',\n          'pascalprecht.translate'    // Adds translation support, which will be used for certain properties when available\n        ]);\n\n        // ES6 / Webpack\n        import {ngFormLib, defaultPolicies} from 'angular-form-lib';\n        import 'angular-scroll';   // Scrolling behaviour for when the state changes to an error and we wish to focus the field\n        import ngTranslate from 'angular-translate';\n\n        const app = angular.module('myApp', ['duScroll', ngTranslate, ngFormLib, defaultPolicies]);\n      </code>\n    </pre>\n  </div>\n\n\n  <div class=\"callout callout-info\">\n    <h4>Custom builds</h4>\n    <p>Angular Form Library provides independently built modules that can be loaded separately:</p>\n    <div class=\"highlight\">\n      <pre>\n        <code class=\"javascript\" highlight-block>\n          angular.module('myApp', [ 'ngFormLib.policy', 'ngFormLib.controls.formInput']);\n        </code>\n      </pre>\n    </div>\n  </div>\n\n  <div class=\"callout callout-info\">\n    <h4>Message translation</h4>\n    <p>Angular Form Library will optionally use the <code>pascalprecht.translate</code> module and the <code>$translate.instant()</code> method\n      to perform translation of error messages, placeholder text, field hints and labels,\n      if the module has been loaded. See <a href=\"http://angular-translate.github.io/\">Angular Translate</a>.</p>\n  </div>\n\n  <h2 id=\"project-contribute\">Contributing</h2>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"bash\" highlight-block>\n        // Fork https://github.com/odecee/angular-form-lib.git on Github\n        mkdir {newDir}\n        cd {newDir}\n        git clone {your forked repo}\n        npm i commitizen -g   // Install commitizen to help generate conventional commit messages\n        npm i\n\n        // Serve and watch docs, ideal to develop\n        $ npm start\n        // Continuous integration\n        $ npm test\n        // Build Angular Form Library and serve documentation site\n        $ npm build:serve\n\n        // Make some changes then commit them\n        git add.\n        git cz\n        // Then create pull request with your changes, push to GitHub, get feedback, rinse, repeat, merge.\n      </code>\n    </pre>\n  </div>\n\n\n</div>\n";
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"bs-header\" id=\"content\">\n  <div class=\"container\">\n    <div class=\"col-md-9\">\n      <h1>Angular Form Library</h1>\n      <p>AngularJS 1.2+ directives for controlling form behaviour using policies with accessible form controls.</p>\n    </div>\n    <div class=\"bs-docs-social col-md-3\">\n      <ul>\n        <li class=\"github-btn\">\n          <iframe src=\"//ghbtns.com/github-btn.html?user=odecee&repo=angular-form-lib&type=watch&count=true\" allowtransparency=\"true\" frameborder=\"0\" scrolling=\"0\" width=\"100\" height=\"20\"></iframe>\n        </li>\n        <li class=\"github-btn\">\n          <iframe src=\"//ghbtns.com/github-btn.html?user=odecee&repo=angular-form-lib&type=fork&count=true\" allowtransparency=\"true\" frameborder=\"0\" scrolling=\"0\" width=\"100\" height=\"20\"></iframe>\n        </li>\n        <li class=\"github-btn\">\n          <iframe src=\"//ghbtns.com/github-btn.html?user=odecee&type=follow&count=true\" allowtransparency=\"true\" frameborder=\"0\" scrolling=\"0\" width=\"160\" height=\"20\"></iframe>\n        </li>\n        <li class=\"twitter-btn\">\n          <a href=\"//twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://odecee.github.io/angular-form-lib\" data-text=\"Angular Form Library - AngularJS 1.2+ directives for controlling form behaviour using policies with accessible form controls.\" data-related=\"u_glow\"></a>\n        </li>\n        <li>\n          <div class=\"g-plusone\" data-size=\"medium\" data-href=\"http://odecee.github.io/angular-form-lib\"></div>\n        </li>\n      </ul>\n    </div>\n  </div>\n</div>\n";
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports) {
 
 	module.exports = "<header class=\"navbar navbar-inverse navbar-fixed-top bs-docs-nav\" role=\"banner\">\n  <div class=\"container\">\n    <div class=\"navbar-header\">\n      <button class=\"navbar-toggle\" type=\"button\" data-template=\"assets/aside.html\" data-animation=\"am-fade-and-slide-left\" data-placement=\"left\" title=\"Menu\" data-container=\"body\" bs-aside>\n        <span class=\"sr-only\">Toggle navigation</span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n        <span class=\"icon-bar\"></span>\n      </button>\n      <a href=\"./\" class=\"navbar-brand\">Angular Form Library</a>\n    </div>\n    <nav class=\"collapse navbar-collapse bs-navbar-collapse\" role=\"navigation\">\n      <ul class=\"nav navbar-nav\">\n        <li>\n          <a ahref=\"#gettingStarted\" use-hash=\"true\" scroll-offset=\"50\">Top</a>\n        </li>\n      </ul>\n      <ul class=\"nav navbar-nav navbar-right\">\n        <li>\n          <a class=\"github-badge\" href=\"//travis-ci.org/odecee/angular-form-lib\" target=\"_blank\">\n            \n          </a>\n        </li>\n        <li>\n          <a class=\"github-badge\" href=\"//codeclimate.com/github/odecee/angular-form-lib\" target=\"_blank\">\n            \n          </a>\n        </li>\n        <li>\n          <a href=\"{{mainCtrl.REPO_HOST}}\" target=\"_blank\">\n            <i class=\"fa fa-github\"></i>&nbsp;GitHub\n          </a>\n        </li>\n        \n        <li>\n          <a href=\"{{mainCtrl.REPO_HOST}}releases\" target=\"_blank\">\n            <i class=\"fa fa-download\"></i>&nbsp;v<span ng-bind=\"mainCtrl.VERSION\"></span>\n          </a>\n        </li>\n      </ul>\n    </nav>\n  </div>\n</header>\n";
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports) {
 
 	module.exports = "<ul class=\"nav bs-sidenav\" ng-if=\"mainCtrl.DOC_CONFIG.sitemap\">\n  <li bs-scrollspy data-target=\"#gettingStarted\">\n    <a ahref=\"#gettingStarted\" use-hash=\"true\" scroll-offset=\"50\">Getting started</a>\n  </li>\n\n  <hr style=\"margin:2px 0\">\n\n  <li ng-repeat=\"menuItem in mainCtrl.DOC_CONFIG.sitemap\" bs-scrollspy data-target=\"{{menuItem.href}}\" data-offset=\"50\">\n    <a ahref=\"{{menuItem.href}}\" use-hash=\"true\" scroll-offset=\"50\">{{menuItem.title}}</a>\n    <ul class=\"nav\">\n      <li ng-repeat=\"subMenuItem in menuItem.subSection\" bs-scrollspy data-target=\"{{subMenuItem.href}}\" data-offset=\"50\"><a ahref=\"{{subMenuItem.href}}\" use-hash=\"true\" scroll-offset=\"50\">{{subMenuItem.title}}</a></li>\n    </ul>\n    <hr ng-if=\"menuItem.separateAfter\" style=\"margin:2px 0\">\n  </li>\n</ul>\n";
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormControlServiceDemoCtrl as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formControlService\">Form Control Service <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/common/FormControlService.js\" target=\"_blank\">FormControlService.js</a>\n    </h1>\n    <code>ngFormLib.controls.common.formControlService</code>\n  </div>\n\n  <p>The Form Control Service service provides common functions used by the form controls, and allows default values for the form controls to be changed from a central place.</p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>The Form Control Service requires the <a ahref=\"#requiredMarker\">RequiredMarker module</a> and the <a href=\"{{mainCtrl.REPO}}src/modules/common\" target=\"_blank\">ngFormLib.common.utility</a> module to be loaded.</p>\n  </div>\n\n  <h2 id=\"formControlServiceOptions\">Options</h2>\n\n  <p>Options can be configured like so:</p>\n  <div class=\"highlight\">\n    <pre><code class=\"js\" highlight-block>angular.module('myApp', ['ngFormLib'])\n  .config(['FormControlServiceProvider', function(FormControlServiceProvider) {\n      FormControlServiceProvider.defaults.select.template = 'path/to/my/template.html'\n  }])</code></pre>\n  </div>\n\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>idPrefix</td>\n          <td>String</td>\n          <td>fpFld</td>\n          <td>The prefix string for generated form-control id values. Generated <code>id</code> values are used\n          when the form-control does not have it's own <code>cid</code> attribute with a non-empty value</td>\n        </tr>\n        <tr>\n          <td>formCheckbox.template</td>\n          <td>URL</td>\n          <td>ngFormLib/controls/formCheckbox/ template/FormCheckboxTemplate.html</td>\n          <td>Template for the <a ahref=\"#formCheckbox\">Form Checkbox</a> control</td>\n        </tr>\n        <tr>\n          <td>formDate.template</td>\n          <td>URL</td>\n          <td>ngFormLib/controls/formDate/ template/FormDateTemplate.html</td>\n          <td>Template for the <a ahref=\"#formDate\">Form Date</a> control</td>\n        </tr>\n        <tr>\n          <td>formInput.template</td>\n          <td>String</td>\n          <td>&lt;div class=\"form-group\"&gt;&lt;label class=\"control-label\"&gt;&lt;/label&gt;&lt;div class=\"control-row\"&gt;&lt;input #type# class=\"form-control\"&gt;&lt;span ng-transclude&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</td>\n          <td>Template for the <a ahref=\"#formInput\">Form Input</a> control. <br>\n          <strong>Note:</strong> The <code>#type#</code> string is replaced with the input's type (text|tel|number|...) prior to the template\n          being compiled. This is due to the <code>type</code> attribute being read-only on an <code>input</code> element (see <a href=\"http://stackoverflow.com/questions/8378563/why-cant-i-change-the-type-of-an-input-element-to-submit\" target=\"_blank\">here</a>)</td>\n        </tr>\n        <tr>\n          <td>formRadioButton.template</td>\n          <td>URL</td>\n          <td>ngFormLib/controls/formRadioButton/ template/FormRadioButtonTemplate.html</td>\n          <td>Template for the <a ahref=\"#formRadioButton\">Form RadioButton</a> control</td>\n        </tr>\n        <tr>\n          <td>formSelect.template</td>\n          <td>URL</td>\n          <td>ngFormLib/controls/formSelect/ template/FormSelectTemplate.html</td>\n          <td>Template for the <a ahref=\"#formSelect\">Form Select</a> control</td>\n        </tr>\n        <tr>\n          <td>requiredMarker.template</td>\n          <td>URL</td>\n          <td>ngFormLib/controls/requiredMarker/ template/RequiredMarker.html</td>\n          <td>Template for the <a ahref=\"#requiredMarker\">Required Marker</a> control</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"bs-docs-section\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formControls\">Form Controls <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/common/\" target=\"_blank\">Form Controls Common</a>\n    </h1>\n    <code>ngFormLib.controls.common</code>\n  </div>\n\n  <p>The Form Controls Common module provides common functions used by the form controls, and allows default values for the form controls to be changed from a central place.</p>\n\n  <h2 id=\"formControlsCommonOptions\">Common Control Options</h2>\n\n  <p>The following options are available for <code>form-checkbox</code>, <code>form-input</code>, <code>form-radio-button</code> and <code>form-select</code>:</p>\n\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports) {
 
 	module.exports = "<tr>\n  <td>uid</td>\n  <td>string</td>\n  <td>generated</td>\n  <td>The control's unique identifier, which is used in the <code>id=\"...\"</code> attribute on the control and to link the label to the form field element.\n    When the form field is inside a repeater, use a variable like <code>uid=\"...{{$index}}\"</code>, so that the control\n    has a page-unique id, which is required to make the control fully accessible.\n    <strong>If the <code>uid</code> is not specified, one will be generated by the formControlService.</strong>\n  </td>\n</tr>\n<tr>\n  <td>name</td>\n  <td>string</td>\n  <td>generated</td>\n  <td>The name of the element, which is used to make form-validation work correctly.\n    Only use an <code>{{interpolationExpression}}</code> inside this attribute when using <code>form-radio</code> buttons inside\n    <code>ng-form</code> inside <code>ng-repeat</code> (<a ahref=\"formDemo4\">see example</a>).\n    <strong>If the <code>name</code> is not specified, one will be generated by the formControlService using the <code>uid</code>.</strong>\n    <p><strong class=\"text-danger\"><code>form-radio</code> controls that are inside a radio-button-group MUST specify this attribute explicitly for the grouping-behaviour to work!</strong></p>\n  </td>\n</tr>\n\n<tr>\n  <td>required</td>\n  <td>expression</td>\n  <td>false</td>\n  <td>An expression that determines the value of <code>ng-required</code>, <code>aria-required</code> and the required indicator on the <code>&lt;label&gt;</code></td>\n</tr>\n<tr>\n  <td>hide-required-indicator</td>\n  <td>expression</td>\n  <td>false</td>\n  <td>An expression that determines whether to show or hide the required indicator</td>\n</tr>\n<tr>\n  <td>label-class</td>\n  <td>CSS class list</td>\n  <td></td>\n  <td>Optional list of CSS classes to apply to the <code>label</code> element</td>\n</tr>\n<tr>\n  <td>label-suffix</td>\n  <td>string</td>\n  <td></td>\n  <td>Optional text to append to a label, but is not displayed when an error message uses the <code>fieldLabel</code> variable.\n    This property is useful to convey formatting information about the field inside the field label, without that information\n    appearing in any error messages.\n  </td>\n</tr>\n\n<tr>\n  <td>hide-label</td>\n  <td>expression</td>\n  <td>false</td>\n  <td>An expression that determines whether to show or hide the label.</td>\n</tr>\n<tr>\n  <td>field-errors</td>\n  <td>object</td>\n  <td></td>\n  <td>A key-value pair object linking an error to a message. The value can be a language-resource-key if `angular-translate` is loaded.</td>\n</tr>\n<tr>\n  <td>text-errors</td>\n  <td>array</td>\n  <td></td>\n  <td>An array of scope-properties to watch for \"truthiness\". E.g. For `text-errors=\"['scopeProp']\"`, the text-value of `scope.scopeProp` will be\n    displayed when the value is \"truthy\" (typically a non empty string).\n    This property is useful for handling error messages returned from calling APIs.\n    The scope value can be a language-resource-key if <code>angular-translate</code> is loaded.</td>\n</tr>\n<tr>\n  <td>ff-ng-model</td>\n  <td>expression</td>\n  <td></td>\n  <td><strong>Required</strong> - the AngularJS <code>ngModel</code> directive, which is applied to the <code>select</code> element.</td>\n</tr>\n<tr>\n  <td>ff-*</td>\n  <td>*</td>\n  <td></td>\n  <td>Additional attributes/directives that are copied onto the <strong>input/select element</strong> can be specified using by prefixing them with <code>ff-</code>. For example <code>ff-size=\"3\"</code>\n    would be compiled to <code>size=\"3\"</code> on the <code>input</code>/<code>select</code> element.</td>\n</tr>\n<tr>\n  <td>template</td>\n  <td>URL</td>\n  <td>See <a ahref=\"#formControlServiceOptions\">Form Controls Service options</a></td>\n  <td>The HTML template to use for the control. The default value can be overridden on the element, or globally by setting the default value in the <a ahref=\"#formControlService\">FormControlService</a></td>\n</tr>\n";
 
 /***/ },
-/* 69 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormControlsDemosController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formDemos\">Demos</h1>\n  </div>\n\n  <h2 id=\"formDemo1\">Standard form</h2>\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"formDemo1\" class=\"form\" novalidate form-submit=\"\">\n      <fieldset>\n        \n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"formDemo1_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"formDemo1_fldTitle\" name=\"formDemo1_fldTitle\" ng-model=\"ctrl.formDemo1.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"formDemo1_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        \n        <div form-input uid=\"formDemo1-fieldName-with-hypens\" label=\"Name\" label-suffix=\"(40 chars)\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo1.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-checkbox uid=\"formDemo1_fld3\" name=\"formDemo1_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo1.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <div form-input uid=\"formDemo1-with.dots\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo1.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo1_fld{{$index}}\" name=\"formDemo1_group1\" ff-ng-model=\"ctrl.formDemo1.group1\" ff-ng-value=\"$index\" required=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo1_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo1\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo2\">Horizontal Form</h2>\n\n  <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-horizontal\"</code>\n    as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo2\" class=\"form form-horizontal\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo2_fld1\" name=\"formDemo2_fld1\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo2.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-select uid=\"formDemo2_fld2-weird.title\" label=\"Common field\" required=\"true\" ff-ng-model=\"ctrl.formDemo2.fld2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formDemo2_fld3\" name=\"formDemo2_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo2.fld2_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <div form-input uid=\"formDemo2_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo2.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo2_fld{{$index}}\" name=\"formDemo2_group1\" ff-ng-model=\"ctrl.formDemo2.group1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo2_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <div class=\"button-row\">\n          <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo2\">Reset</button>\n        </div>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo3\">Inline Form</h2>\n  <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-inline\"</code>\n    as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo3\" class=\"form form-inline\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo3_fld1\" name=\"formDemo3_fld1\" label=\"Nick Name\" hide-label=\"true\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo3.fld1\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" ff-placeholder=\"Enter Nick Name\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-input uid=\"formDemo3_fld4\" label=\"Income\" hide-label=\"true\" required=\"true\" ff-style=\"width:40px\" input-type=\"text\" input-prefix=\"$\" ff-ng-model=\"ctrl.formDemo3.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <div form-select uid=\"formDemo3_fld2\" name=\"formDemo3_fld2\" label=\"Common field\" hide-label=\"true\" required=\"true\" ff-ng-model=\"ctrl.formDemo3.fld2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" placeholder=\"Enter Title\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formDemo3_fld3\" name=\"formDemo3_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo3.fld3\" hide-required-indicator=\"true\" field-errors=\"{required: 'You must agree'}\">I agree</div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <span ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo3_fld{{$index}}\" name=\"formDemo3_group1\" ff-ng-model=\"ctrl.formDemo3.group1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n          </span>\n          <div error-container field-name=\"formDemo3_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo3\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo4\">Form with repeating sections</h2>\n\n  <p>This is probably as complex as it gets - a horizontal-form with a repeating inline-form.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <style>[name=formDemo4] .form-inline .form-group{margin-right:0}[name=formDemo4] .form-inline .control-label{display:none}[name=formDemo4] .form-inline .control-row{width:auto;padding:0;margin-left:15px}[name=formDemo4] .form-inline .form-group-checkbox,[name=formDemo4] .form-inline .form-group-radio{margin-left:0;width:auto;float:none}[name=formDemo4] .form-inline .btn{margin-bottom:15px}</style>\n    <form name=\"formDemo4\" class=\"form form-horizontal\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo4_fld1\" name=\"formDemo4_fld1\" label=\"Last Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo4.name\" ff-maxlength=\"40\" field-errors=\"{required: 'Last name is required'}\"></div>\n\n        <div form-select uid=\"formDemo4_fld2\" name=\"formDemo4_fld2\" label=\"Type\" required=\"true\" placeholder=\"Select Title\" ff-ng-model=\"ctrl.formDemo4.title\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div class=\"form-group\">\n          <label class=\"control-label\">Education History</label>\n\n          <div class=\"control-row\">\n            <div ng-repeat=\"school in ctrl.formDemo4.education\" class=\"form form-inline\" ng-init=\"schoolIndex = $index\">\n              <div ng-form=\"formDemo4_subform\">\n                <div form-input uid=\"formDemo4_subform{{$index}}_fld1\" name=\"formDemo4_subform_fld1\" label=\"School\" hide-label=\"true\" required=\"true\" input-type=\"text\" ff-placeholder=\"School Name\" ff-ng-model=\"school.name\" ff-maxlength=\"30\" ff-style=\"width: 100px\" field-errors=\"{required: 'School name is required'}\"></div>\n\n                <div form-input uid=\"formDemo4_subform{{$index}}_fld4\" label=\"Income\" hide-label=\"true\" required=\"true\" ff-style=\"width:40px\" input-type=\"text\" input-prefix=\"$\" ff-ng-model=\"school.income\" field-errors=\"{required: 'Income is required'}\"></div>\n\n                <div form-select uid=\"formDemo4_subform{{$index}}_fld2\" name=\"formDemo4_subform_fld2\" label=\"Type\" hide-label=\"true\" required=\"true\" placeholder=\"School Type\" ff-ng-model=\"school.type\" ff-ng-options=\"item.label for item in ctrl.schoolData track by item.label\" field-errors=\"{required: 'Type is required'}\"></div>\n\n                <div form-checkbox uid=\"formDemo4_subform{{$index}}_fld3\" name=\"formDemo4_subform_fld3\" required=\"true\" ff-ng-model=\"school.isCoEd\" field-errors=\"{required: 'Uniforms are required'}\">Uniform</div>\n\n\n                <fieldset class=\"form-group form-group-radio\">\n                  <span ng-repeat=\"item in ctrl.titleData\">\n                    <div form-radio-button uid=\"formDemo4_subform{{schoolIndex}}_fld4_{{$index}}\" name=\"formDemo4_subform_group{{schoolIndex}}\" ff-ng-model=\"school.title\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n                  </span>\n                  <div error-container field-name=\"formDemo4_subform_group{{schoolIndex}}\" field-errors=\"{required: 'Please select an option'}\"></div>\n                </fieldset>\n\n                <button type=\"button\" class=\"btn btn-success\" ng-click=\"ctrl.addSchool()\" ng-if=\"$last\">+</button>\n\n              </div>\n            </div>\n          </div>\n        </div>\n\n\n        <div class=\"button-row\">\n          <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo4\">Reset</button>\n        </div>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo5\">Child forms that are conditionally shown</h2>\n\n  <div class=\"callout callout-info\">\n    <h4>Focus management</h4>\n    <p>The default <code>behaviourOnStateChange</code> policy correctly sets the focus to the top-most field that contains an error, making it easy for users to find and fix the problem.</p>\n  </div>\n\n  <div class=\"callout callout-warning\">\n    <h4><code>ng-if</code> versus <code>ng-show/ng-hide</code></h4>\n    <p>Use <code>ng-if</code> instead of <code>ng-show/ng-hide</code> when dynamically showing form elements. <code>ng-show/hide</code> keeps the form field in the DOM\n    which means that the <code>ngModelController</code> of each hidden field is <strong>still attached to the <code>ngModelController</code> of the form</strong>. This\n    causes problems when trying to submit the form, as the form will contain an error, but the field with the error is not visible!</p>\n\n    <p>Using <code>ng-if</code> prevents this issue from occurring, as <code>ng-if</code> removes the hidden form elements from the DOM,\n    which detaches them from the form's <code>ngModelController</code>.</p>\n  </div>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo5\" class=\"form\" novalidate form-submit=\"ctrl.submit()\">\n      <fieldset>\n\n        <div form-checkbox uid=\"formDemo5_toggle\" name=\"formDemo5_toggle\" ff-ng-model=\"ctrl.toggleChildForm\"><strong>Toggle child form</strong></div>\n\n        \n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"formDemo5_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"formDemo5_fldTitle\" name=\"formDemo5_fldTitle\" ng-model=\"ctrl.formDemo5.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"formDemo5_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        <div form-checkbox uid=\"formDemo5_fld3\" name=\"formDemo5_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo5.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <ng-form name=\"formDemo5_subform\" ng-if=\"!ctrl.toggleChildForm\">\n          <div form-input uid=\"formDemo5_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo5.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n        </ng-form>\n\n        \n        <div form-input uid=\"formDemo5_fldName\" name=\"formDemo5_fldName\" label=\"Name\" label-suffix=\"(40 chars)\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo5.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo5_fld{{$index}}\" name=\"formDemo5_group1\" ff-ng-model=\"ctrl.formDemo5.group1\" ff-ng-value=\"$index\" required=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo5_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo5\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n</div>\n";
-
-/***/ },
 /* 70 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"ErrorMessageContainerDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"errorMessageContainer\">Error Message Container <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/errorMessageContainer/ErrorMessageContainer.js\" target=\"_blank\">ErrorMessageContainer.js</a>\n    </h1>\n    <code>ngFormLib.controls.errorMessageContainer</code>\n  </div>\n\n  <p>The Error Message Container is a directive which shows & hides error messages based on the parent-form's policy and the corresponding input-field's state.\n    It links the error message(s) to the field using ARIA attributes. This increases the accessibility of form-elements quite a bit.</p>\n\n  <div class=\"callout callout-info\">\n    <h4>Message translation</h4>\n    <p>Error Message Controller will optionally use the <code>pascalprecht.translate</code> module and the <code>$translate.instant()</code> method to perform translation of error messages,\n      if it has been loaded. See <a href=\"http://angular-translate.github.io/\">Angular Translate</a>.</p>\n  </div>\n\n  <p>Error messages typically have a consistent grammer.\n    <a href=\"http://angular-translate.github.io/\">Angular Translate</a> makes it really easy to provide consistent error\n    syntax for the error messages across your application, with the bonus of providing multi-language support as well.\n    However, you can still use this directive without configuring Angular Translate - the error message strings will be rendered as-is.\n  </p>\n\n  <h2 id=\"errorMessageContainerExamples\">Examples</h2>\n  <p><code>error-message-container</code> was designed to be used by the form controls in this library. However, it is possible to use\n  this directive without using the form controls. A good use case is when dealing with a collection of <code>form-radio-button</code> elements where there is no initial selection, but a selection is required</p>\n  <p>Use <code>error-message-container</code> to show an error message when a validation error occurs.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"errMsgDemo\" class=\"form\" novalidate>\n      <fieldset>\n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"errMsgDemo_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"errMsgDemo_fldTitle\" name=\"errMsgDemo_fldTitle\" ng-model=\"ctrl.errMsgDemo.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"errMsgDemo_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"errMsgDemo_fldName\">Name</label>\n          <div class=\"control-row\">\n            <input type=\"text\" id=\"errMsgDemo_fldName\" name=\"errMsgDemo_fldName\" ng-model=\"ctrl.errMsgDemo.name\" class=\"form-control\" ng-required=\"true\" field-error-controller>\n          </div>\n          <div error-container field-name=\"errMsgDemo_fldName\" field-label=\"custom error label\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}\" text-errors=\"['ctrl.myTextError', 'ctrl.translationKey']\"></div>\n        </div>\n\n        <div form-input uid=\"errMsgDemo_fldName2\" label=\"FIELD.LABEL\" label-suffix=\"FIELD.LABEL_SUFFIX\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo1.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n      </fieldset>\n\n      <button type=\"submit\" class=\"btn btn-primary\" form-submit=\"\">Submit</button>\n      <button type=\"button\" class=\"btn\" form-reset=\"ctrl.errMsgDemo\">Reset</button>\n      <div tabindex=\"0\" class=\"btn\" ng-click=\"ctrl.toggleTextError()\">Toggle text error</div>\n    </form>\n  </div>\n\n  <h2 id=\"errorMessageContainerUsage\">Usage</h2>\n  <p>Add the <code>error-message-container</code> directive to any element, or use one of the form controls (above) which uses <code>error-message-container</code> already.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>field-name</td>\n          <td>string</td>\n          <td></td>\n          <td>The reference to a form-control. The must match the <code>name</code> attribute of the form-control. This property allows the directive to watch the form control and show errors for that form control.</td>\n        </tr>\n        <tr>\n          <td>field-label</td>\n          <td>string</td>\n          <td></td>\n          <td>The label to display when a translated-error message contains <code>{{fieldLabel}}</code>. Relies on the use of the translation service to specify error messages as translation IDs.</td>\n        </tr>\n        <tr>\n          <td>field-errors</td>\n          <td>object</td>\n          <td></td>\n          <td>A key-value pair object linking an error to a message. The value can be a language-resource-key if `angular-translate` is loaded.</td>\n        </tr>\n        <tr>\n          <td>text-errors</td>\n          <td>array</td>\n          <td></td>\n          <td>An array of scope-properties to watch for \"truthiness\". E.g. For `text-errors=\"['scopeProp']\"`, the text-value of `scope.scopeProp` will be\n            displayed when the value is \"truthy\" (typically a non empty string).\n            This property is useful for handling error messages returned from calling APIs.\n            The scope value can be a language-resource-key if <code>angular-translate</code> is loaded.</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormControlsDemosController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formDemos\">Demos</h1>\n  </div>\n\n  <h2 id=\"formDemo1\">Standard form</h2>\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"formDemo1\" class=\"form\" novalidate form-submit=\"\">\n      <fieldset>\n        \n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"formDemo1_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"formDemo1_fldTitle\" name=\"formDemo1_fldTitle\" ng-model=\"ctrl.formDemo1.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"formDemo1_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        \n        <div form-input uid=\"formDemo1-fieldName-with-hypens\" label=\"Name\" label-suffix=\"(40 chars)\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo1.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-checkbox uid=\"formDemo1_fld3\" name=\"formDemo1_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo1.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <div form-input uid=\"formDemo1-with.dots\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo1.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo1_fld{{$index}}\" name=\"formDemo1_group1\" ff-ng-model=\"ctrl.formDemo1.group1\" ff-ng-value=\"$index\" required=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo1_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo1\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo2\">Horizontal Form</h2>\n\n  <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-horizontal\"</code>\n    as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo2\" class=\"form form-horizontal\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo2_fld1\" name=\"formDemo2_fld1\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo2.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-select uid=\"formDemo2_fld2-weird.title\" label=\"Common field\" required=\"true\" ff-ng-model=\"ctrl.formDemo2.fld2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formDemo2_fld3\" name=\"formDemo2_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo2.fld2_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <div form-input uid=\"formDemo2_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo2.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo2_rbfld{{$index}}\" name=\"formDemo2_group1\" ff-ng-model=\"ctrl.formDemo2.group1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo2_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <div class=\"button-row\">\n          <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo2\">Reset</button>\n        </div>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo3\">Inline Form</h2>\n  <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-inline\"</code>\n    as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo3\" class=\"form form-inline\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo3_fld1\" name=\"formDemo3_fld1\" label=\"Nick Name\" hide-label=\"true\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo3.fld1\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" ff-placeholder=\"Enter Nick Name\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-input uid=\"formDemo3_fld4\" label=\"Income\" hide-label=\"true\" required=\"true\" ff-style=\"width:40px\" input-type=\"text\" input-prefix=\"$\" ff-ng-model=\"ctrl.formDemo3.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n\n        <div form-select uid=\"formDemo3_fld2\" name=\"formDemo3_fld2\" label=\"Common field\" hide-label=\"true\" required=\"true\" ff-ng-model=\"ctrl.formDemo3.fld2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" placeholder=\"Enter Title\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formDemo3_fld3\" name=\"formDemo3_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo3.fld3\" hide-required-indicator=\"true\" field-errors=\"{required: 'You must agree'}\">I agree</div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <span ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo3_fld{{$index}}\" name=\"formDemo3_group1\" ff-ng-model=\"ctrl.formDemo3.group1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n          </span>\n          <div error-container field-name=\"formDemo3_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo3\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo4\">Form with repeating sections</h2>\n\n  <p>This is probably as complex as it gets - a horizontal-form with a repeating inline-form.</p>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <style>[name=formDemo4] .form-inline .form-group{margin-right:0}[name=formDemo4] .form-inline .control-label{display:none}[name=formDemo4] .form-inline .control-row{width:auto;padding:0;margin-left:15px}[name=formDemo4] .form-inline .form-group-checkbox,[name=formDemo4] .form-inline .form-group-radio{margin-left:0;width:auto;float:none}[name=formDemo4] .form-inline .btn{margin-bottom:15px}</style>\n    <form name=\"formDemo4\" class=\"form form-horizontal\" novalidate form-submit=\"\">\n      <fieldset>\n\n        <div form-input uid=\"formDemo4_fld1\" name=\"formDemo4_fld1\" label=\"Last Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo4.name\" ff-maxlength=\"40\" field-errors=\"{required: 'Last name is required'}\"></div>\n\n        <div form-select uid=\"formDemo4_fld2\" name=\"formDemo4_fld2\" label=\"Type\" required=\"true\" placeholder=\"Select Title\" ff-ng-model=\"ctrl.formDemo4.title\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div class=\"form-group\">\n          <label class=\"control-label\">Education History</label>\n\n          <div class=\"control-row\">\n            <div ng-repeat=\"school in ctrl.formDemo4.education\" class=\"form form-inline\" ng-init=\"schoolIndex = $index\">\n              <div ng-form=\"formDemo4_subform\">\n                <div form-input uid=\"formDemo4_subform{{$index}}_fld1\" name=\"formDemo4_subform_fld1\" label=\"School\" hide-label=\"true\" required=\"true\" input-type=\"text\" ff-placeholder=\"School Name\" ff-ng-model=\"school.name\" ff-maxlength=\"30\" ff-style=\"width: 100px\" field-errors=\"{required: 'School name is required'}\"></div>\n\n                <div form-input uid=\"formDemo4_subform{{$index}}_fld4\" label=\"Income\" hide-label=\"true\" required=\"true\" ff-style=\"width:40px\" input-type=\"text\" input-prefix=\"$\" ff-ng-model=\"school.income\" field-errors=\"{required: 'Income is required'}\"></div>\n\n                <div form-select uid=\"formDemo4_subform{{$index}}_fld2\" name=\"formDemo4_subform_fld2\" label=\"Type\" hide-label=\"true\" required=\"true\" placeholder=\"School Type\" ff-ng-model=\"school.type\" ff-ng-options=\"item.label for item in ctrl.schoolData track by item.label\" field-errors=\"{required: 'Type is required'}\"></div>\n\n                <div form-checkbox uid=\"formDemo4_subform{{$index}}_fld3\" name=\"formDemo4_subform_fld3\" required=\"true\" ff-ng-model=\"school.isCoEd\" field-errors=\"{required: 'Uniforms are required'}\">Uniform</div>\n\n\n                <fieldset class=\"form-group form-group-radio\">\n                  <span ng-repeat=\"item in ctrl.titleData\">\n                    <div form-radio-button uid=\"formDemo4_subform{{schoolIndex}}_fld4_{{$index}}\" name=\"formDemo4_subform_group{{schoolIndex}}\" ff-ng-model=\"school.title\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator=\"true\">{{item.label}}</div>\n                  </span>\n                  <div error-container field-name=\"formDemo4_subform_group{{schoolIndex}}\" field-errors=\"{required: 'Please select an option'}\"></div>\n                </fieldset>\n\n                <button type=\"button\" class=\"btn btn-success\" ng-click=\"ctrl.addSchool()\" ng-if=\"$last\">+</button>\n\n              </div>\n            </div>\n          </div>\n        </div>\n\n\n        <div class=\"button-row\">\n          <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo4\">Reset</button>\n        </div>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formDemo5\">Child forms that are conditionally shown</h2>\n\n  <div class=\"callout callout-info\">\n    <h4>Focus management</h4>\n    <p>The default <code>behaviourOnStateChange</code> policy correctly sets the focus to the top-most field that contains an error, making it easy for users to find and fix the problem.</p>\n  </div>\n\n  <div class=\"callout callout-warning\">\n    <h4><code>ng-if</code> versus <code>ng-show/ng-hide</code></h4>\n    <p>Use <code>ng-if</code> instead of <code>ng-show/ng-hide</code> when dynamically showing form elements. <code>ng-show/hide</code> keeps the form field in the DOM\n    which means that the <code>ngModelController</code> of each hidden field is <strong>still attached to the <code>ngModelController</code> of the form</strong>. This\n    causes problems when trying to submit the form, as the form will contain an error, but the field with the error is not visible!</p>\n\n    <p>Using <code>ng-if</code> prevents this issue from occurring, as <code>ng-if</code> removes the hidden form elements from the DOM,\n    which detaches them from the form's <code>ngModelController</code>.</p>\n  </div>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n    <form name=\"formDemo5\" class=\"form\" novalidate form-submit=\"ctrl.submit()\">\n      <fieldset>\n\n        <div form-checkbox uid=\"formDemo5_toggle\" name=\"formDemo5_toggle\" ff-ng-model=\"ctrl.toggleChildForm\"><strong>Toggle child form</strong></div>\n\n        \n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"formDemo5_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"formDemo5_fldTitle\" name=\"formDemo5_fldTitle\" ng-model=\"ctrl.formDemo5.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"formDemo5_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        <div form-checkbox uid=\"formDemo5_fld3\" name=\"formDemo5_fld3\" required=\"true\" ff-ng-model=\"ctrl.formDemo5.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <ng-form name=\"formDemo5_subform\" ng-if=\"!ctrl.toggleChildForm\">\n          <div form-input uid=\"formDemo5_fld4\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formDemo5.fld4\" field-errors=\"{required: 'Income is required'}\"></div>\n        </ng-form>\n\n        \n        <div form-input uid=\"formDemo5_fldName\" name=\"formDemo5_fldName\" label=\"Name\" label-suffix=\"(40 chars)\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo5.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n        <fieldset class=\"form-group form-group-radio\">\n          <div ng-repeat=\"item in ctrl.titleData\">\n            <div form-radio-button uid=\"formDemo5_fld{{$index}}\" name=\"formDemo5_group1\" ff-ng-model=\"ctrl.formDemo5.group1\" ff-ng-value=\"$index\" required=\"true\">{{item.label}}</div>\n          </div>\n          <div error-container field-name=\"formDemo5_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n        </fieldset>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n        <button type=\"button\" class=\"btn\" form-reset=\"ctrl.formDemo5\">Reset</button>\n      </fieldset>\n    </form>\n  </div>\n\n</div>\n";
 
 /***/ },
 /* 71 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormCheckboxDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formCheckbox\">Form Checkbox <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formCheckbox/FormCheckbox.js\" target=\"_blank\">FormCheckbox.js</a>\n    </h1>\n    <code>ngFormLib.controls.formCheckbox</code>\n  </div>\n\n  <p>The Form Checkbox directive acts like a macro in that it expands into a <code>&lt;label&gt;</code>,<code>&lt;input type=\"checkbox\"&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>FormCheckbox requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a ahref=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the <a href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formCheckbox/template/FormCheckboxTemplate.html\" target=\"_blank\">FormCheckboxTemplate.html</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"formCheckboxExamples\">Examples</h2>\n  <p>Use <code>form-checkbox</code> to create a complete HTML structure containing a <code>label</code> and <code>input type=\"checkbox\"</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formCheckbox1\" class=\"form\" novalidate form-submit>\n\n      <div form-checkbox uid=\"formCheckbox1_fld1\" name=\"formCheckbox1_fld1\" required=\"true\" ff-ng-model=\"ctrl.data.fld1\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld2\" name=\"formCheckbox1_fld2\" ff-ng-model=\"ctrl.data.fld2\" ff-ng-true-value=\"'dog'\" ff-ng-false-value=\"'cat'\">Optional Checkbox with value: {{ctrl.data.fld2}}</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld3\" name=\"formCheckbox1_fld3\" class=\"image-checkbox\" required=\"true\" field-errors=\"{required: 'You must agree'}\" ff-ng-model=\"ctrl.data.fld3\">Styled accessible checkbox</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld4\" name=\"formCheckbox1_fld4\" class=\"image-checkbox\" ff-ng-disabled=\"ctrl.data.fld3\" ff-ng-model=\"ctrl.data.fld4\">Occassionally disabled checkbox</div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formCheckboxUsage\">Usage</h2>\n  <p>Add the <code>form-check</code> directive to an element, and supply a label as the content of the element (see example above).</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>ff-ng-true-value</td>\n          <td>expression</td>\n          <td></td>\n          <td>The value to use in the model-value when the checkbox is checked.</td>\n        </tr>\n        <tr>\n          <td>ff-ng-false-value</td>\n          <td>expression</td>\n          <td></td>\n          <td>The value to use in the model-value when the checkbox is not checked.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"ErrorMessageContainerDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"errorMessageContainer\">Error Message Container <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/errorMessageContainer/ErrorMessageContainer.js\" target=\"_blank\">ErrorMessageContainer.js</a>\n    </h1>\n    <code>ngFormLib.controls.errorMessageContainer</code>\n  </div>\n\n  <p>The Error Message Container is a directive which shows & hides error messages based on the parent-form's policy and the corresponding input-field's state.\n    It links the error message(s) to the field using ARIA attributes. This increases the accessibility of form-elements quite a bit.</p>\n\n  <div class=\"callout callout-info\">\n    <h4>Message translation</h4>\n    <p>Error Message Controller will optionally use the <code>pascalprecht.translate</code> module and the <code>$translate.instant()</code> method to perform translation of error messages,\n      if it has been loaded. See <a href=\"http://angular-translate.github.io/\">Angular Translate</a>.</p>\n  </div>\n\n  <p>Error messages typically have a consistent grammer.\n    <a href=\"http://angular-translate.github.io/\">Angular Translate</a> makes it really easy to provide consistent error\n    syntax for the error messages across your application, with the bonus of providing multi-language support as well.\n    However, you can still use this directive without configuring Angular Translate - the error message strings will be rendered as-is.\n  </p>\n\n  <h2 id=\"errorMessageContainerExamples\">Examples</h2>\n  <p><code>error-message-container</code> was designed to be used by the form controls in this library. However, it is possible to use\n  this directive without using the form controls. A good use case is when dealing with a collection of <code>form-radio-button</code> elements where there is no initial selection, but a selection is required</p>\n  <p>Use <code>error-message-container</code> to show an error message when a validation error occurs.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"errMsgDemo\" class=\"form\" novalidate>\n      <fieldset>\n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"errMsgDemo_fldTitle\">Title</label>\n          <div class=\"control-row\">\n            <select id=\"errMsgDemo_fldTitle\" name=\"errMsgDemo_fldTitle\" ng-model=\"ctrl.errMsgDemo.title\" ng-options=\"item.label for item in ctrl.titleData track by item.label\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n          </div>\n          <div error-container field-name=\"errMsgDemo_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n        </div>\n\n        <div class=\"form-group\">\n          <label class=\"control-label\" for=\"errMsgDemo_fldName\">Name</label>\n          <div class=\"control-row\">\n            <input type=\"text\" id=\"errMsgDemo_fldName\" name=\"errMsgDemo_fldName\" ng-model=\"ctrl.errMsgDemo.name\" class=\"form-control\" ng-required=\"true\" field-error-controller>\n          </div>\n          <div error-container field-name=\"errMsgDemo_fldName\" field-label=\"custom error label\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}\" text-errors=\"['ctrl.myTextError', 'ctrl.translationKey']\"></div>\n        </div>\n\n        <div form-input uid=\"errMsgDemo_fldName2\" label=\"FIELD.LABEL\" label-suffix=\"FIELD.LABEL_SUFFIX\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formDemo1.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED', pattern: 'Please enter a valid last name'}\"></div>\n\n      </fieldset>\n\n      <button type=\"submit\" class=\"btn btn-primary\" form-submit=\"\">Submit</button>\n      <button type=\"button\" class=\"btn\" form-reset=\"ctrl.errMsgDemo\">Reset</button>\n      <div tabindex=\"0\" class=\"btn\" ng-click=\"ctrl.toggleTextError()\">Toggle text error</div>\n    </form>\n  </div>\n\n  <h2 id=\"errorMessageContainerUsage\">Usage</h2>\n  <p>Add the <code>error-message-container</code> directive to any element, or use one of the form controls (above) which uses <code>error-message-container</code> already.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>field-name</td>\n          <td>string</td>\n          <td></td>\n          <td>The reference to a form-control. The must match the <code>name</code> attribute of the form-control. This property allows the directive to watch the form control and show errors for that form control.</td>\n        </tr>\n        <tr>\n          <td>field-label</td>\n          <td>string</td>\n          <td></td>\n          <td>The label to display when a translated-error message contains <code>{{fieldLabel}}</code>. Relies on the use of the translation service to specify error messages as translation IDs.</td>\n        </tr>\n        <tr>\n          <td>field-errors</td>\n          <td>object</td>\n          <td></td>\n          <td>A key-value pair object linking an error to a message. The value can be a language-resource-key if `angular-translate` is loaded.</td>\n        </tr>\n        <tr>\n          <td>text-errors</td>\n          <td>array</td>\n          <td></td>\n          <td>An array of scope-properties to watch for \"truthiness\". E.g. For `text-errors=\"['scopeProp']\"`, the text-value of `scope.scopeProp` will be\n            displayed when the value is \"truthy\" (typically a non empty string).\n            This property is useful for handling error messages returned from calling APIs.\n            The scope value can be a language-resource-key if <code>angular-translate</code> is loaded.</td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
 /* 72 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormDateDocsController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formDate\">Form Date <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formDate/formDate.js\" target=\"_blank\">FormDate.js</a>\n    </h1>\n    <code>ngFormLib.controls.formDate</code>\n  </div>\n\n  <p>Same as the Form Input directive, but with additional date validation. The date validation is DD/MM/YYYY-centric. Feel free to refactor it to be more international-friendly.</p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Form Date requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a href=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the <a href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formDate/template/FormDateInputTemplate.html\" target=\"_blank\">FormDateInputTemplate.html</a> template to be loaded.\n      Additionally, if the <code>mgcrea.ngStrap.datepicker</code> module is loaded (as part of <a href=\"http://http://mgcrea.github.io/angular-strap\" target=\"_blank\">AngularStrap</a>, then a calendar control will be displayed.\n      See the <a href=\"http://mgcrea.github.io/angular-strap/#/datepickers\">Date Picker API</a> for more options.\n    </p>\n  </div>\n\n  <h2 id=\"formDateExamples\">Examples</h2>\n  <p>Use <code>form-date</code> to create a complete HTML structure containing a <code>label</code> and <code>input</code> element that reacts to the state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formDate1\" class=\"form\" novalidate form-submit>\n\n      <div form-date uid=\"formDate1_fld1\" label=\"Date field\" required=\"true\" ff-ng-model=\"ctrl.date1\" field-hint=\"OTHER.HINT\" ff-min-date=\"07/07/2010\" ff-max-date=\"today\" ff-date-type=\"string\" ff-date-format=\"dd/MM/yyyy\" ff-model-date-format=\"dd/MM/yyyy\" field-errors=\"{required: 'Date is required', dateFormat: 'Date must be correct format',\n            minDate: 'Must be greater than 07/07/2010', maxDate: 'Date must not be greater than today'}\"></div>\n\n      <div>{{ctrl.date1}}</div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formDateUsage\">Usage</h2>\n  <p>Add the <code>form-date</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>ff-min-date</td>\n          <td>string</td>\n          <td></td>\n          <td>Minimum valid date. A string representation of a date in dd/mm/yyyy format, or the string 'today'</td>\n        </tr>\n        <tr>\n          <td>ff-max-date</td>\n          <td>string</td>\n          <td></td>\n          <td>Maximum valid date. A string representation of a date in dd/mm/yyyy format, or the string 'today'</td>\n        </tr>\n        <tr>\n          <td>field-hint</td>\n          <td>string</td>\n          <td></td>\n          <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field. This string can be a language-resource-key.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormCheckboxDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formCheckbox\">Form Checkbox <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formCheckbox/FormCheckbox.js\" target=\"_blank\">FormCheckbox.js</a>\n    </h1>\n    <code>ngFormLib.controls.formCheckbox</code>\n  </div>\n\n  <p>The Form Checkbox directive acts like a macro in that it expands into a <code>&lt;label&gt;</code>,<code>&lt;input type=\"checkbox\"&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>FormCheckbox requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a ahref=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the <a href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formCheckbox/template/FormCheckboxTemplate.html\" target=\"_blank\">FormCheckboxTemplate.html</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"formCheckboxExamples\">Examples</h2>\n  <p>Use <code>form-checkbox</code> to create a complete HTML structure containing a <code>label</code> and <code>input type=\"checkbox\"</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formCheckbox1\" class=\"form\" novalidate form-submit>\n\n      <div form-checkbox uid=\"formCheckbox1_fld1\" name=\"formCheckbox1_fld1\" required=\"true\" ff-ng-model=\"ctrl.data.fld1\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld2\" name=\"formCheckbox1_fld2\" ff-ng-model=\"ctrl.data.fld2\" ff-ng-true-value=\"'dog'\" ff-ng-false-value=\"'cat'\">Optional Checkbox with value: {{ctrl.data.fld2}}</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld3\" name=\"formCheckbox1_fld3\" class=\"image-checkbox\" required=\"true\" field-errors=\"{required: 'You must agree'}\" ff-ng-model=\"ctrl.data.fld3\">Styled accessible checkbox</div>\n\n      <div form-checkbox uid=\"formCheckbox1_fld4\" name=\"formCheckbox1_fld4\" class=\"image-checkbox\" ff-ng-disabled=\"ctrl.data.fld3\" ff-ng-model=\"ctrl.data.fld4\">Occassionally disabled checkbox</div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formCheckboxUsage\">Usage</h2>\n  <p>Add the <code>form-check</code> directive to an element, and supply a label as the content of the element (see example above).</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>ff-ng-true-value</td>\n          <td>expression</td>\n          <td></td>\n          <td>The value to use in the model-value when the checkbox is checked.</td>\n        </tr>\n        <tr>\n          <td>ff-ng-false-value</td>\n          <td>expression</td>\n          <td></td>\n          <td>The value to use in the model-value when the checkbox is not checked.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
 /* 73 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formInput\">Form Input <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formInput/FormInput.js\" target=\"_blank\">FormInput.js</a>\n    </h1>\n    <code>ngFormLib.controls.formInput</code>\n  </div>\n\n  <p>The Form Input directive acts like a macro in that it expands into a <code>&lt;label&gt;</code><code>&lt;input&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Form Input requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a href=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> to be loaded.</p>\n  </div>\n\n  <h2 id=\"formInputExamples\">Examples</h2>\n  <p>Use <code>form-input</code> to create a complete HTML structure containing a <code>label</code> and <code>select</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formInput1\" class=\"form\" novalidate form-submit>\n\n      <div form-input uid=\"formInput1_fld1\" name=\"formInput1_fld1\" label=\"Text type field\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput1.fld1\" field-hint=\"{{'OTHER.HINT' | translate}}\" field-errors=\"{required: 'Title is required'}\" placeholder=\"Placeholder text\"></div>\n\n      <div form-input uid=\"formInput1_fld2\" name=\"formInput1_fld2\" label=\"Date type field\" required=\"false\" input-type=\"date\" ff-ng-model=\"ctrl.formInput1.fld2\"></div>\n\n      <div form-input uid=\"formInput1_fld3\" name=\"formInput1_fld3\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formInput1.fld3\" field-errors=\"{required: 'Income is required'}\"></div>\n\n      \n      <div form-input label=\"Generated id field\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput1.fld4\" placeholder=\"This field has a generated name and id\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formInputUsage\">Usage</h2>\n  <p>Add the <code>form-input</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>field-hint</td>\n          <td>string</td>\n          <td></td>\n          <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field.</td>\n        </tr>\n        <tr>\n          <td>input-prefix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups\" target=\"_blank\">input group</a> around the input\n            element and displays the <strong>input-prefix</strong> string inside a <code>&lt;span class=\"input-group-addon\"&gt;&lt;/span&gt;</code> element, which appears <strong>before</strong> the <code>input</code> element.\n          </td>\n        </tr>\n        <tr>\n          <td>input-suffix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups\" target=\"_blank\">input group</a> around the input\n            element and displays the <strong>input-suffix</strong> string inside a <code>&lt;span class=\"input-group-addon\"&gt;&lt;/span&gt;</code> element, which appears <strong>after</strong> the <code>input</code> element.\n          </td>\n        </tr>\n        <tr>\n          <td>placeholder</td>\n          <td>string</td>\n          <td></td>\n          <td>Placeholder text that appears inside the input element when there is no existing value. Alias for <code>ff-placeholder</code>.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormDateDocsController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formDate\">Form Date <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formDate/formDate.js\" target=\"_blank\">FormDate.js</a>\n    </h1>\n    <code>ngFormLib.controls.formDate</code>\n  </div>\n\n  <p>Same as the Form Input directive, but with additional date validation. The date validation is DD/MM/YYYY-centric. Feel free to refactor it to be more international-friendly.</p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Form Date requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a href=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the <a href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formDate/template/FormDateInputTemplate.html\" target=\"_blank\">FormDateInputTemplate.html</a> template to be loaded.\n      Additionally, if the <code>mgcrea.ngStrap.datepicker</code> module is loaded (as part of <a href=\"http://http://mgcrea.github.io/angular-strap\" target=\"_blank\">AngularStrap</a>, then a calendar control will be displayed.\n      See the <a href=\"http://mgcrea.github.io/angular-strap/#/datepickers\">Date Picker API</a> for more options.\n    </p>\n  </div>\n\n  <h2 id=\"formDateExamples\">Examples</h2>\n  <p>Use <code>form-date</code> to create a complete HTML structure containing a <code>label</code> and <code>input</code> element that reacts to the state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formDate1\" class=\"form\" novalidate form-submit>\n\n      <div form-date uid=\"formDate1_fld1\" label=\"Date field\" required=\"true\" ff-ng-model=\"ctrl.date1\" field-hint=\"OTHER.HINT\" ff-min-date=\"07/07/2010\" ff-max-date=\"today\" ff-date-type=\"string\" ff-date-format=\"dd/MM/yyyy\" ff-model-date-format=\"dd/MM/yyyy\" field-errors=\"{required: 'Date is required', dateFormat: 'Date must be correct format',\n            minDate: 'Must be greater than 07/07/2010', maxDate: 'Date must not be greater than today'}\"></div>\n\n      <div>{{ctrl.date1}}</div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formDateUsage\">Usage</h2>\n  <p>Add the <code>form-date</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>ff-min-date</td>\n          <td>string</td>\n          <td></td>\n          <td>Minimum valid date. A string representation of a date in dd/mm/yyyy format, or the string 'today'</td>\n        </tr>\n        <tr>\n          <td>ff-max-date</td>\n          <td>string</td>\n          <td></td>\n          <td>Maximum valid date. A string representation of a date in dd/mm/yyyy format, or the string 'today'</td>\n        </tr>\n        <tr>\n          <td>field-hint</td>\n          <td>string</td>\n          <td></td>\n          <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field. This string can be a language-resource-key.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
 /* 74 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormRadioButtonDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formRadioButton\">Form RadioButton <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formRadioButton/FormRadioButton.js\" target=\"_blank\">FormRadioButton.js</a>\n    </h1>\n    <code>ngFormLib.controls.formRadioButton</code>\n  </div>\n\n  <p>Form RadioButton is a directive that is a wrapper for a <code>label</code>,<code>input type=\"radio\"</code> and some auxillary HTML elements, designed to work within Bootstrap form-structures.</p>\n\n  <p>It works this way because the <code>label</code>,<code>input type=\"radio\"</code> and error-display elements are inter-related.\n    For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Form RadioButton requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a ahref=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the\n      <a href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formRadioButton/template/formRadioButtonTemplate.html\" target=\"_blank\">FormRadioButtonTemplate.html</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"formRadioButtonExamples\">Examples</h2>\n  <p>Use <code>form-radio-button</code> to create a complete HTML structure containing a <code>label</code> and <code>input type=\"radio\"</code> element that reacts to the state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formRadio1\" class=\"form\" novalidate form-submit>\n\n      \n      <fieldset class=\"form-group form-group-radio\">\n        <div ng-repeat=\"item in ctrl.titleData\">\n          <div form-radio-button uid=\"formRadio1_fld{{$index}}\" name=\"formRadio1_group1\" ff-ng-model=\"ctrl.data.radioVal1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator>{{item.label}}</div>\n        </div>\n        <div error-container field-name=\"formRadio1_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n      </fieldset>\n\n      <p>Selected value: {{ctrl.data1.radioVal1}}</p>\n\n      \n      <fieldset class=\"form-group form-group-radio\">\n        <div ng-repeat=\"item in ctrl.titleData\">\n          <div form-radio-button uid=\"formRadio1_fld2{{$index}}\" name=\"formRadio1_group2\" ff-ng-model=\"ctrl.data.radioVal2\" ff-ng-value=\"$index\">{{item.label}}</div>\n        </div>\n      </fieldset>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n      <button type=\"button\" class=\"btn\" form-reset=\"ctrl.data\">Reset</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formRadioButtonUsage\">Usage</h2>\n  <p>Add the <code>form-radio-button</code> directive to an element, and supply a label as the content of the element (see example above).</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>ff-ng-value</td>\n        <td>expression</td>\n        <td></td>\n        <td>The value to use in the model-value when the radio-button is selected.</td>\n      </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formInput\">Form Input <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formInput/FormInput.js\" target=\"_blank\">FormInput.js</a>\n    </h1>\n    <code>ngFormLib.controls.formInput</code>\n  </div>\n\n  <p>The Form Input directive acts like a macro in that it expands into a <code>&lt;label&gt;</code><code>&lt;input&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Form Input requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a href=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> to be loaded.</p>\n  </div>\n\n  <h2 id=\"formInputExamples\">Examples</h2>\n  <p>Use <code>form-input</code> to create a complete HTML structure containing a <code>label</code> and <code>select</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formInput1\" class=\"form\" novalidate form-submit>\n\n      <div form-input uid=\"formInput1_fld1\" name=\"formInput1_fld1\" label=\"Text type field\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput1.fld1\" field-hint=\"{{'OTHER.HINT' | translate}}\" field-errors=\"{required: 'Title is required'}\" placeholder=\"Placeholder text\"></div>\n\n      <div form-input uid=\"formInput1_fld2\" name=\"formInput1_fld2\" label=\"Date type field\" required=\"false\" input-type=\"date\" ff-ng-model=\"ctrl.formInput1.fld2\"></div>\n\n      <div form-input uid=\"formInput1_fld3\" name=\"formInput1_fld3\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formInput1.fld3\" field-errors=\"{required: 'Income is required'}\"></div>\n\n      \n      <div form-input label=\"Generated id field\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput1.fld4\" placeholder=\"This field has a generated name and id\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formInputUsage\">Usage</h2>\n  <p>Add the <code>form-input</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>field-hint</td>\n          <td>string</td>\n          <td></td>\n          <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field.</td>\n        </tr>\n        <tr>\n          <td>input-prefix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups\" target=\"_blank\">input group</a> around the input\n            element and displays the <strong>input-prefix</strong> string inside a <code>&lt;span class=\"input-group-addon\"&gt;&lt;/span&gt;</code> element, which appears <strong>before</strong> the <code>input</code> element.\n          </td>\n        </tr>\n        <tr>\n          <td>input-suffix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups\" target=\"_blank\">input group</a> around the input\n            element and displays the <strong>input-suffix</strong> string inside a <code>&lt;span class=\"input-group-addon\"&gt;&lt;/span&gt;</code> element, which appears <strong>after</strong> the <code>input</code> element.\n          </td>\n        </tr>\n        <tr>\n          <td>placeholder</td>\n          <td>string</td>\n          <td></td>\n          <td>Placeholder text that appears inside the input element when there is no existing value. Alias for <code>ff-placeholder</code>.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
 /* 75 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormResetDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formReset\">Form Reset <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formReset/FormReset.js\" target=\"_blank\">FormReset.js</a>\n    </h1>\n    <code>ngFormLib.controls.formReset</code>\n  </div>\n\n  <p>Form Reset is a directive which resets each form-field to it's initial state, by copying the initial state of the form's data-model.<br/>\n    This requires every form controls' <code>ng-model</code> expression to refer to a common scope-object.\n  </p>\n\n  <h2 id=\"formResetExamples\">Examples</h2>\n  <p>Add <code>form-reset</code> directive to any <code>button</code> element inside a form.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"formReset\" class=\"form\" novalidate form-submit=\"ctrl.callWhenValid()\">\n\n      <div form-input uid=\"formReset_fldName\" name=\"formReset_fldName\" label=\"Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.data.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <div form-input uid=\"formReset_fldNickName\" name=\"formReset_fldNickName\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.data.nickName\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Nick name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <div form-select uid=\"formReset_fldTitle\" name=\"formReset_fldTitle\" label=\"Title with default value\" required=\"true\" ff-ng-model=\"ctrl.data.title\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n      <div form-select uid=\"formReset_fldTitle2\" name=\"formReset_fldTitle2\" label=\"Title with no default value\" required=\"true\" ff-ng-model=\"ctrl.data.title2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n      <div form-select uid=\"formReset_fldTitle3\" name=\"formReset_fldTitle3\" label=\"Title with placeholder\" required=\"true\" placeholder=\"Select title\" ff-ng-model=\"ctrl.data.title3\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n      <button type=\"button\" class=\"btn\" form-reset=\"ctrl.data\">Reset</button>\n    </form>\n\n  </div>\n\n  <div class=\"callout callout-danger\">\n    <h4>ngOptions <strong>must</strong> use 'track by'</h4>\n    <p>Due to the way <code>form-reset</code> works (copying the data-object used by the controls, then changing the data-object back to the original value),\n    <code>select</code> elements which use <code>ng-options</code> <strong>MUST</strong> use the <code>ng-options=\"... track by ...\"</code> variant\n    of the syntax, if the <code>select</code> element has an initial value. See the example above.</p>\n  </div>\n\n  <h2 id=\"formResetUsage\">Usage</h2>\n  <p>Add the <code>form-reset</code> directive to a <code>button</code> element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>form-reset</td>\n        <td>expression</td>\n        <td></td>\n        <td><strong>Required </strong>This expression should represent the parent scope-model-object that the form controls bind to.\n          For example, a Customer Profile form should have a set of form controls that bind to 'myObject.&lt;name|age|birthDate|...&gt;'.\n          In this example, use <code>form-reset=\"myObject\"</code>.</td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormRadioButtonDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formRadioButton\">Form RadioButton <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formRadioButton/FormRadioButton.js\" target=\"_blank\">FormRadioButton.js</a>\n    </h1>\n    <code>ngFormLib.controls.formRadioButton</code>\n  </div>\n\n  <p>Form RadioButton is a directive that is a wrapper for a <code>label</code>,<code>input type=\"radio\"</code> and some auxillary HTML elements, designed to work within Bootstrap form-structures.</p>\n\n  <p>It works this way because the <code>label</code>,<code>input type=\"radio\"</code> and error-display elements are inter-related.\n    For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Form RadioButton requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a ahref=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the\n      <a href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formRadioButton/template/formRadioButtonTemplate.html\" target=\"_blank\">FormRadioButtonTemplate.html</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"formRadioButtonExamples\">Examples</h2>\n  <p>Use <code>form-radio-button</code> to create a complete HTML structure containing a <code>label</code> and <code>input type=\"radio\"</code> element that reacts to the state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formRadio1\" class=\"form\" novalidate form-submit>\n\n      \n      <fieldset class=\"form-group form-group-radio\">\n        <div ng-repeat=\"item in ctrl.titleData\">\n          <div form-radio-button uid=\"formRadio1_fld{{$index}}\" name=\"formRadio1_group1\" ff-ng-model=\"ctrl.data.radioVal1\" ff-ng-value=\"$index\" required=\"true\" hide-required-indicator>{{item.label}}</div>\n        </div>\n        <div error-container field-name=\"formRadio1_group1\" field-errors=\"{required: 'Please select one of the above options'}\"></div>\n      </fieldset>\n\n      <p>Selected value: {{ctrl.data1.radioVal1}}</p>\n\n      \n      <fieldset class=\"form-group form-group-radio\">\n        <div ng-repeat=\"item in ctrl.titleData\">\n          <div form-radio-button uid=\"formRadio1_fld2{{$index}}\" name=\"formRadio1_group2\" ff-ng-model=\"ctrl.data.radioVal2\" ff-ng-value=\"$index\">{{item.label}}</div>\n        </div>\n      </fieldset>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n      <button type=\"button\" class=\"btn\" form-reset=\"ctrl.data\">Reset</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formRadioButtonUsage\">Usage</h2>\n  <p>Add the <code>form-radio-button</code> directive to an element, and supply a label as the content of the element (see example above).</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>ff-ng-value</td>\n        <td>expression</td>\n        <td></td>\n        <td>The value to use in the model-value when the radio-button is selected.</td>\n      </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
 /* 76 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormSelectDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formSelect\">Form Select <a class=\"small\" href=\"{{mainCtrl.REPO}}/src/modules/ngFormLib/controls/formSelect/FormSelect.js\" target=\"_blank\">FormSelect.js</a>\n    </h1>\n    <code>ngFormLib.controls.formSelect</code>\n  </div>\n\n  <p>The Form Select directive acts like a macro in that it expands into a <code>&lt;label&gt;</code><code>&lt;select&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>FormSelect requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a href=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the <a href=\"{{mainCtrl.REPO}}/src/modules/ngFormLib/controls/formSelect/template/FormSelectTemplate.html\" target=\"_blank\">FormSelectTemplate.html</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"formSelectExamples\">Examples</h2>\n  <p>Use <code>form-select</code> to create a complete HTML structure containing a <code>label</code> and <code>select</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formFormSelect\" class=\"form\" novalidate form-submit>\n\n      <div form-select uid=\"formFormSelect_fldDemo1\" name=\"formFormSelect_fldDemo1\" label=\"Common field\" required=\"true\" ff-ng-model=\"ctrl.data.demo1\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n      <div form-select uid=\"formFormSelect_fldDemo2\" name=\"formFormSelect_fldDemo2\" label=\"Field with placeholder\" required=\"false\" ff-ng-model=\"ctrl.data.demo2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" placeholder=\"{{'OTHER.PLACEHOLDER' | translate}}\"></div>\n\n      <div form-select uid=\"formFormSelect_fldDemo3\" name=\"formFormSelect_fldDemo3\" label=\"{{'FIELD.TITLE' | translate}}\" required=\"false\" ff-ng-model=\"ctrl.data.demo3\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-hint=\"OTHER.HINT\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n      <button type=\"button\" class=\"btn\" form-reset=\"ctrl.data\">Reset</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formSelectUsage\">Usage</h2>\n  <p>Add the <code>form-select</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>field-hint</td>\n          <td>string</td>\n          <td></td>\n          <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field. This string can be a language-resource-key.</td>\n        </tr>\n        <tr>\n          <td>placeholder</td>\n          <td>string</td>\n          <td></td>\n          <td>Text to display when there is no initial value.</td>\n        </tr>\n        <tr>\n          <td>ff-ng-options</td>\n          <td>expression</td>\n          <td></td>\n          <td><strong>Required</strong> - the AngularJS <code>ngOptions</code> directive, which is applied to the <code>select</code> element.\n          Note that the 'track by' syntax is required in this expression for the control to work correctly with the <code>form-reset</code> directive.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormResetDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formReset\">Form Reset <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formReset/FormReset.js\" target=\"_blank\">FormReset.js</a>\n    </h1>\n    <code>ngFormLib.controls.formReset</code>\n  </div>\n\n  <p>Form Reset is a directive which resets each form-field to it's initial state, by copying the initial state of the form's data-model.<br/>\n    This requires every form controls' <code>ng-model</code> expression to refer to a common scope-object.\n  </p>\n\n  <h2 id=\"formResetExamples\">Examples</h2>\n  <p>Add <code>form-reset</code> directive to any <code>button</code> element inside a form.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"formReset\" class=\"form\" novalidate form-submit=\"ctrl.callWhenValid()\">\n\n      <div form-input uid=\"formReset_fldName\" name=\"formReset_fldName\" label=\"Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.data.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <div form-input uid=\"formReset_fldNickName\" name=\"formReset_fldNickName\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.data.nickName\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Nick name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <div form-select uid=\"formReset_fldTitle\" name=\"formReset_fldTitle\" label=\"Title with default value\" required=\"true\" ff-ng-model=\"ctrl.data.title\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n      <div form-select uid=\"formReset_fldTitle2\" name=\"formReset_fldTitle2\" label=\"Title with no default value\" required=\"true\" ff-ng-model=\"ctrl.data.title2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n      <div form-select uid=\"formReset_fldTitle3\" name=\"formReset_fldTitle3\" label=\"Title with placeholder\" required=\"true\" placeholder=\"Select title\" ff-ng-model=\"ctrl.data.title3\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n      <button type=\"button\" class=\"btn\" form-reset=\"ctrl.data\">Reset</button>\n    </form>\n\n  </div>\n\n  <div class=\"callout callout-danger\">\n    <h4>ngOptions <strong>must</strong> use 'track by'</h4>\n    <p>Due to the way <code>form-reset</code> works (copying the data-object used by the controls, then changing the data-object back to the original value),\n    <code>select</code> elements which use <code>ng-options</code> <strong>MUST</strong> use the <code>ng-options=\"... track by ...\"</code> variant\n    of the syntax, if the <code>select</code> element has an initial value. See the example above.</p>\n  </div>\n\n  <h2 id=\"formResetUsage\">Usage</h2>\n  <p>Add the <code>form-reset</code> directive to a <code>button</code> element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>form-reset</td>\n        <td>expression</td>\n        <td></td>\n        <td><strong>Required </strong>This expression should represent the parent scope-model-object that the form controls bind to.\n          For example, a Customer Profile form should have a set of form controls that bind to 'myObject.&lt;name|age|birthDate|...&gt;'.\n          In this example, use <code>form-reset=\"myObject\"</code>.</td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n\n</div>\n";
 
 /***/ },
 /* 77 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormSubmitDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formSubmit\">Form Submit <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formSubmit/FormSubmit.js\" target=\"_blank\">FormSubmit.js</a>\n    </h1>\n    <code>ngFormLib.controls.formSubmit</code>\n  </div>\n\n  <p>Form Submit is a directive which can contain an expression to execute <strong>when the form is valid</strong>.<br/>\n    This directive is useful when you need to execute a function on the <code>$scope</code> once the form data has been successfully validated.\n    The function would typically do some minor data-transformation on (a copy of) the form's data before sending the data to a service for further processing.\n  </p>\n\n  <h2 id=\"formSubmitExamples\">Examples</h2>\n  <p>Add <code>form-submit</code> directive to any form element <strong>or</strong> to any button inside a form.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formSubmit\" class=\"form\" novalidate form-submit=\"ctrl.callWhenValid()\">\n      \n      <div form-input uid=\"formSubmit_fldName\" name=\"formSubmit_fldName\" label=\"Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.data.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <input type=\"submit\" class=\"btn\" value=\"Input type=submit\">\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n      <button type=\"button\" class=\"btn\">Non-submit button</button>\n    </form>\n\n    <hr>\n\n    \n    <form name=\"formSubmit2\" class=\"form\" novalidate>\n      \n      <div form-input uid=\"formSubmit2_fldNickName\" name=\"formSubmit2_fldNickName\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.data.nickName\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <input type=\"submit\" class=\"btn\" value=\"Input type=submit\">\n      <button type=\"submit\" class=\"btn btn-primary\" form-submit=\"ctrl.callWhenValid()\">Submit button with directive</button>\n      <button type=\"button\" class=\"btn\" form-submit=\"ctrl.callWhenValid()\">Non-submit button with directive</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formSubmitUsage\">Usage</h2>\n  <p>Add the <code>form-submit</code> directive to a <code>form</code> or <code>button</code> element, with a value that is a scope-expression.</p>\n\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormSelectDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formSelect\">Form Select <a class=\"small\" href=\"{{mainCtrl.REPO}}/src/modules/ngFormLib/controls/formSelect/FormSelect.js\" target=\"_blank\">FormSelect.js</a>\n    </h1>\n    <code>ngFormLib.controls.formSelect</code>\n  </div>\n\n  <p>The Form Select directive acts like a macro in that it expands into a <code>&lt;label&gt;</code><code>&lt;select&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>FormSelect requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a href=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> and the <a href=\"{{mainCtrl.REPO}}/src/modules/ngFormLib/controls/formSelect/template/FormSelectTemplate.html\" target=\"_blank\">FormSelectTemplate.html</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"formSelectExamples\">Examples</h2>\n  <p>Use <code>form-select</code> to create a complete HTML structure containing a <code>label</code> and <code>select</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formFormSelect\" class=\"form\" novalidate form-submit>\n\n      <div form-select uid=\"formFormSelect_fldDemo1\" name=\"formFormSelect_fldDemo1\" label=\"Common field\" required=\"true\" ff-ng-model=\"ctrl.data.demo1\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n      <div form-select uid=\"formFormSelect_fldDemo2\" name=\"formFormSelect_fldDemo2\" label=\"Field with placeholder\" required=\"false\" ff-ng-model=\"ctrl.data.demo2\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" placeholder=\"{{'OTHER.PLACEHOLDER' | translate}}\"></div>\n\n      <div form-select uid=\"formFormSelect_fldDemo3\" name=\"formFormSelect_fldDemo3\" label=\"{{'FIELD.TITLE' | translate}}\" required=\"false\" ff-ng-model=\"ctrl.data.demo3\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-hint=\"OTHER.HINT\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n      <button type=\"button\" class=\"btn\" form-reset=\"ctrl.data\">Reset</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formSelectUsage\">Usage</h2>\n  <p>Add the <code>form-select</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>field-hint</td>\n          <td>string</td>\n          <td></td>\n          <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field. This string can be a language-resource-key.</td>\n        </tr>\n        <tr>\n          <td>placeholder</td>\n          <td>string</td>\n          <td></td>\n          <td>Text to display when there is no initial value.</td>\n        </tr>\n        <tr>\n          <td>ff-ng-options</td>\n          <td>expression</td>\n          <td></td>\n          <td><strong>Required</strong> - the AngularJS <code>ngOptions</code> directive, which is applied to the <code>select</code> element.\n          Note that the 'track by' syntax is required in this expression for the control to work correctly with the <code>form-reset</code> directive.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
 /* 78 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"RequiredMarkerDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"requiredMarker\">Required Marker <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/requiredMarker/RequiredMarker.js\" target=\"_blank\">RequiredMarker.js</a>\n    </h1>\n    <code>ngFormLib.controls.requiredMarker</code>\n  </div>\n\n  <p>Required Marker is a small directive which emits HTML which can be styled to display a symbol/content to indicate that a form-field is required.\n    The default template makes the marker accessible by hiding the element from a screen reader and reading out 'required' instead.</p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Required Marker requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"requiredMarkerExamples\">Examples</h2>\n  <p>Use <code>required-marker</code> to add an indicator inside a <code>label</code> element.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formRequiredMarker\" class=\"form\" novalidate form-submit>\n\n      \n      <div class=\"form-group\">\n        <label for=\"formRequiredMarker_fldTitle\">My field<span required-marker></span></label>\n        <div class=\"control-row\">\n          <select uid=\"formRequiredMarker_fldTitle\" name=\"formRequiredMarker_fldTitle\" ng-model=\"ctrl.data.title\" ng-options=\"item.label for item in ctrl.titleData\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n        </div>\n        <div error-container field-name=\"formRequiredMarker_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n      </div>\n\n\n      \n      <div class=\"form-group\">\n        <label for=\"formRequiredMarker_fldTitle2\">Optionally required field</label><span required-marker hide=\"ctrl.data.title.label === 'Mr'\"></span>\n        <div class=\"control-row\">\n          <select uid=\"formRequiredMarker_fldTitle2\" name=\"formRequiredMarker_fldTitle2\" ng-model=\"ctrl.data.title2\" ng-options=\"item.label for item in ctrl.titleData\" class=\"form-control\" ng-required=\"ctrl.data.title.label !== 'Mr'\" field-error-controller></select>\n        </div>\n        <div error-container field-name=\"formRequiredMarker_fldTitle2\" field-errors=\"{required: 'Please select a title'}\"></div>\n      </div>\n\n\n      \n      <div form-input uid=\"formRequiredMarker_fldName\" name=\"formRequiredMarker_fldName\" label=\"Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput.demo1\" field-errors=\"{required: 'Name is required'}\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"requiredMarkerUsage\">Usage</h2>\n  <p>Add the <code>required-marker</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>hide</td>\n        <td>expression</td>\n        <td>false</td>\n        <td>A scope-expression which causes the required marker to appear (false) or disappear (true)</td>\n      </tr>\n      <tr>\n        <td>template</td>\n        <td>URL</td>\n        <td>ngFormLib/controls/requiredMarker/template/RequiredMarkerTemplate.html</td>\n        <td>The HTML template to use for the control. The default value can be overridden on the element, or globally by setting the default value in the <a ahref=\"#formControlService\">formControlService</a></td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormSubmitDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formSubmit\">Form Submit <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formSubmit/FormSubmit.js\" target=\"_blank\">FormSubmit.js</a>\n    </h1>\n    <code>ngFormLib.controls.formSubmit</code>\n  </div>\n\n  <p>Form Submit is a directive which can contain an expression to execute <strong>when the form is valid</strong>.<br/>\n    This directive is useful when you need to execute a function on the <code>$scope</code> once the form data has been successfully validated.\n    The function would typically do some minor data-transformation on (a copy of) the form's data before sending the data to a service for further processing.\n  </p>\n\n  <h2 id=\"formSubmitExamples\">Examples</h2>\n  <p>Add <code>form-submit</code> directive to any form element <strong>or</strong> to any button inside a form.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formSubmit\" class=\"form\" novalidate form-submit=\"ctrl.callWhenValid()\">\n      \n      <div form-input uid=\"formSubmit_fldName\" name=\"formSubmit_fldName\" label=\"Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.data.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <input type=\"submit\" class=\"btn\" value=\"Input type=submit\">\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n      <button type=\"button\" class=\"btn\">Non-submit button</button>\n    </form>\n\n    <hr>\n\n    \n    <form name=\"formSubmit2\" class=\"form\" novalidate>\n      \n      <div form-input uid=\"formSubmit2_fldNickName\" name=\"formSubmit2_fldNickName\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.data.nickName\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <input type=\"submit\" class=\"btn\" value=\"Input type=submit\">\n      <button type=\"submit\" class=\"btn btn-primary\" form-submit=\"ctrl.callWhenValid()\">Submit button with directive</button>\n      <button type=\"button\" class=\"btn\" form-submit=\"ctrl.callWhenValid()\">Non-submit button with directive</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formSubmitUsage\">Usage</h2>\n  <p>Add the <code>form-submit</code> directive to a <code>form</code> or <code>button</code> element, with a value that is a scope-expression.</p>\n\n</div>\n";
 
 /***/ },
 /* 79 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormPolicyDemoCtrl as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formPolicy\">Form Policy <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/policy/FormPolicy.js\" target=\"_blank\">FormPolicy.js</a>\n    </h1>\n    <code>ngFormLib.policy</code>\n  </div>\n\n  <p>Form Policy is a service which is used in conjunction with decorated <code>form</code> and <code>ng-form</code> directives to\n  apply validation behaviours to any form.<br/><strong><code>ngFormLib.policy</code> is a required module for all other Form Policy directives.</strong>\n\n  </p><p>This service exposes the following configurable policies:</p>\n  <ul>\n    <li><strong>field state definition</strong> (policies which define what state a component should be in for the component to be consider in an error-state, a success-state, or some-other-state which you can define</li>\n    <li><strong>when to check for field-state changes</strong> - which user-or-application events should cause the component-state to be checked to see if it has changed state (according to the definition in the above policy)</li>\n    <li><strong>what to do when a state-change occurs</strong> - such as setting the focus to the first field that has an error, when the field is in an error-state</li>\n  </ul>\n\n  <p>Additionally, the decorated <code>form</code> and <code>ng-form</code> directives work with the <a ahref=\"#formControlService\">Form Controls Service</a>\n  to allow the correct form element templates to be loaded based on the presence (or not) of the <code>form-horizontal</code> CSS class on the <code>form</code> element.</p>\n\n  <h2 id=\"formPolicyExamples\">Examples</h2>\n  <p>Apply the default form policy to a form.</p>\n\n  <h3>Live demo</h3>\n  <pre class=\"bs-example-scope\">  // Load policy and policy libraries FIRST. The policy libraries define a default policy for each policy-type\n  angular.module('myApp', ['ngFormLib',\n    'ngFormLib.policy.behaviourOnStateChange',\n    'ngFormLib.policy.checkForStateChanges',\n    'ngFormLib.policy.stateDefinitions']\n  );</pre>\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"formPolicy\" class=\"form\" novalidate form-submit=\"\">\n      \n      <div class=\"form-group\">\n        <label class=\"control-label\" for=\"formPolicy_fldTitle\">Title</label>\n        <div class=\"control-row\">\n          <select id=\"formPolicy_fldTitle\" name=\"formPolicy_fldTitle\" ng-model=\"ctrl.employee.title\" ng-options=\"item.label for item in ctrl.titleData\" class=\"form-control\" ng-required=\"false\" field-error-controller></select>\n        </div>\n        <div error-container field-name=\"formPolicy_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n      </div>\n\n      \n      <div form-input uid=\"formPolicy_fldName\" name=\"formPolicy_fldName\" label=\"Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.employee.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <div form-checkbox uid=\"formPolicy_fld3\" name=\"formPolicy_fld3\" required=\"true\" ff-ng-model=\"ctrl.employee.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n      <button type=\"button\" class=\"btn btn-secondary\" form-reset=\"ctrl.employee\">Reset</button>\n    </form>\n\n    <hr/>\n\n    <form name=\"formPolicy2\" class=\"form\" novalidate form-submit=\"\" form-policy=\"ctrl.myCustomPolicy\">\n      <fieldset>\n        <legend>Custom Form Policy</legend>\n\n        <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-horizontal\"</code>\n        as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n        <div form-input uid=\"formPolicy2_fld1\" name=\"formPolicy2_fld1\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.fldFPCustPolicy.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-select uid=\"formPolicy2_fld2\" name=\"formPolicy2_fld2\" label=\"Common field\" required=\"true\" ff-ng-model=\"ctrl.data.demo1\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formPolicy2_fld3\" name=\"formPolicy2_fld3\" required=\"true\" ff-ng-model=\"ctrl.data.fld2_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formPolicyUsage\">Usage</h2>\n  <p>Load the <code>ngFormLib</code>module and (normally) the standard form policy libraries.</p>\n  <div class=\"highlight\">\n    <pre><code class=\"js\" highlight-block>\n      angular.module('myApp', ['ngFormLib',\n        'ngFormLib.policy.behaviourOnStateChange',\n        'ngFormLib.policy.checkForStateChanges',\n        'ngFormLib.policy.stateDefinitions'\n      ]);\n    </code></pre>\n  </div>\n\n  <div class=\"callout callout-danger\">\n    <h4>Heads up!</h4>\n    <p>For the form policy to work as above, the following configuration must exist:</p>\n    <ul>\n      <li>the <code>form</code> must have a non-empty <code>name</code> attribute</li>\n      <li>the <code>form-submit</code> directive <strong>must</strong> exist on the <code>form</code> element, or on a <code>button</code> element inside the form</li>\n      <li>each form field must have a non-empty <code>name</code> and <code>ng-model</code> attribute</li>\n      <li>each form field must use the <code>field-error-controller</code> directive for errors to appear when using the <code>error-container</code> directive</li>\n    </ul>\n  </div>\n\n  <h3>Options</h3>\n\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>formSubmitAttemptedClass</td>\n        <td>string</td>\n        <td>'form-submit-attempted'</td>\n        <td>a CSS class-name that is applied to the <code>form</code> element when an attempt to submit the form is made (via the <code>formSubmit</code> directive)</td>\n      </tr>\n      <tr>\n        <td>fieldErrorClass</td>\n        <td>string</td>\n        <td>'has-error'</td>\n        <td>a CSS class-name that is applied to the field's form-group when an error is showing</td>\n      </tr>\n      <tr>\n        <td>fieldSuccessClass</td>\n        <td>string</td>\n        <td>'has-success'</td>\n        <td>a CSS class-name that is applied to the field's form-group when the field has been successfully validated</td>\n      </tr>\n      <tr>\n        <td>behaviourOnStateChange</td>\n        <td>function</td>\n        <td>noop</td>\n        <td>The behaviour-on-state-change policy function. This function returns an object with two methods on it: <code>applyBehaviour()</code> which is called when an the field's state changes,\n          and <code>resetBehaviour()</code> function which is called when the form is reset and when the form is submitted again. Function signature:\n\n          <pre class=\"bs-example-code\"><code class=\"javascript\" highlight-block>function myBehaviourOnStateChange(formController) {\n  return {\n    applyBehaviour: function (fieldElem, fieldState, formSubmitAttempted) {...},\n    resetBehaviour: function() {...}\n  };\n}</code></pre>\n          where:\n          <ul>\n            <li><code>formController</code> is the <code>form</code> controller, which has a reference to the form state and policy,</li>\n            <li><code>fieldElem</code> is a jqLite element,</li>\n            <li><code>fieldState</code> is a boolean indicating whether an error for this field is showing or not,</li>\n            <li><code>formSubmitAttempted</code> is a boolean indicating whether the user ahs attempted to submit the form</li>\n          </ul>\n        </td>\n      </tr>\n      <tr>\n        <td>checkForStateChanges</td>\n        <td>function</td>\n        <td>noop</td>\n        <td>The check-for-state-changes policy function. This function is responsible for determining <strong>when</strong> to evaluate whether a field has changed state (into an error state or into a success state).\n          Function signature:\n\n          <pre class=\"bs-example-code\"><code class=\"javascript\" highlight-block>function myCheckForStateChangesFunc(scope, element, name, errorCondition, ngModelController) {...}</code></pre>\n          where <ul>\n            <li><code>scope</code> is the Angular $scope for the element</li>\n            <li><code>element</code> is a jqLite field element</li>\n            <li><code>name</code> is the string-name of the field</li>\n            <li><code>errorCondition</code> is an Angular expression that can be $watch()ed</li>\n            <li><code>ngModelController</code> is the ngModelController of the field, which contains the <code>fieldState</code> property</li>\n          </ul>\n        </td>\n      </tr>\n      <tr>\n        <td>errorCondition</td>\n        <td>function</td>\n        <td>noop</td>\n        <td>The error condition policy function. This function returns a string-expression is used to determine <strong>if</strong> a field should show an error.\n          Function signature:\n\n          <pre class=\"bs-example-code\"><code class=\"javascript\" highlight-block>function myErrorCondition(formName, fieldName) {\n  ...;\n  return '...';\n}</code></pre>\n          where <ul>\n            <li><code>formName</code> is the string-name of the form that the field is situated inside of</li>\n            <li><code>fieldName</code> is strong-name of the field</li>\n          </ul>\n        </td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <h2 id=\"formPolicyConfig\">Configuration</h2>\n  <p>Form policies can be defined in 3 ways: application-wide, per-form, or a combination of the two (application-wide with per-form overrides).</p>\n\n  <div class=\"callout callout-info\">\n    <h4>Application-wide configuration</h4>\n\n    <p>You can override the default policies by replacing the policy-factory value for each policy:</p>\n    <div class=\"highlight\">\n      <pre class=\"bs-example-code\">\n        <code class=\"javascript\" highlight-block>\n          angular.module('myApp', ['ngFormLib',\n            'ngFormLib.policy.behaviourOnStateChange',\n            'ngFormLib.policy.checkForStateChanges',\n            'ngFormLib.policy.stateDefinitions'\n          ])\n          // Replace the 'formPolicyBehaviourOnStateChange' policy with a new implementation\n          .factory('formPolicyBehaviourOnStateChange', ['formPolicyBehaviourOnStateChangeLibrary', function(policyLib) {\n            return policyLib.onSubmitFocusFirstField;\n          }])\n          // Replace the 'formPolicycheckForStateChanges' policy with a new implementation\n          .factory('formPolicycheckForStateChanges', ['formPolicycheckForStateChangesLibrary', function(policyLib) {\n            return policyLib.onChange;\n          }]);\n          // Replace the 'formPolicyStateDefinitions' policy with a new implementation\n          .factory('formPolicyStateDefinitions', ['formPolicyStateDefinitionLibrary', function(policyLib) {\n\n            return function(formName, fieldName) {\n              // Return an object with the stateName(key) and the stateDefinition string(value)\n              return {\n                'error': policyLib.immediately(formName, fieldName)\n              };\n            };\n\n          }]);\n        </code>\n      </pre>\n    </div>\n  </div>\n\n  <div class=\"callout callout-info\">\n    <h4>Per-Form configuration</h4>\n\n    <p>You can override the application-wide (default) policies by specifying a policy-object on the form via a <code>form-policy</code> attribute:</p>\n    <div class=\"highlight\">\n      <pre class=\"bs-example-code\"><code class=\"html\" highlight-block>\n        &lt;div ng-controller=\"myController as ctrl\"&gt;\n          &lt;form form-policy=\"myPolicy\"&gt;...&lt;/form&gt;\n        &lt;/div&gt;\n      </code></pre>\n    </div>\n    <div class=\"highlight\">\n      <pre class=\"bs-example-code\"><code class=\"javascript\" highlight-block>\nmodule.controller('myController', function() {\n  var vm = this;\n\n  function wonderChecker(scope, element, name, errorCondition, ngModelController) {\n      //...\n  }\n\n  // This will overwrite only the checkForStateChanges policy\n  vm.myPolicy = {\n    checkForStateChanges: wonderChecker,\n  };\n}\n        </code>\n      </pre>\n    </div>\n  </div>\n\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"RequiredMarkerDemoController as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"requiredMarker\">Required Marker <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/requiredMarker/RequiredMarker.js\" target=\"_blank\">RequiredMarker.js</a>\n    </h1>\n    <code>ngFormLib.controls.requiredMarker</code>\n  </div>\n\n  <p>Required Marker is a small directive which emits HTML which can be styled to display a symbol/content to indicate that a form-field is required.\n    The default template makes the marker accessible by hiding the element from a screen reader and reading out 'required' instead.</p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Required Marker requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a> template to be loaded.</p>\n  </div>\n\n  <h2 id=\"requiredMarkerExamples\">Examples</h2>\n  <p>Use <code>required-marker</code> to add an indicator inside a <code>label</code> element.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formRequiredMarker\" class=\"form\" novalidate form-submit>\n\n      \n      <div class=\"form-group\">\n        <label for=\"formRequiredMarker_fldTitle\">My field<span required-marker></span></label>\n        <div class=\"control-row\">\n          <select uid=\"formRequiredMarker_fldTitle\" name=\"formRequiredMarker_fldTitle\" ng-model=\"ctrl.data.title\" ng-options=\"item.label for item in ctrl.titleData\" class=\"form-control\" ng-required=\"true\" field-error-controller></select>\n        </div>\n        <div error-container field-name=\"formRequiredMarker_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n      </div>\n\n\n      \n      <div class=\"form-group\">\n        <label for=\"formRequiredMarker_fldTitle2\">Optionally required field</label><span required-marker hide=\"ctrl.data.title.label === 'Mr'\"></span>\n        <div class=\"control-row\">\n          <select uid=\"formRequiredMarker_fldTitle2\" name=\"formRequiredMarker_fldTitle2\" ng-model=\"ctrl.data.title2\" ng-options=\"item.label for item in ctrl.titleData\" class=\"form-control\" ng-required=\"ctrl.data.title.label !== 'Mr'\" field-error-controller></select>\n        </div>\n        <div error-container field-name=\"formRequiredMarker_fldTitle2\" field-errors=\"{required: 'Please select a title'}\"></div>\n      </div>\n\n\n      \n      <div form-input uid=\"formRequiredMarker_fldName\" name=\"formRequiredMarker_fldName\" label=\"Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput.demo1\" field-errors=\"{required: 'Name is required'}\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"requiredMarkerUsage\">Usage</h2>\n  <p>Add the <code>required-marker</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>hide</td>\n        <td>expression</td>\n        <td>false</td>\n        <td>A scope-expression which causes the required marker to appear (false) or disappear (true)</td>\n      </tr>\n      <tr>\n        <td>template</td>\n        <td>URL</td>\n        <td>ngFormLib/controls/requiredMarker/template/RequiredMarkerTemplate.html</td>\n        <td>The HTML template to use for the control. The default value can be overridden on the element, or globally by setting the default value in the <a ahref=\"#formControlService\">formControlService</a></td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
 /* 80 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"bs-docs-section\" ng-controller=\"FormPolicyDemoCtrl as ctrl\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formPolicy\">Form Policy <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/policy/FormPolicy.js\" target=\"_blank\">FormPolicy.js</a>\n    </h1>\n    <code>ngFormLib.policy</code>\n  </div>\n\n  <p>Form Policy is a service which is used in conjunction with decorated <code>form</code> and <code>ng-form</code> directives to\n  apply validation behaviours to any form.<br/><strong><code>ngFormLib.policy</code> is a required module for all other Form Policy directives.</strong>\n\n  </p><p>This service exposes the following configurable policies:</p>\n  <ul>\n    <li><strong>field state definition</strong> (policies which define what state a component should be in for the component to be consider in an error-state, a success-state, or some-other-state which you can define</li>\n    <li><strong>when to check for field-state changes</strong> - which user-or-application events should cause the component-state to be checked to see if it has changed state (according to the definition in the above policy)</li>\n    <li><strong>what to do when a state-change occurs</strong> - such as setting the focus to the first field that has an error, when the field is in an error-state</li>\n    <li><strong>accessible form behaviour</strong> - defines how form-field error messages are associated with form-fields</li>\n  </ul>\n\n  <h2 id=\"formPolicyExamples\">Examples</h2>\n  <p>Apply the default form policy to a form.</p>\n\n  <h3>Live demo</h3>\n  <pre class=\"bs-example-scope\">  // Load policy and policy libraries FIRST. The policy libraries define a default policy for each policy-type\n  angular.module('myApp', ['ngFormLib',\n    'ngFormLib.policy.behaviourOnStateChange',\n    'ngFormLib.policy.checkForStateChanges',\n    'ngFormLib.policy.stateDefinitions',\n    'ngFormLib.policy.formAccessibility']\n  );</pre>\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    <form name=\"formPolicy\" class=\"form\" novalidate form-submit=\"\">\n      \n      <div class=\"form-group\">\n        <label class=\"control-label\" for=\"formPolicy_fldTitle\">Title</label>\n        <div class=\"control-row\">\n          <select id=\"formPolicy_fldTitle\" name=\"formPolicy_fldTitle\" ng-model=\"ctrl.employee.title\" ng-options=\"item.label for item in ctrl.titleData\" class=\"form-control\" ng-required=\"false\" field-error-controller></select>\n        </div>\n        <div error-container field-name=\"formPolicy_fldTitle\" field-errors=\"{required: 'Please select a title'}\"></div>\n      </div>\n\n      \n      <div form-input uid=\"formPolicy_fldName\" name=\"formPolicy_fldName\" label=\"Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.employee.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n      <div form-checkbox uid=\"formPolicy_fld3\" name=\"formPolicy_fld3\" required=\"true\" ff-ng-model=\"ctrl.employee.fld1_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n      <button type=\"button\" class=\"btn btn-secondary\" form-reset=\"ctrl.employee\">Reset</button>\n    </form>\n\n    <hr/>\n\n    <form name=\"formPolicy2\" class=\"form\" novalidate form-submit=\"\" form-policy=\"ctrl.myCustomPolicy\">\n      <fieldset>\n        <legend>Custom Form Policy</legend>\n\n        <p>This form takes advantage of the default control-templates' HTML structure to render the controls inside a form with <code>class=\"form-horizontal\"</code>\n        as expected within Bootstrap. See the <a href=\"/css/sampleFormStyle.css\" target=\"_blank\">sample style sheet</a> to see how to do this.</p>\n\n        <div form-input uid=\"formPolicy2_fld1\" name=\"formPolicy2_fld1\" label=\"Nick Name\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.fldFPCustPolicy.name\" ff-maxlength=\"40\" ff-ng-pattern=\"/^[a-zA-Z0-9 \\-.']+$/\" field-errors=\"{required: 'Last name is required', pattern: 'Please enter a valid last name'}\"></div>\n\n        <div form-select uid=\"formPolicy2_fld2\" name=\"formPolicy2_fld2\" label=\"Common field\" required=\"true\" ff-ng-model=\"ctrl.data.demo1\" ff-ng-options=\"item.label for item in ctrl.titleData track by item.label\" field-errors=\"{required: 'Title is required'}\"></div>\n\n        <div form-checkbox uid=\"formPolicy2_fld3\" name=\"formPolicy2_fld3\" required=\"true\" ff-ng-model=\"ctrl.data.fld2_3\" field-errors=\"{required: 'You must agree'}\">You are required to agree to this</div>\n\n        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n      </fieldset>\n    </form>\n  </div>\n\n  <h2 id=\"formPolicyUsage\">Usage</h2>\n  <p>Load the <code>ngFormLib</code>module and (normally) the standard form policy libraries.</p>\n  <div class=\"highlight\">\n    <pre><code class=\"js\" highlight-block>\n      // ES5\n      angular.module('myApp', [\n        'ngFormLib',\n        'duScroll',   // Scrolling behaviour for when the state changes to an error and we wish to focus the field\n        'ngFormLib.policy.behaviourOnStateChange',\n        'ngFormLib.policy.checkForStateChanges',\n        'ngFormLib.policy.stateDefinitions',\n        'pascalprecht.translate'    // Adds translation support, which will be used for certain properties when available\n      ]);\n\n      // ES6 / Webpack\n      import {ngFormLib, defaultPolicies} from 'angular-form-lib';\n      import 'angular-scroll';   // Scrolling behaviour for when the state changes to an error and we wish to focus the field\n      import ngTranslate from 'angular-translate';\n      const app = angular.module('myApp', ['duScroll', ngTranslate, ngFormLib, defaultPolicies]);\n    </code></pre>\n  </div>\n\n  <div class=\"callout callout-danger\">\n    <h4>Heads up!</h4>\n    <p>For the form policy to work as above, the following configuration must exist:</p>\n    <ul>\n      <li>the <code>form</code> must have a non-empty <code>name</code> attribute</li>\n      <li>the <code>form-submit</code> directive <strong>must</strong> exist on the <code>form</code> element, or on a <code>button</code> element inside the form</li>\n      <li>each form field must have a non-empty <code>name</code> and <code>ng-model</code> attribute</li>\n      <li>each form field must use the <code>field-error-controller</code> directive for errors to appear when using the <code>error-container</code> directive</li>\n    </ul>\n  </div>\n\n\n  <h3><code>FormPolicy</code> Options</h3>\n\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>formSubmitAttemptedClass</td>\n        <td>string</td>\n        <td>'form-submit-attempted'</td>\n        <td>a CSS class-name that is applied to the <code>form</code> element when an attempt to submit the form is made (via the <code>formSubmit</code> directive)</td>\n      </tr>\n      <tr>\n        <td>accessibilityBehaviour</td>\n        <td>object</td>\n        <td></td>\n        <td>See PolicyBehaviourOnStateChange Options below.</td>\n      </tr>\n      <tr>\n        <td>behaviourOnStateChange</td>\n        <td>function</td>\n        <td>noop</td>\n        <td>See PolicyBehaviourOnStateChange Options below.</td>\n      </tr>\n      <tr>\n        <td>checkForStateChanges</td>\n        <td>function</td>\n        <td>noop</td>\n        <td>See PolicyCheckForStateChanges Options below.\n        </td>\n      </tr>\n      <tr>\n        <td>stateDefinitions</td>\n        <td>function</td>\n        <td>noop</td>\n        <td>See PolicyStateDefinitions Options below.\n        </td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <h3><code>PolicyFormAccessibility</code> Options</h3>\n\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>createAriaErrorElement</td>\n        <td>function</td>\n        <td><code>formPolicyAccessibilityLibrary.createAriaErrorElement</code></td>\n        <td>Creates and returns a DOM element which will be used to render error messages designed to be read by a screen-reader.</td>\n      </tr>\n      <tr>\n        <td>onErrorChangeBehaviour</td>\n        <td>function</td>\n        <td><code>formPolicyAccessibilityLibrary.createLongErrorDescription</code></td>\n        <td>Function with the signature <code>(ariaElement, errorObj)</code> which updates the text-content inside the\n          ariaElement based on the errors that are showing. The <code>formPolicyAccessibilityLibrary</code> also has\n          a <code>createShortErrorDescription()</code> method.\n        </td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <h3><code>PolicyBehaviourOnStateChange</code> Options</h3>\n\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>fieldErrorClass</td>\n        <td>string</td>\n        <td>'has-error'</td>\n        <td>a CSS class-name that is applied to the field's form-group when an error is showing</td>\n      </tr>\n      <tr>\n        <td>fieldSuccessClass</td>\n        <td>string</td>\n        <td>'has-success'</td>\n        <td>a CSS class-name that is applied to the field's form-group when the field has been successfully validated</td>\n      </tr>\n      <tr>\n        <td>behaviour</td>\n        <td>function</td>\n        <td>\n          <code>formPolicyBehaviourOnStateChangeLibrary.onSubmitFocusFirstFieldIfError</code>\n          <code>formPolicyBehaviourOnStateChangeLibrary.onErrorSetAriaDescribedByToAriaErrorElement</code>\n          <code>formPolicyBehaviourOnStateChangeLibrary.updateElementStyle</code>\n        </td>\n        <td>The behaviour-on-state-change policy function. This function returns an object with two methods on it: <code>applyBehaviour()</code> which is called when an the field's state changes,\n          and <code>resetBehaviour()</code> function which is called when the form is reset and when the form is submitted again. Function signature:\n\n          <pre class=\"bs-example-code\"><code class=\"javascript\" highlight-block>function myBehaviourOnStateChange(formController) {\n            return {\n              applyBehaviour: function (fieldElem, fieldState, formSubmitAttempted, formName, fieldName, formGroupElement) {...},\n              resetBehaviour: function() {...}\n            };\n          }</code></pre>\n          where:\n          <ul>\n            <li><code>formController</code> is the <code>form</code> controller, which has a reference to the form state and policy,</li>\n            <li><code>fieldElem</code> is a jqLite element</li>\n            <li><code>fieldState</code> is a boolean indicating whether an error for this field is showing or not</li>\n            <li><code>formSubmitAttempted</code> is a boolean indicating whether the user has attempted to submit the form</li>\n            <li><code>formName</code> is the <code>name</code> of the parent form</li>\n            <li><code>fieldName</code> is the <code>name</code> of the field itself</li>\n            <li><code>formGroupElement</code> is a jqLite element reference to the <code>form-group</code> element (used to set error/success styles on)</li>\n          </ul></td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <h3><code>PolicyCheckForStateChanges</code> Options</h3>\n\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>checker</td>\n        <td>function</td>\n        <td><code>formPolicyCheckForStateChangesLibrary.onBlurUntilSubmitThenOnChange</code></td>\n        <td>The check-for-state-changes policy function. This function is responsible for determining <strong>when</strong> to evaluate whether a field has changed state (into an error state or into a success state).\n          Function signature:\n\n          <pre class=\"bs-example-code\"><code class=\"javascript\" highlight-block>function myCheckForStateChangesFunc(scope, element, fieldName, stateDefinitions, ngModelController) {...}</code></pre>\n          where <ul>\n            <li><code>scope</code> is the Angular $scope for the element</li>\n            <li><code>element</code> is a jqLite field element</li>\n            <li><code>name</code> is the string-name of the field</li>\n            <li><code>stateDefinitions</code> is an Angular fieldState expression that is $watch()ed</li>\n            <li><code>ngModelController</code> is the ngModelController of the field, which contains the <code>fieldState</code> property</li>\n          </ul>\n\n          The <code>formPolicyCheckForStateChangesLibrary</code> also has <code>onChange()</code> and <code>onBlur</code> method.\n        </td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <h3><code>PolicyStateDefinitions</code> Options</h3>\n\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n      <tr>\n        <th style=\"width:100px\">Name</th>\n        <th style=\"width:100px\">Type</th>\n        <th style=\"width:50px\">Default</th>\n        <th>Description</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr>\n        <td>states</td>\n        <td>object</td>\n        <td><code>formPolicyErrorDefinitionLibrary.onSubmitOrDirty</code> and <code>formPolicySuccessDefinitionLibrary.onSubmitOrDirty</code></td>\n        <td>An object listing the states and the state-definition functions for all fields.\n          Each state-definition function returns a string-expression which is used to determine <strong>if</strong> a field is in the corresponding state.\n          Function signature:\n\n          <pre class=\"bs-example-code\"><code class=\"javascript\" highlight-block>function stateDefnFunction(formName, fieldName) {\n            return {\n              stateName: libraryFunction(formName, fieldName)\n            };\n          }</code></pre>\n          where <ul>\n            <li><code>stateName</code> is the name of a field state (typically 'error' or 'success')</li>\n            <li><code>formName</code> is the string-name of the form that the field is situated inside of</li>\n            <li><code>fieldName</code> is string-name of the field</li>\n          </ul>\n\n          The <code>formPolicyErrorDefinitionLibrary</code> has the following state definitions:\n          <ul>\n            <li><code>onSubmit()</code> - when the form has been submitted and field is invalid</li>\n            <li><code>onDirty()</code> - when field has been changed and is invalid</li>\n            <li><code>immediately()</code> - when the field is invalid</li>\n            <li><code>onSubmitAndDirty()</code> - when the form has been submitted AND the field has changed AND the field is invalid</li>\n            <li><code>onSubmitOrDirty()</code> - (when the form has been submitted OR the field has changed) AND the field is invalid</li>\n          </ul>\n\n          The <code>formPolicySuccessDefinitionLibrary</code> has the following state definitions:\n          <ul>\n            <li><code>onSubmit()</code> - when the form has been submitted and field is valid</li>\n            <li><code>onDirty()</code> - when field has been changed and is valid</li>\n            <li><code>immediately()</code> - when the field is valid</li>\n            <li><code>onSubmitAndDirty()</code> - when the form has been submitted AND the field has changed AND the field is valid</li>\n            <li><code>onSubmitOrDirty()</code> - (when the form has been submitted OR the field has changed) AND the field is valid</li>\n          </ul>\n        </td>\n      </tr>\n      <tr>\n        <td>create</td>\n        <td>function</td>\n        <td></td>\n        <td>Calls the state definition functions, passing the <code>formName</code> and <code>fieldName</code>.\n        </td>\n      </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <h2 id=\"formPolicyConfig\">Configuration</h2>\n  <p>Form policies can be defined in 3 ways: application-wide, per-form, or a combination of the two (application-wide with per-form overrides).</p>\n\n  <div class=\"callout callout-info\">\n    <h4>Application-wide configuration</h4>\n\n    <p>You can override the default policies by configuring the policy-providers for each policy:</p>\n    <div class=\"highlight\">\n      <pre class=\"bs-example-code\">\n        <code class=\"javascript\" highlight-block>\n          var mod = angular.module('myApp', ['ngFormLib',\n            'ngFormLib.policy.behaviourOnStateChange',\n            'ngFormLib.policy.checkForStateChanges',\n            'ngFormLib.policy.stateDefinitions',\n            'ngFormLib.policy.formAccessibility'\n          ])\n\n          // Set the field-error-focus-scroll-position, to allow for the website's fixed header\n          mod.config(['formPolicyBehaviourOnStateChangeProvider', function(stateChangeBehavePolicy) {\n            stateChangeBehavePolicy.config.fieldFocusScrollOffset = 80;\n          }]);\n\n          mod.config(['formPolicyAccessibilityBehaviourProvider', 'formPolicyAccessibilityLibrary', function(a11yPolicy, lib) {\n            // Configure the formPolicyAccessibilityBehaviour to use the short-error version of the onErrorChangeBehaviour\n            a11yPolicy.config.onErrorChangeBehaviour = lib.createShortErrorDescription;\n          }]);\n\n          mod.config(['formPolicyCheckForStateChangesProvider', 'formPolicyCheckForStateChangesLibrary', function(statePolicy, lib) {\n            // Check for errors as soon as the control is changed\n            statePolicy.config.checker = lib.onChange;\n          }]);\n\n          mod.config(['formPolicyStateDefinitionsProvider', 'formPolicyErrorDefinitionLibrary', function(stateDefs, errorLib) {\n            // Show errors immediately\n            stateDefs.config.states.error = errorLib.immediately;\n          }]);\n        </code>\n      </pre>\n    </div>\n  </div>\n\n  <div class=\"callout callout-info\">\n    <h4>Per-Form configuration</h4>\n\n    <p>You can override the application-wide (default) policies by specifying a policy-object on the form via a <code>form-policy</code> attribute:</p>\n    <div class=\"highlight\">\n      <pre class=\"bs-example-code\"><code class=\"html\" highlight-block>\n        &lt;div ng-controller=\"myController as ctrl\"&gt;\n          &lt;form form-policy=\"myPolicy\"&gt;...&lt;/form&gt;\n        &lt;/div&gt;\n      </code></pre>\n    </div>\n    <div class=\"highlight\">\n      <pre class=\"bs-example-code\"><code class=\"javascript\" highlight-block>\nmodule.controller('myController', function() {\n  var vm = this;\n\n  function wonderChecker(scope, element, name, errorCondition, ngModelController) {\n      //...\n  }\n\n  // This will overwrite only the checkForStateChanges policy\n  vm.myPolicy = {\n    checkForStateChanges: wonderChecker,\n  };\n}\n        </code>\n      </pre>\n    </div>\n  </div>\n\n</div>\n";
+
+/***/ },
+/* 81 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -8207,4 +8406,4 @@ webpackJsonp([1],[
 
 /***/ }
 ]);
-//# sourceMappingURL=docs.d8e6e11d.js.map
+//# sourceMappingURL=docs.4f03d584.js.map
