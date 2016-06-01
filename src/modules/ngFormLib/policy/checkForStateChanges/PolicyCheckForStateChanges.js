@@ -84,8 +84,13 @@ mod.constant('formPolicyCheckForStateChangesLibrary', (function() {
   };
 })());
 
-  // This 'service' is the default implementation of the check-for-errors policy
-mod.factory('formPolicyCheckForStateChanges', ['formPolicyCheckForStateChangesLibrary', function(formPolicyCheckForStateChangesLibrary) {
-  return formPolicyCheckForStateChangesLibrary.onBlurUntilSubmitThenOnChange;
-}]);
 
+mod.provider('formPolicyCheckForStateChanges', ['formPolicyCheckForStateChangesLibrary', function(lib) {
+  let config = this.config = {
+    checker: lib.onBlurUntilSubmitThenOnChange
+  };
+
+  this.$get = function() {
+    return config;
+  };
+}]);

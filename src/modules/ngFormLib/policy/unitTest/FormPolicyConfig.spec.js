@@ -18,26 +18,27 @@ describe('Form Policy Service configuration', function() {
     it('should have the default settings', function() {
       // By the time the service is created, the policy functions are stubbed if they are null
       expect(defaultFormSettings.formSubmitAttemptedClass).toEqual('form-submit-attempted');
-      expect(defaultFormSettings.fieldErrorClass).toEqual('has-error');
-      expect(typeof defaultFormSettings.behaviourOnStateChange).toEqual('function');
+      expect(typeof defaultFormSettings.accessibilityBehaviour).toEqual('object');
+      expect(typeof defaultFormSettings.behaviourOnStateChange.behaviour).toEqual('function');
       expect(typeof defaultFormSettings.checkForStateChanges).toEqual('function');
-      expect(typeof defaultFormSettings.stateDefinitions).toEqual('function');
+      expect(typeof defaultFormSettings.stateDefinitions.states).toEqual('function');
     });
   });
 
 
   describe('can be changed using the service provider', function() {
-    var mockFnA = function a() { return 'a'; },
-      mockFnB = function b() { return 'b'; },
-      mockFnC = function c() { return 'c'; },
-      mockDefaults = {
-        formSubmitAttemptedClass: 'abc',
-        fieldErrorClass: 'efg',
-        behaviourOnError: mockFnA,
-        checkForStateChanges: mockFnB,
-        stateDefinitions: mockFnC
-      },
-      formPolicyService;
+    let mockFnA = function a() { return 'a'; };
+    let mockFnB = function b() { return 'b'; };
+    let mockFnC = function c() { return 'c'; };
+    let a11yMock = { d: 'd' };
+    let mockDefaults = {
+      formSubmitAttemptedClass: 'abc',
+      behaviourOnError: mockFnA,
+      checkForStateChanges: mockFnB,
+      stateDefinitions: mockFnC,
+      accessibilityBehaviour: a11yMock
+    };
+    let formPolicyService;
 
     // Set the defaults using the provider method
     beforeEach(function() {

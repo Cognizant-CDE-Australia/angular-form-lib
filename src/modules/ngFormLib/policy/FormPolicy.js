@@ -12,26 +12,32 @@ export default mod.name;
 // It should contain the _default_ values for form policies
 
 mod.provider('formPolicyService', function() {
-  var self = this,
-    noop = angular.noop,
-    nullBehaviourOnStateChange = function() {
+  let self = this;
+  let noop = () => {};
+  let nullBehaviourOnStateChange = {
+    behaviour: () => {
       return {
         applyBehaviour: noop,
         resetBehaviour: noop
-      };
-    },
-    nullStateChanges = function() {
-      return {};
-    };
+      }
+    }
+  };
+  let nullStateDefinitions = {
+    create: () => { return {}; },
+    states: () => { return {}; }
+  };
+  let nullAccessibilityBehaviour = {
+    createAriaErrorElement: () => '',
+    onErrorChangeBehaviour: noop
+  };
 
+  // The self.defaults property allows the formPolicy to be customised for a specific form
   self.defaults = {
     formSubmitAttemptedClass: 'form-submit-attempted',
-    fieldErrorClass: 'has-error',
-    fieldSuccessClass: 'has-success',
-    behaviourOnStateChange: null,    // Previously called focusBehavior
+    accessibilityBehaviour: null,
+    behaviourOnStateChange: null,
     checkForStateChanges: null,
-    stateDefinitions: null,
-    fieldFocusScrollOffset: 0
+    stateDefinitions: null
   };
 
   this.$get = ['$injector', function($injector) {
@@ -45,9 +51,10 @@ mod.provider('formPolicyService', function() {
     }
 
     // Policy precedence: this.defaults, policy-value-object, noop
+    self.defaults.accessibilityBehaviour = self.defaults.accessibilityBehaviour || getService('formPolicyAccessibilityBehaviour') || nullAccessibilityBehaviour;
     self.defaults.behaviourOnStateChange = self.defaults.behaviourOnStateChange || getService('formPolicyBehaviourOnStateChange') || nullBehaviourOnStateChange;
-    self.defaults.checkForStateChanges = self.defaults.checkForStateChanges || getService('formPolicyCheckForStateChanges') || noop;
-    self.defaults.stateDefinitions = self.defaults.stateDefinitions || getService('formPolicyStateDefinitions') || nullStateChanges;
+    self.defaults.checkForStateChanges = self.defaults.checkForStateChanges || (getService('formPolicyCheckForStateChanges') || {}).checker || noop;
+    self.defaults.stateDefinitions = self.defaults.stateDefinitions || getService('formPolicyStateDefinitions') || nullStateDefinitions;
 
     var policyService = {
       getCurrentPolicy: function() {
@@ -92,7 +99,7 @@ function formDirective(formPolicyService) {
           }
 
           // Generate the focus policy function for use by other directive
-          formController._applyFormBehaviourOnStateChangePolicy = formController._policy.behaviourOnStateChange(formController);
+          formController._applyFormBehaviourOnStateChangePolicy = formController._policy.behaviourOnStateChange.behaviour(formController);
 
           // Add/remove a class onto the form based on the value of the formSubmitted variable
           formController.setSubmitted = function(value, tellNoOne) {
