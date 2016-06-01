@@ -2,7 +2,7 @@ import angular from 'angular';
 import FormControlService from './FormControlService';
 
 const mod = angular.module('ngFormLib.controls.common.fieldErrorController', [
-  FormControlService
+  FormControlService,
 ]);
 
 export default mod.name;
@@ -27,29 +27,12 @@ export default mod.name;
 
 mod.directive('fieldErrorController', ['formControlService', '$timeout', function(formControlService, $timeout) {
 
-  function updateAriaFeatures(fieldState, element, formName, fieldName) {
-    element.attr('aria-invalid', fieldState === 'error');
-    var errorElemId = formName + '-' + fieldName + '-errors-aria';
-
-    if (fieldState === 'error') {
-      // Use the errorContainer's special ARIA element as the source of the error text
-      formControlService.addToAttribute(element, 'aria-describedby', errorElemId);
-    } else {
-      formControlService.removeFromAttribute(element, 'aria-describedby', errorElemId);
-    }
-  }
-
-  function updateElementStyle(fieldState, element, formPolicy) {
-    element[(fieldState === 'error') ? 'addClass' : 'removeClass'](formPolicy.fieldErrorClass);
-    element[(fieldState === 'success') ? 'addClass' : 'removeClass'](formPolicy.fieldSuccessClass);
-  }
-
   function setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name) {
     // Using the form policy, determine when to show errors for this field
     let formPolicy = formController._policy;
     let formName = formController.$name;
     let fieldName = formName + '["' + name + '"]';
-    let stateConditions = formPolicy.stateDefinitions(formName, fieldName);
+    let stateConditions = formPolicy.stateDefinitions.create(formName, fieldName);
 
     formPolicy.checkForStateChanges(formController._scope, element, name, stateConditions, ngModelController, formController);
   }
@@ -60,16 +43,14 @@ mod.directive('fieldErrorController', ['formControlService', '$timeout', functio
     require: ['?ngModel', '?^form', '?^formGroup'],  // Require the formController controller somewhere in the parent hierarchy
     replace: true,
     link: function(scope, element, attr, controllers) {
-      // Tried to use a template string, but the model was not binding properly. Using $compile() works :)
-      var ngModelController = controllers[0],
-        formController = controllers[1],
-        formGroupElement = (controllers[2] || {}).$element || element,// This looks for a parent directive called formGroup, which has a controller, which has an $element property
-        name = attr.name;
-
+      let ngModelController = controllers[0];
+      let formController = controllers[1];
+      let formGroupElement = (controllers[2] || {}).$element || element;// This looks for a parent directive called formGroup, which has a controller, which has an $element property
+      let name = attr.name;
 
       if (formController) {
-        var formName = formController.$name,
-          errorBehaviour = formController._applyFormBehaviourOnStateChangePolicy; // returns a function which encapsulates the form policy rules for the behaviour to apply when errors show
+        let formName = formController.$name;
+        let stateChangeBehaviour = formController._applyFormBehaviourOnStateChangePolicy; // returns a function which encapsulates the form policy rules for the behaviour to apply when errors show
 
         if (ngModelController) {
           setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name);
@@ -77,19 +58,14 @@ mod.directive('fieldErrorController', ['formControlService', '$timeout', functio
 
         // When the error-showing flag changes, update the field style
         formController._scope.$watch(formName + '["' + name + '"].fieldState', function(fieldState) {
-          updateAriaFeatures(fieldState, element, formName, name);
-          updateElementStyle(fieldState, formGroupElement, formController._policy);
-
-          // Apply the error behaviour behaviour
-          errorBehaviour.applyBehaviour(element, fieldState, false);
+          // fieldState is set to '' when the form is reset. So must respond to that too.
+          stateChangeBehaviour.applyBehaviour(element, fieldState, false, formName, name, formGroupElement);
         });
 
         // Listen to form-submit events, to determine what to focus on too
-        scope.$on('event:FormSubmitAttempted', function() {
+        scope.$on('event:FormSubmitAttempted', () => {
           // Make sure that the field-level watchers have a chance to fire first, so use a timeout
-          $timeout(function() {
-            errorBehaviour.applyBehaviour(element, ngModelController.fieldState, true);
-          }, 1);
+          $timeout(() => stateChangeBehaviour.applyBehaviour(element, ngModelController.fieldState, true, formName, name, formGroupElement), 1);
         });
       }
     }

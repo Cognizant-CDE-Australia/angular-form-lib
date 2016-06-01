@@ -14,10 +14,8 @@
     <li><strong>field state definition</strong> (policies which define what state a component should be in for the component to be consider in an error-state, a success-state, or some-other-state which you can define</li>
     <li><strong>when to check for field-state changes</strong> - which user-or-application events should cause the component-state to be checked to see if it has changed state (according to the definition in the above policy)</li>
     <li><strong>what to do when a state-change occurs</strong> - such as setting the focus to the first field that has an error, when the field is in an error-state</li>
+    <li><strong>accessible form behaviour</strong> - defines how form-field error messages are associated with form-fields</li>
   </ul>
-
-  <p>Additionally, the decorated <code>form</code> and <code>ng-form</code> directives work with the <a ahref="#formControlService">Form Controls Service</a>
-  to allow the correct form element templates to be loaded based on the presence (or not) of the <code>form-horizontal</code> CSS class on the <code>form</code> element.</p>
 
   <h2 id="formPolicyExamples">Examples</h2>
   <p>Apply the default form policy to a form.</p>
@@ -27,7 +25,8 @@
   angular.module('myApp', ['ngFormLib',
     'ngFormLib.policy.behaviourOnStateChange',
     'ngFormLib.policy.checkForStateChanges',
-    'ngFormLib.policy.stateDefinitions']
+    'ngFormLib.policy.stateDefinitions',
+    'ngFormLib.policy.formAccessibility']
   );</pre>
   <div class="bs-example" style="padding-bottom: 24px;" append-source>
 
@@ -90,11 +89,21 @@
   <p>Load the <code>ngFormLib</code>module and (normally) the standard form policy libraries.</p>
   <div class="highlight">
     <pre><code class="js" highlight-block>
-      angular.module('myApp', ['ngFormLib',
+      // ES5
+      angular.module('myApp', [
+        'ngFormLib',
+        'duScroll',   // Scrolling behaviour for when the state changes to an error and we wish to focus the field
         'ngFormLib.policy.behaviourOnStateChange',
         'ngFormLib.policy.checkForStateChanges',
-        'ngFormLib.policy.stateDefinitions'
+        'ngFormLib.policy.stateDefinitions',
+        'pascalprecht.translate'    // Adds translation support, which will be used for certain properties when available
       ]);
+
+      // ES6 / Webpack
+      import {ngFormLib, defaultPolicies} from 'angular-form-lib';
+      import 'angular-scroll';   // Scrolling behaviour for when the state changes to an error and we wish to focus the field
+      import ngTranslate from 'angular-translate';
+      const app = angular.module('myApp', ['duScroll', ngTranslate, ngFormLib, defaultPolicies]);
     </code></pre>
   </div>
 
@@ -109,7 +118,8 @@
     </ul>
   </div>
 
-  <h3>Options</h3>
+
+  <h3><code>FormPolicy</code> Options</h3>
 
   <div class="table-responsive">
     <table class="table table-bordered table-striped">
@@ -129,6 +139,81 @@
         <td>a CSS class-name that is applied to the <code>form</code> element when an attempt to submit the form is made (via the <code>formSubmit</code> directive)</td>
       </tr>
       <tr>
+        <td>accessibilityBehaviour</td>
+        <td>object</td>
+        <td></td>
+        <td>See PolicyBehaviourOnStateChange Options below.</td>
+      </tr>
+      <tr>
+        <td>behaviourOnStateChange</td>
+        <td>function</td>
+        <td>noop</td>
+        <td>See PolicyBehaviourOnStateChange Options below.</td>
+      </tr>
+      <tr>
+        <td>checkForStateChanges</td>
+        <td>function</td>
+        <td>noop</td>
+        <td>See PolicyCheckForStateChanges Options below.
+        </td>
+      </tr>
+      <tr>
+        <td>stateDefinitions</td>
+        <td>function</td>
+        <td>noop</td>
+        <td>See PolicyStateDefinitions Options below.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><code>PolicyFormAccessibility</code> Options</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th style="width: 100px;">Name</th>
+        <th style="width: 100px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>createAriaErrorElement</td>
+        <td>function</td>
+        <td><code>formPolicyAccessibilityLibrary.createAriaErrorElement</code></td>
+        <td>Creates and returns a DOM element which will be used to render error messages designed to be read by a screen-reader.</td>
+      </tr>
+      <tr>
+        <td>onErrorChangeBehaviour</td>
+        <td>function</td>
+        <td><code>formPolicyAccessibilityLibrary.createLongErrorDescription</code></td>
+        <td>Function with the signature <code>(ariaElement, errorObj)</code> which updates the text-content inside the
+          ariaElement based on the errors that are showing. The <code>formPolicyAccessibilityLibrary</code> also has
+          a <code>createShortErrorDescription()</code> method.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><code>PolicyBehaviourOnStateChange</code> Options</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th style="width: 100px;">Name</th>
+        <th style="width: 100px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
         <td>fieldErrorClass</td>
         <td>string</td>
         <td>'has-error'</td>
@@ -141,59 +226,129 @@
         <td>a CSS class-name that is applied to the field's form-group when the field has been successfully validated</td>
       </tr>
       <tr>
-        <td>behaviourOnStateChange</td>
+        <td>behaviour</td>
         <td>function</td>
-        <td>noop</td>
+        <td>
+          <code>formPolicyBehaviourOnStateChangeLibrary.onSubmitFocusFirstFieldIfError</code>
+          <code>formPolicyBehaviourOnStateChangeLibrary.onErrorSetAriaDescribedByToAriaErrorElement</code>
+          <code>formPolicyBehaviourOnStateChangeLibrary.updateElementStyle</code>
+        </td>
         <td>The behaviour-on-state-change policy function. This function returns an object with two methods on it: <code>applyBehaviour()</code> which is called when an the field's state changes,
           and <code>resetBehaviour()</code> function which is called when the form is reset and when the form is submitted again. Function signature:
 
           <pre class="bs-example-code"><code class="javascript" highlight-block>function myBehaviourOnStateChange(formController) {
-  return {
-    applyBehaviour: function (fieldElem, fieldState, formSubmitAttempted) {...},
-    resetBehaviour: function() {...}
-  };
-}</code></pre>
+            return {
+              applyBehaviour: function (fieldElem, fieldState, formSubmitAttempted, formName, fieldName, formGroupElement) {...},
+              resetBehaviour: function() {...}
+            };
+          }</code></pre>
           where:
           <ul>
             <li><code>formController</code> is the <code>form</code> controller, which has a reference to the form state and policy,</li>
-            <li><code>fieldElem</code> is a jqLite element,</li>
-            <li><code>fieldState</code> is a boolean indicating whether an error for this field is showing or not,</li>
-            <li><code>formSubmitAttempted</code> is a boolean indicating whether the user ahs attempted to submit the form</li>
-          </ul>
-        </td>
+            <li><code>fieldElem</code> is a jqLite element</li>
+            <li><code>fieldState</code> is a boolean indicating whether an error for this field is showing or not</li>
+            <li><code>formSubmitAttempted</code> is a boolean indicating whether the user has attempted to submit the form</li>
+            <li><code>formName</code> is the <code>name</code> of the parent form</li>
+            <li><code>fieldName</code> is the <code>name</code> of the field itself</li>
+            <li><code>formGroupElement</code> is a jqLite element reference to the <code>form-group</code> element (used to set error/success styles on)</li>
+          </ul></td>
       </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><code>PolicyCheckForStateChanges</code> Options</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead>
       <tr>
-        <td>checkForStateChanges</td>
+        <th style="width: 100px;">Name</th>
+        <th style="width: 100px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>checker</td>
         <td>function</td>
-        <td>noop</td>
+        <td><code>formPolicyCheckForStateChangesLibrary.onBlurUntilSubmitThenOnChange</code></td>
         <td>The check-for-state-changes policy function. This function is responsible for determining <strong>when</strong> to evaluate whether a field has changed state (into an error state or into a success state).
           Function signature:
 
-          <pre class="bs-example-code"><code class="javascript" highlight-block>function myCheckForStateChangesFunc(scope, element, name, errorCondition, ngModelController) {...}</code></pre>
+          <pre class="bs-example-code"><code class="javascript" highlight-block>function myCheckForStateChangesFunc(scope, element, fieldName, stateDefinitions, ngModelController) {...}</code></pre>
           where <ul>
             <li><code>scope</code> is the Angular $scope for the element</li>
             <li><code>element</code> is a jqLite field element</li>
             <li><code>name</code> is the string-name of the field</li>
-            <li><code>errorCondition</code> is an Angular expression that can be $watch()ed</li>
+            <li><code>stateDefinitions</code> is an Angular fieldState expression that is $watch()ed</li>
             <li><code>ngModelController</code> is the ngModelController of the field, which contains the <code>fieldState</code> property</li>
+          </ul>
+
+          The <code>formPolicyCheckForStateChangesLibrary</code> also has <code>onChange()</code> and <code>onBlur</code> method.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><code>PolicyStateDefinitions</code> Options</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th style="width: 100px;">Name</th>
+        <th style="width: 100px;">Type</th>
+        <th style="width: 50px;">Default</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>states</td>
+        <td>object</td>
+        <td><code>formPolicyErrorDefinitionLibrary.onSubmitOrDirty</code> and <code>formPolicySuccessDefinitionLibrary.onSubmitOrDirty</code></td>
+        <td>An object listing the states and the state-definition functions for all fields.
+          Each state-definition function returns a string-expression which is used to determine <strong>if</strong> a field is in the corresponding state.
+          Function signature:
+
+          <pre class="bs-example-code"><code class="javascript" highlight-block>function stateDefnFunction(formName, fieldName) {
+            return {
+              stateName: libraryFunction(formName, fieldName)
+            };
+          }</code></pre>
+          where <ul>
+            <li><code>stateName</code> is the name of a field state (typically 'error' or 'success')</li>
+            <li><code>formName</code> is the string-name of the form that the field is situated inside of</li>
+            <li><code>fieldName</code> is string-name of the field</li>
+          </ul>
+
+          The <code>formPolicyErrorDefinitionLibrary</code> has the following state definitions:
+          <ul>
+            <li><code>onSubmit()</code> - when the form has been submitted and field is invalid</li>
+            <li><code>onDirty()</code> - when field has been changed and is invalid</li>
+            <li><code>immediately()</code> - when the field is invalid</li>
+            <li><code>onSubmitAndDirty()</code> - when the form has been submitted AND the field has changed AND the field is invalid</li>
+            <li><code>onSubmitOrDirty()</code> - (when the form has been submitted OR the field has changed) AND the field is invalid</li>
+          </ul>
+
+          The <code>formPolicySuccessDefinitionLibrary</code> has the following state definitions:
+          <ul>
+            <li><code>onSubmit()</code> - when the form has been submitted and field is valid</li>
+            <li><code>onDirty()</code> - when field has been changed and is valid</li>
+            <li><code>immediately()</code> - when the field is valid</li>
+            <li><code>onSubmitAndDirty()</code> - when the form has been submitted AND the field has changed AND the field is valid</li>
+            <li><code>onSubmitOrDirty()</code> - (when the form has been submitted OR the field has changed) AND the field is valid</li>
           </ul>
         </td>
       </tr>
       <tr>
-        <td>errorCondition</td>
+        <td>create</td>
         <td>function</td>
-        <td>noop</td>
-        <td>The error condition policy function. This function returns a string-expression is used to determine <strong>if</strong> a field should show an error.
-          Function signature:
-
-          <pre class="bs-example-code"><code class="javascript" highlight-block>function myErrorCondition(formName, fieldName) {
-  ...;
-  return '...';
-}</code></pre>
-          where <ul>
-            <li><code>formName</code> is the string-name of the form that the field is situated inside of</li>
-            <li><code>fieldName</code> is strong-name of the field</li>
-          </ul>
+        <td></td>
+        <td>Calls the state definition functions, passing the <code>formName</code> and <code>fieldName</code>.
         </td>
       </tr>
       </tbody>
@@ -206,33 +361,35 @@
   <div class="callout callout-info">
     <h4>Application-wide configuration</h4>
 
-    <p>You can override the default policies by replacing the policy-factory value for each policy:</p>
+    <p>You can override the default policies by configuring the policy-providers for each policy:</p>
     <div class="highlight">
       <pre class="bs-example-code">
         <code class="javascript" highlight-block>
-          angular.module('myApp', ['ngFormLib',
+          var mod = angular.module('myApp', ['ngFormLib',
             'ngFormLib.policy.behaviourOnStateChange',
             'ngFormLib.policy.checkForStateChanges',
-            'ngFormLib.policy.stateDefinitions'
+            'ngFormLib.policy.stateDefinitions',
+            'ngFormLib.policy.formAccessibility'
           ])
-          // Replace the 'formPolicyBehaviourOnStateChange' policy with a new implementation
-          .factory('formPolicyBehaviourOnStateChange', ['formPolicyBehaviourOnStateChangeLibrary', function(policyLib) {
-            return policyLib.onSubmitFocusFirstField;
-          }])
-          // Replace the 'formPolicycheckForStateChanges' policy with a new implementation
-          .factory('formPolicycheckForStateChanges', ['formPolicycheckForStateChangesLibrary', function(policyLib) {
-            return policyLib.onChange;
+
+          // Set the field-error-focus-scroll-position, to allow for the website's fixed header
+          mod.config(['formPolicyBehaviourOnStateChangeProvider', function(stateChangeBehavePolicy) {
+            stateChangeBehavePolicy.config.fieldFocusScrollOffset = 80;
           }]);
-          // Replace the 'formPolicyStateDefinitions' policy with a new implementation
-          .factory('formPolicyStateDefinitions', ['formPolicyStateDefinitionLibrary', function(policyLib) {
 
-            return function(formName, fieldName) {
-              // Return an object with the stateName(key) and the stateDefinition string(value)
-              return {
-                'error': policyLib.immediately(formName, fieldName)
-              };
-            };
+          mod.config(['formPolicyAccessibilityBehaviourProvider', 'formPolicyAccessibilityLibrary', function(a11yPolicy, lib) {
+            // Configure the formPolicyAccessibilityBehaviour to use the short-error version of the onErrorChangeBehaviour
+            a11yPolicy.config.onErrorChangeBehaviour = lib.createShortErrorDescription;
+          }]);
 
+          mod.config(['formPolicyCheckForStateChangesProvider', 'formPolicyCheckForStateChangesLibrary', function(statePolicy, lib) {
+            // Check for errors as soon as the control is changed
+            statePolicy.config.checker = lib.onChange;
+          }]);
+
+          mod.config(['formPolicyStateDefinitionsProvider', 'formPolicyErrorDefinitionLibrary', function(stateDefs, errorLib) {
+            // Show errors immediately
+            stateDefs.config.states.error = errorLib.immediately;
           }]);
         </code>
       </pre>

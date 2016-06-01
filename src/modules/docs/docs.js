@@ -54,8 +54,24 @@ mod.config(['$translateProvider', function($translateProvider) {
 }]);
 
 // Set the field-error-focus-scroll-position, to allow for the website's fixed header
-mod.config(['formPolicyServiceProvider', function(formPolicyServiceProvider) {
-  formPolicyServiceProvider.defaults.fieldFocusScrollOffset = 80;
+mod.config(['formPolicyBehaviourOnStateChangeProvider', function(stateChangeBehavePolicy) {
+  stateChangeBehavePolicy.config.fieldFocusScrollOffset = 80;
+}]);
+
+mod.config(['formPolicyAccessibilityBehaviourProvider', 'formPolicyAccessibilityLibrary', function(a11yPolicy, lib) {
+  // Configure the formPolicyAccessibilityBehaviour to use the short-error version of the onErrorChangeBehaviour
+  a11yPolicy.config.onErrorChangeBehaviour = lib.createShortErrorDescription;
+}]);
+
+
+mod.config(['formPolicyCheckForStateChangesProvider', 'formPolicyCheckForStateChangesLibrary', function(statePolicy, lib) {
+  // DEMO: Check for errors as soon as the control is changed
+  //statePolicy.config.checker = lib.onChange;
+}]);
+
+mod.config(['formPolicyStateDefinitionsProvider', 'formPolicyErrorDefinitionLibrary', function(stateDefs, errorLib) {
+  // DEMO: Show errors immediately
+  //stateDefs.config.states.error = errorLib.immediately;
 }]);
 
 

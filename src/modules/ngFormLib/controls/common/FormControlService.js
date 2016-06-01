@@ -143,14 +143,18 @@ mod.provider('formControlService', function() {
       },
 
       addToAttribute: function(element, attributeName, value) {
-        var existingVal = element.attr(attributeName);
-        element.attr(attributeName, ((existingVal) ? existingVal + ' ' : '') + value);
+        let existingValues = element.attr(attributeName) || '';
+
+        // Don't add the same attribute value - remove it first before adding it back
+        if (existingValues.split(' ').indexOf(value) === -1) {
+          element.attr(attributeName, existingValues + (existingValues ? ' ' : '') + value);
+        }
       },
 
 
       removeFromAttribute: function(element, attributeName, value) {
         // Borrowed this statement from Angular.js
-        var newValue = StringUtil.trim(
+        let newValue = StringUtil.trim(
           (' ' + (element.attr(attributeName) || '') + ' ')
           .replace(/[\n\t]/g, ' ')
           .replace(' ' + StringUtil.trim(value) + ' ', ' ')
@@ -183,7 +187,7 @@ mod.provider('formControlService', function() {
 
       addInputGroup: function(inputElem, inputGroupPrefix, inputGroupSuffix) {
         if (inputGroupPrefix || inputGroupSuffix) {
-          inputElem.wrap('<div class="input-group">');//inputElem.parent(); // This should be the 'control-row' element//wrap('<div class="input-group">');
+          inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element//wrap('<div class="input-group">');
           var wrapper = inputElem.parent();
 
           if (inputGroupPrefix) {
