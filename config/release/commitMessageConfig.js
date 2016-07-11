@@ -2,6 +2,7 @@
 
 const featFixScopes = [
   {name: 'a11y'},
+  {name: 'build'},
   {name: 'controls'},
   {name: 'errorMessage'},
   {name: 'formCheckbox'},

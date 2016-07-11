@@ -1,10 +1,10 @@
-@require "colours"
+@require 'colours'
 
 // We have to @extend some grid classes, so need to import (and repeat myself, but this would not be required in a production system - it is convenient here)
-@require "~bootstrap-styl/stylus/variables"
-@require "~bootstrap-styl/stylus/mixins"
-@require "~bootstrap-styl/stylus/utilities"
-@require "~bootstrap-styl/stylus/grid"
+@require '~bootstrap-styl/stylus/variables'
+@require '~bootstrap-styl/stylus/mixins'
+@require '~bootstrap-styl/stylus/utilities'
+@require '~bootstrap-styl/stylus/grid'
 
 
 // Validatation..
@@ -20,7 +20,7 @@
   display: block
   border-radius: 0 0 5px 5px
   background-color: $brand-danger
-  color: #fff
+  color: $clr-white
   font-size: 14px
 
   // For whatever reason, this does not work in FireFox. Works in Chrome (OSX) and Safari (OSX)
@@ -52,14 +52,14 @@
 // Required indicator
 label > .required:after, .required:after
   color: $brand-danger
-  content: "^"
+  content: '^'
   padding-left: 5px
 
 
 
 // Style for "normal" checkboxes
-.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"]
-  margin-left: 0px
+.radio input[type='radio'], .radio-inline input[type='radio'], .checkbox input[type='checkbox'], .checkbox-inline input[type='checkbox']
+  margin-left: 0
 
 
 // Horizontal Form styles - automatically overload the control-label and control-row classes wo make them into columns
@@ -122,4 +122,4 @@ $default-horiz-control-cols = 12 - $default-horiz-label-cols
 
 
 // Image Checkbox
-@require "_imageCheckbox"
+@require '_imageCheckbox'
