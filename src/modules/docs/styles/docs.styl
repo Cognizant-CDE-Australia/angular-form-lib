@@ -1,16 +1,16 @@
-@require "./utils"
-@require "./vars";    // Naming this file "variables" was interferring with Stylus finding the Bootstrap/variables file?!?
+@require './utils'
+@require './vars';    // Naming this file 'variables' was interferring with Stylus finding the Bootstrap/variables file?!?
 
-@require "~bootstrap-styl/stylus/bootstrap.styl"
+@require '~bootstrap-styl/stylus/bootstrap.styl'
 
-@require "_aside"
-@require "_header"
-@require "_footer"
-@require "_highlight"
-@require "_navbar"
-@require "_sidebar"
-@require "_codeExamples"
-@require "_callouts"
+@require '_aside'
+@require '_header'
+@require '_footer'
+@require '_highlight'
+@require '_navbar'
+@require '_sidebar'
+@require '_codeExamples'
+@require '_callouts'
 
 
 body
@@ -22,7 +22,7 @@ body
   max-height: 200px
   ul
     list-style: none
-    padding: 1em 0 0 0
+    padding: 1em 0 0 0 // @stylint ignore
     li
       height: 30px
       @media (max-width: $screen-sm-max)
