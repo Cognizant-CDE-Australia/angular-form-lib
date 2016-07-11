@@ -1,23 +1,17 @@
-<!--[CN_HEADING]-->
 # Contributing
 
 Welcome! This document explains how you can contribute to making **angular-form-lib** even better.
 
 
-<!--[]-->
-
-<!--[CN_GETTING_STARTED]-->
 # Getting Started
 
 ## Installation
 
 ```
 git clone <this repo>
+npm install -g commitizen
 npm install
 ```
-
-
-<!--[]-->
 
 <!--[CN_GITFLOW_PROCESS]-->
 # GitFlow Development Process
@@ -112,7 +106,11 @@ Command | Description
 
 Command | Description
 :------ | :----------
-<pre>npm run verify</pre> | Verify JS & CSS code style and syntax<ul><li>Verifies source *and test code* (unlike Webpack loaders)</li></ul>
+<pre>npm run verify</pre> | Verify code style and syntax<ul><li>Verifies source *and test code* aginst customisable rules (unlike Webpack loaders)</li></ul>
+<pre>npm run verify:css</pre> | Verify CSS code style and syntax
+<pre>npm run verify:css:watch</pre> | Verify CSS code style and syntax and watch files for changes
+<pre>npm run verify:js</pre> | Verify Javascript code style and syntax
+<pre>npm run verify:js:watch</pre> | Verify Javascript code style and syntax and watch files for changes
 <pre>npm run verify:watch</pre> | Runs verify task whenever JS or CSS code is changed
 
 
