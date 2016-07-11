@@ -497,8 +497,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	              // Special case for type property. It *must* be read-only. Therefore, don't write it to the element
 	              // See http://stackoverflow.com/questions/8378563/why-cant-i-change-the-type-of-an-input-element-to-submit
 	            } else if (origAttrName !== 'type') {
-	                inputElem.attr(origAttrName, attr[a]);
-	              }
+	              inputElem.attr(origAttrName, attr[a]);
+	            }
 	
 	            // Remove all attributes off the host element
 	            hostElement.removeAttr(attr.$attr[a]);
@@ -1030,7 +1030,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var mod = _angular2.default.module('ngFormLib.controls.formDate', [_common2.default, _ErrorMessageContainer2.default]);
 	
-	//'mgcrea.ngStrap.datepicker'   We are using this, but if it is not loaded, we can still offer basic functionality
 	exports.default = mod.name;
 	
 	// INPUT:
