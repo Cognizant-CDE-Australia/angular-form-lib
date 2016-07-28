@@ -91,18 +91,28 @@ describe('Form Input Directive', function() {
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control" id="fld" name="fld" placeholder="indirect" ng-required="false" aria-required="false">');
   });
 
-
   it('should support input-prefix to add a Bootstrap input group addon before the field', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-prefix="AUD">');
 
     expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-addon">AUD</span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"></div>');
   });
 
-
   it('should support input-suffix to add a Bootstrap input group addon after the field', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-suffix="per hour">');
 
     expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-addon">per hour</span></div>');
+  });
+
+  it('should support input-button-prefix to add a Bootstrap input group button addon before the field', function() {
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-button-prefix="<button>Open</button>">');
+
+    expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-btn"><button>Open</button></span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"></div>');
+  });
+
+  it('should support input-button-suffix to add a Bootstrap input group button addon after the field', function() {
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-button-suffix="<button>Open</button>">');
+
+    expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-btn"><button>Open</button></span></div>');
   });
 
 

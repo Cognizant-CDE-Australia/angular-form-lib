@@ -185,19 +185,31 @@ mod.provider('formControlService', function() {
         labelElem.prepend(service.translate(labelText));
       },
 
-      addInputGroup: function(inputElem, inputGroupPrefix, inputGroupSuffix) {
-        if (inputGroupPrefix || inputGroupSuffix) {
-          inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element//wrap('<div class="input-group">');
-          var wrapper = inputElem.parent();
+      addInputGroup: function(inputElem, attr) {
 
-          if (inputGroupPrefix) {
-            wrapper.prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
-          }
-          if (inputGroupSuffix) {
-            wrapper.append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
-          }
+        const inputGroupMapping = {
+          inputPrefix: {className: 'input-group-addon', prepend: true},
+          inputSuffix: {className: 'input-group-addon', prepend: false},
+          inputButtonPrefix: {className: 'input-group-btn', prepend: true},
+          inputButtonSuffix: {className: 'input-group-btn', prepend: false}
+        };
+
+        if (attr.inputPrefix || attr.inputSuffix || attr.inputButtonPrefix || attr.inputButtonSuffix) {
+          inputElem.wrap('<div class="input-group">');//inputElem.parent(); // This should be the 'control-row' element//wrap('<div class="input-group">');
+          let wrapper = inputElem.parent();
+
+          Object.keys(inputGroupMapping).forEach((inputGroupName) => {
+
+            if (attr[inputGroupName]) {
+              const inputGroupConfig = inputGroupMapping[inputGroupName];
+              const inputGroupContent = `<span class="${inputGroupConfig.className}">${attr[inputGroupName]}</span>`;
+              inputGroupConfig.prepend ? wrapper.prepend(inputGroupContent) : wrapper.append(inputGroupContent);
+            }
+          });
+
           return true;
         }
+
         return false;
       },
 
