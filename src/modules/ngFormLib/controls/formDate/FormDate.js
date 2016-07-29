@@ -32,7 +32,7 @@ mod.directive('formDate', ['formControlService', function(formControlService) {
       formControlService.addLabelText(labelElem, tAttr.label);
       addPlaceholder(inputElem, formControlService.translate(tAttr.placeholder)); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 
-      // If the user wants to use 'input-addon-*' or 'input-addon-*', change the DOM
+      // If the user wants to use addons (either text or buttons), change the DOM
       var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
       var parentElemForErrors = (hasInputGroup) ? inputElem.parent().parent() : inputElem.parent();
 
