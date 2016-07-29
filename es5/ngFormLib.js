@@ -304,6 +304,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  //
 	  self.defaults = {
 	    idPrefix: 'fpFld',
+	    inputGroupButtonTemplateFunction: function inputGroupButtonTemplateFunction(val, handler) {
+	      return '<button type="button" class="btn btn-default" ' + (handler ? 'ng-click="' + handler + '"' : '') + '>' + val + '</button>';
+	    },
 	    templates: {
 	      formCheckbox: {
 	        template: 'ngFormLib/template/formCheckbox.html'
@@ -434,20 +437,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	        labelElem.prepend(service.translate(labelText));
 	      },
 	
-	      addInputGroup: function addInputGroup(inputElem, inputGroupPrefix, inputGroupSuffix) {
-	        if (inputGroupPrefix || inputGroupSuffix) {
-	          inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element//wrap('<div class="input-group">');
-	          var wrapper = inputElem.parent();
+	      addInputGroup: function addInputGroup(inputElem, attr) {
 	
-	          if (inputGroupPrefix) {
-	            wrapper.prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
+	        var inputGroupMapping = [{ inputAttr: 'inputPrefix', className: 'input-group-addon', attachFn: 'prepend', clickHandler: '', content: function content(val) {
+	            return val;
+	          } }, { inputAttr: 'inputSuffix', className: 'input-group-addon', attachFn: 'append', clickHandler: '', content: function content(val) {
+	            return val;
+	          } }, { inputAttr: 'inputButtonPrefix', className: 'input-group-btn', attachFn: 'prepend', clickHandler: 'inputButtonPrefixClick', content: self.defaults.inputGroupButtonTemplateFunction }, { inputAttr: 'inputButtonSuffix', className: 'input-group-btn', attachFn: 'append', clickHandler: 'inputButtonSuffixClick', content: self.defaults.inputGroupButtonTemplateFunction }];
+	        var contentToAppend = [];
+	
+	        inputGroupMapping.forEach(function (igConfig) {
+	          if (attr[igConfig.inputAttr]) {
+	            contentToAppend.push({
+	              attachFn: igConfig.attachFn,
+	              html: '<span class="' + igConfig.className + '">' + igConfig.content(attr[igConfig.inputAttr], attr[igConfig.clickHandler]) + '</span>'
+	            });
 	          }
-	          if (inputGroupSuffix) {
-	            wrapper.append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
-	          }
-	          return true;
+	        });
+	
+	        if (contentToAppend.length) {
+	          (function () {
+	            inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element
+	            var wrapper = inputElem.parent();
+	
+	            contentToAppend.forEach(function (content) {
+	              return wrapper[content.attachFn](content.html);
+	            });
+	          })();
 	        }
-	        return false;
+	
+	        return !!contentToAppend.length;
 	      },
 	
 	      decorateLabel: function decorateLabel(labelElem, required, id, labelClass, hideLabelExpr, hideRequiredIndicator, labelSuffix) {
@@ -885,6 +904,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// OUTPUT:
 	//  <input ... aria-invalid="false/true" aria-describedby="fieldId-errors">
 	
+	
 	mod.directive('fieldErrorController', ['formControlService', '$timeout', function (formControlService, $timeout) {
 	
 	  function setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name) {
@@ -985,6 +1005,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// OUTPUT:
 	
+	
 	mod.directive('formCheckbox', ['formControlService', function (formControlService) {
 	
 	  return formControlService.buildDirective({
@@ -1042,6 +1063,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	//      <i class="calendar" ng-click="acctCtrl.toggleDatePicker('datePickerTo')"></i>
 	//    </div>
 	
+	
 	mod.directive('formDate', ['formControlService', function (formControlService) {
 	
 	  return formControlService.buildDirective({
@@ -1052,8 +1074,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      formControlService.addLabelText(labelElem, tAttr.label);
 	      addPlaceholder(inputElem, formControlService.translate(tAttr.placeholder)); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 	
-	      // If the user wants to use 'input-addon-prefix' or 'input-addon-suffix', change the DOM
-	      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr.inputPrefix, tAttr.inputSuffix);
+	      // If the user wants to use addons (either text or buttons), change the DOM
+	      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
 	      var parentElemForErrors = hasInputGroup ? inputElem.parent().parent() : inputElem.parent();
 	
 	      formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
@@ -1200,6 +1222,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// OUTPUT:
 	
+	
 	mod.directive('formInput', ['formControlService', function (formControlService) {
 	
 	  return formControlService.buildDirective({
@@ -1210,8 +1233,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      formControlService.addLabelText(labelElem, tAttr.label);
 	      addPlaceholder(inputElem, formControlService.translate(tAttr.placeholder)); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 	
-	      // If the user wants to use 'input-addon-prefix' or 'input-addon-suffix', change the DOM
-	      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr.inputPrefix, tAttr.inputSuffix);
+	      // If the user wants to use addons (either text or buttons), change the DOM
+	      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
 	      var parentElemForErrors = hasInputGroup ? inputElem.parent().parent() : inputElem.parent();
 	
 	      formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
@@ -1395,6 +1418,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	//    text-errors="['data.errors']"></form-select>
 	
 	// OUTPUT:
+	
 	
 	mod.directive('formSelect', ['formControlService', function (formControlService) {
 	
@@ -1735,7 +1759,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Will storing an element this way cause a memory leak? Or should I just store the data I currently need (attr.class)
 	      // This has to happen during the compile step, as the children need access to the variable when they are compiled
 	      //  ('class' is a reserved word to JavaScript, so we need to treat it as a string)
-	      tElement.data('formElementClasses', tAttr['class']); //jscs:ignore
+	      tElement.data('formElementClasses', tAttr['class']);
 	
 	      return {
 	        pre: function pre(scope, element, attr, controller) {

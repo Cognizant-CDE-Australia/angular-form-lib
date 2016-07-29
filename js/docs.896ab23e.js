@@ -285,6 +285,9 @@ webpackJsonp([1],[
 	  //
 	  self.defaults = {
 	    idPrefix: 'fpFld',
+	    inputGroupButtonTemplateFunction: function inputGroupButtonTemplateFunction(val, handler) {
+	      return '<button type="button" class="btn btn-default" ' + (handler ? 'ng-click="' + handler + '"' : '') + '>' + val + '</button>';
+	    },
 	    templates: {
 	      formCheckbox: {
 	        template: 'ngFormLib/template/formCheckbox.html'
@@ -415,20 +418,36 @@ webpackJsonp([1],[
 	        labelElem.prepend(service.translate(labelText));
 	      },
 	
-	      addInputGroup: function addInputGroup(inputElem, inputGroupPrefix, inputGroupSuffix) {
-	        if (inputGroupPrefix || inputGroupSuffix) {
-	          inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element//wrap('<div class="input-group">');
-	          var wrapper = inputElem.parent();
+	      addInputGroup: function addInputGroup(inputElem, attr) {
 	
-	          if (inputGroupPrefix) {
-	            wrapper.prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
+	        var inputGroupMapping = [{ inputAttr: 'inputPrefix', className: 'input-group-addon', attachFn: 'prepend', clickHandler: '', content: function content(val) {
+	            return val;
+	          } }, { inputAttr: 'inputSuffix', className: 'input-group-addon', attachFn: 'append', clickHandler: '', content: function content(val) {
+	            return val;
+	          } }, { inputAttr: 'inputButtonPrefix', className: 'input-group-btn', attachFn: 'prepend', clickHandler: 'inputButtonPrefixClick', content: self.defaults.inputGroupButtonTemplateFunction }, { inputAttr: 'inputButtonSuffix', className: 'input-group-btn', attachFn: 'append', clickHandler: 'inputButtonSuffixClick', content: self.defaults.inputGroupButtonTemplateFunction }];
+	        var contentToAppend = [];
+	
+	        inputGroupMapping.forEach(function (igConfig) {
+	          if (attr[igConfig.inputAttr]) {
+	            contentToAppend.push({
+	              attachFn: igConfig.attachFn,
+	              html: '<span class="' + igConfig.className + '">' + igConfig.content(attr[igConfig.inputAttr], attr[igConfig.clickHandler]) + '</span>'
+	            });
 	          }
-	          if (inputGroupSuffix) {
-	            wrapper.append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
-	          }
-	          return true;
+	        });
+	
+	        if (contentToAppend.length) {
+	          (function () {
+	            inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element
+	            var wrapper = inputElem.parent();
+	
+	            contentToAppend.forEach(function (content) {
+	              return wrapper[content.attachFn](content.html);
+	            });
+	          })();
 	        }
-	        return false;
+	
+	        return !!contentToAppend.length;
 	      },
 	
 	      decorateLabel: function decorateLabel(labelElem, required, id, labelClass, hideLabelExpr, hideRequiredIndicator, labelSuffix) {
@@ -832,6 +851,7 @@ webpackJsonp([1],[
 	// OUTPUT:
 	//  <input ... aria-invalid="false/true" aria-describedby="fieldId-errors">
 	
+	
 	mod.directive('fieldErrorController', ['formControlService', '$timeout', function (formControlService, $timeout) {
 	
 	  function setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name) {
@@ -932,6 +952,7 @@ webpackJsonp([1],[
 	
 	// OUTPUT:
 	
+	
 	mod.directive('formCheckbox', ['formControlService', function (formControlService) {
 	
 	  return formControlService.buildDirective({
@@ -989,6 +1010,7 @@ webpackJsonp([1],[
 	//      <i class="calendar" ng-click="acctCtrl.toggleDatePicker('datePickerTo')"></i>
 	//    </div>
 	
+	
 	mod.directive('formDate', ['formControlService', function (formControlService) {
 	
 	  return formControlService.buildDirective({
@@ -999,8 +1021,8 @@ webpackJsonp([1],[
 	      formControlService.addLabelText(labelElem, tAttr.label);
 	      addPlaceholder(inputElem, formControlService.translate(tAttr.placeholder)); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 	
-	      // If the user wants to use 'input-addon-prefix' or 'input-addon-suffix', change the DOM
-	      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr.inputPrefix, tAttr.inputSuffix);
+	      // If the user wants to use addons (either text or buttons), change the DOM
+	      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
 	      var parentElemForErrors = hasInputGroup ? inputElem.parent().parent() : inputElem.parent();
 	
 	      formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
@@ -1147,6 +1169,7 @@ webpackJsonp([1],[
 	
 	// OUTPUT:
 	
+	
 	mod.directive('formInput', ['formControlService', function (formControlService) {
 	
 	  return formControlService.buildDirective({
@@ -1157,8 +1180,8 @@ webpackJsonp([1],[
 	      formControlService.addLabelText(labelElem, tAttr.label);
 	      addPlaceholder(inputElem, formControlService.translate(tAttr.placeholder)); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 	
-	      // If the user wants to use 'input-addon-prefix' or 'input-addon-suffix', change the DOM
-	      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr.inputPrefix, tAttr.inputSuffix);
+	      // If the user wants to use addons (either text or buttons), change the DOM
+	      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
 	      var parentElemForErrors = hasInputGroup ? inputElem.parent().parent() : inputElem.parent();
 	
 	      formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
@@ -1342,6 +1365,7 @@ webpackJsonp([1],[
 	//    text-errors="['data.errors']"></form-select>
 	
 	// OUTPUT:
+	
 	
 	mod.directive('formSelect', ['formControlService', function (formControlService) {
 	
@@ -1682,7 +1706,7 @@ webpackJsonp([1],[
 	      // Will storing an element this way cause a memory leak? Or should I just store the data I currently need (attr.class)
 	      // This has to happen during the compile step, as the children need access to the variable when they are compiled
 	      //  ('class' is a reserved word to JavaScript, so we need to treat it as a string)
-	      tElement.data('formElementClasses', tAttr['class']); //jscs:ignore
+	      tElement.data('formElementClasses', tAttr['class']);
 	
 	      return {
 	        pre: function pre(scope, element, attr, controller) {
@@ -7384,8 +7408,6 @@ webpackJsonp([1],[
 	
 	// import all of the documentation JS files
 	// There should be a nicer way to do this, but this won't change very often...
-	
-	
 	var mod = _angular2.default.module('ngFormLibDocs.docs.fixtures', [_formControlsCommon2.default, _formControlsCommonProperties2.default, _formControlsDemos2.default, _formControlService2.default, _formPolicy2.default, _formReset2.default, _formSubmit2.default, _formInput2.default, _formCheckbox2.default, _formRadioButton2.default, _formSelect2.default, _formDate2.default, _errorMessageContainer2.default, _requiredMarker2.default]);
 	
 	exports.default = mod.name;
@@ -7428,8 +7450,6 @@ webpackJsonp([1],[
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// No export, currently
-	
-	
 	var mod = _angular2.default.module('ngFormLibDocs.docs', ['mgcrea.ngStrap', _ngFormLib.ngFormLib, _ngFormLib.defaultPolicies, _angularAnimate2.default, _angularTranslate2.default,
 	
 	// require ALL of the docs /demo components
@@ -7437,8 +7457,6 @@ webpackJsonp([1],[
 	
 	// import all of the documentation JS files
 	// Allows animations to run
-	
-	
 	exports.default = mod.name;
 	
 	// Needed to bind to HTML and compile it when it is loaded
@@ -7983,9 +8001,21 @@ webpackJsonp([1],[
 	
 	
 	mod.directive('formInputDocs', function () {
+	  var prefixCount = 0;
+	  var suffixCount = 0;
+	
 	  return {
 	    restrict: 'A',
-	    template: __webpack_require__(74)
+	    template: __webpack_require__(74),
+	    controller: function controller() {
+	      this.igbPrefixHandler = function () {
+	        return window.alert('input group button prefix clicked ' + ++prefixCount + ' times');
+	      };
+	      this.igbSuffixHandler = function () {
+	        return window.alert('input group button suffix clicked ' + ++suffixCount + ' times');
+	      };
+	    },
+	    controllerAs: '$ctrl'
 	  };
 	});
 	module.exports = exports['default'];
@@ -8275,7 +8305,7 @@ webpackJsonp([1],[
 /* 63 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\">\n\n  <div class=\"page-header\">\n    <h1 id=\"gettingStarted\">Getting started <a class=\"small\" href=\"{{mainCtrl.REPO}}readme.md\" target=\"_blank\">readme.md</a>\n    </h1>\n    <code>ngFormLib</code>\n  </div>\n\n  <div class=\"callout callout-info\">\n    <h4 id=\"project-history\">About the project</h4>\n    <p>Angular Form Library is a set of Angular components that allow you to configure how form validation works across your entire site,\n      plus a set of accessibility-aware input controls that are easy to integrate into your AngularJS 1.2+ application.</p>\n    <p>Designed with Bootstrap CSS styles and markup in mind, Angular Form Library can be easily customised to work with your existing\n      CSS and form markup.</p>\n  </div>\n\n  <h2 id=\"project-quickstart\">Quick Start</h2>\n  <p>Install and manage Angular Form Library with NPM.</p>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"bash\" highlight-block>\n        $ npm install angular-form-lib --save\n      </code>\n    </pre>\n  </div>\n\n  <div class=\"callout callout-warning\">\n    <h4>Dependencies</h4>\n    <p>Angular Form Library has a dependency on <strong>Angular 1.2+</strong>.\n       You <strong>must</strong> load Angular 1.2+ yourself.</p>\n    <p>Additionally, <code>angular-scroll</code> and <code>angular-translate</code> are optional dependencies which will be used if loaded.\n      Angular Scroll provides smooth-scrolling to an element that receives focus (such as the first error-field in a form). Angular Translate\n      allows strings to be loaded from resource files, which can help standardise error messages.</p>\n  </div>\n\n\n  <p>Inject the <code>ngFormLib</code>module into your Angular application.</p>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"javascript\" highlight-block>\n        // ES5\n        angular.module('myApp', ['ngFormLib']);\n\n        // ES6 / Webpack\n        import {ngFormLib} from 'angular-form-lib';\n\n        const app = angular.module('myApp', [ngFormLib]);\n      </code>\n    </pre>\n  </div>\n\n  <p>Typically you would load both the module and the default policies into your application:</p>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"javascript\" highlight-block>\n        // ES5\n        angular.module('myApp', [\n          'ngFormLib',\n          'duScroll',   // Scrolling behaviour for when the state changes to an error and we wish to focus the field\n          'ngFormLib.policy.behaviourOnStateChange',\n          'ngFormLib.policy.checkForStateChanges',\n          'ngFormLib.policy.stateDefinitions',\n          'pascalprecht.translate'    // Adds translation support, which will be used for certain properties when available\n        ]);\n\n        // ES6 / Webpack\n        import {ngFormLib, defaultPolicies} from 'angular-form-lib';\n        import 'angular-scroll';   // Scrolling behaviour for when the state changes to an error and we wish to focus the field\n        import ngTranslate from 'angular-translate';\n\n        const app = angular.module('myApp', ['duScroll', ngTranslate, ngFormLib, defaultPolicies]);\n      </code>\n    </pre>\n  </div>\n\n\n  <div class=\"callout callout-info\">\n    <h4>Custom builds</h4>\n    <p>Angular Form Library provides independently built modules that can be loaded separately:</p>\n    <div class=\"highlight\">\n      <pre>\n        <code class=\"javascript\" highlight-block>\n          angular.module('myApp', [ 'ngFormLib.policy', 'ngFormLib.controls.formInput']);\n        </code>\n      </pre>\n    </div>\n  </div>\n\n  <div class=\"callout callout-info\">\n    <h4>Message translation</h4>\n    <p>Angular Form Library will optionally use the <code>pascalprecht.translate</code> module and the <code>$translate.instant()</code> method\n      to perform translation of error messages, placeholder text, field hints and labels,\n      if the module has been loaded. See <a href=\"http://angular-translate.github.io/\">Angular Translate</a>.</p>\n  </div>\n\n  <h2 id=\"project-contribute\">Contributing</h2>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"bash\" highlight-block>\n        // Fork https://github.com/odecee/angular-form-lib.git on Github\n        mkdir {newDir}\n        cd {newDir}\n        git clone {your forked repo}\n        npm i commitizen -g   // Install commitizen to help generate conventional commit messages\n        npm i\n\n        // Serve and watch docs, ideal to develop\n        $ npm start\n        // Continuous integration\n        $ npm test\n        // Build Angular Form Library and serve documentation site\n        $ npm build:serve\n\n        // Make some changes then commit them\n        git add.\n        git cz\n        // Then create pull request with your changes, push to GitHub, get feedback, rinse, repeat, merge.\n      </code>\n    </pre>\n  </div>\n\n\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\">\n\n  <div class=\"page-header\">\n    <h1 id=\"gettingStarted\">Getting started <a class=\"small\" href=\"{{mainCtrl.REPO}}readme.md\" target=\"_blank\">readme.md</a>\n    </h1>\n    <code>ngFormLib</code>\n  </div>\n\n  <div class=\"callout callout-info\">\n    <h4 id=\"project-history\">About the project</h4>\n    <p>Angular Form Library is a set of Angular components that allow you to configure how form validation works across your entire site,\n      plus a set of accessibility-aware input controls that are easy to integrate into your AngularJS 1.2+ application.</p>\n    <p>Designed with Bootstrap CSS styles and markup in mind, Angular Form Library can be easily customised to work with your existing\n      CSS and form markup.</p>\n  </div>\n\n  <h2 id=\"project-quickstart\">Quick Start</h2>\n  <p>Install and manage Angular Form Library with NPM.</p>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"bash\" highlight-block>\n        $ npm install angular-form-lib --save\n      </code>\n    </pre>\n  </div>\n\n  <div class=\"callout callout-warning\">\n    <h4>Dependencies</h4>\n    <p>Angular Form Library has a dependency on <strong>Angular 1.2+</strong> and <code>angular-scroll</code>.\n       You <strong>must</strong> load Angular 1.2+ and <code>angular-scroll</code> yourself.</p>\n    <p>Additionally, <code>angular-translate</code> are optional dependencies which will be used if loaded.\n      Angular Scroll provides smooth-scrolling to an element that receives focus (such as the first error-field in a form). Angular Translate\n      allows strings to be loaded from resource files, which can help standardise error messages.</p>\n  </div>\n\n\n  <p>Inject the <code>ngFormLib</code>module into your Angular application.</p>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"javascript\" highlight-block>\n        // ES5\n        angular.module('myApp', ['ngFormLib']);\n\n        // ES6 / Webpack\n        import {ngFormLib} from 'angular-form-lib';\n\n        const app = angular.module('myApp', [ngFormLib]);\n      </code>\n    </pre>\n  </div>\n\n  <p>Typically you would load both the module and the default policies into your application:</p>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"javascript\" highlight-block>\n        // ES5\n        angular.module('myApp', [\n          'ngFormLib',\n          'duScroll',   // Scrolling behaviour for when the state changes to an error and we wish to focus the field\n          'ngFormLib.policy.behaviourOnStateChange',\n          'ngFormLib.policy.checkForStateChanges',\n          'ngFormLib.policy.stateDefinitions',\n          'pascalprecht.translate'    // Adds translation support, which will be used for certain properties when available\n        ]);\n\n        // ES6 / Webpack\n        import {ngFormLib, defaultPolicies} from 'angular-form-lib';\n        import 'angular-scroll';   // Scrolling behaviour for when the state changes to an error and we wish to focus the field\n        import ngTranslate from 'angular-translate';\n\n        const app = angular.module('myApp', ['duScroll', ngTranslate, ngFormLib, defaultPolicies]);\n      </code>\n    </pre>\n  </div>\n\n\n  <div class=\"callout callout-info\">\n    <h4>Custom builds</h4>\n    <p>Angular Form Library provides independently built modules that can be loaded separately:</p>\n    <div class=\"highlight\">\n      <pre>\n        <code class=\"javascript\" highlight-block>\n          angular.module('myApp', [ 'ngFormLib.policy', 'ngFormLib.controls.formInput']);\n        </code>\n      </pre>\n    </div>\n  </div>\n\n  <div class=\"callout callout-info\">\n    <h4>Message translation</h4>\n    <p>Angular Form Library will optionally use the <code>pascalprecht.translate</code> module and the <code>$translate.instant()</code> method\n      to perform translation of error messages, placeholder text, field hints and labels,\n      if the module has been loaded. See <a href=\"http://angular-translate.github.io/\">Angular Translate</a>.</p>\n  </div>\n\n  <h2 id=\"project-contribute\">Contributing</h2>\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"bash\" highlight-block>\n        // Fork https://github.com/odecee/angular-form-lib.git on Github\n        mkdir {newDir}\n        cd {newDir}\n        git clone {your forked repo}\n        npm i commitizen -g   // Install commitizen to help generate conventional commit messages\n        npm i\n\n        // Serve and watch docs, ideal to develop\n        $ npm start\n        // Continuous integration\n        $ npm test\n        // Build Angular Form Library and serve documentation site\n        $ npm build:serve\n\n        // Make some changes then commit them\n        git add.\n        git cz\n        // Then create pull request with your changes, push to GitHub, get feedback, rinse, repeat, merge.\n      </code>\n    </pre>\n  </div>\n\n\n</div>\n";
 
 /***/ },
 /* 64 */
@@ -8341,7 +8371,7 @@ webpackJsonp([1],[
 /* 74 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"bs-docs-section\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formInput\">Form Input <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formInput/FormInput.js\" target=\"_blank\">FormInput.js</a>\n    </h1>\n    <code>ngFormLib.controls.formInput</code>\n  </div>\n\n  <p>The Form Input directive acts like a macro in that it expands into a <code>&lt;label&gt;</code><code>&lt;input&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Form Input requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a href=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> to be loaded.</p>\n  </div>\n\n  <h2 id=\"formInputExamples\">Examples</h2>\n  <p>Use <code>form-input</code> to create a complete HTML structure containing a <code>label</code> and <code>select</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formInput1\" class=\"form\" novalidate form-submit>\n\n      <div form-input uid=\"formInput1_fld1\" name=\"formInput1_fld1\" label=\"Text type field\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput1.fld1\" field-hint=\"{{'OTHER.HINT' | translate}}\" field-errors=\"{required: 'Title is required'}\" placeholder=\"Placeholder text\"></div>\n\n      <div form-input uid=\"formInput1_fld2\" name=\"formInput1_fld2\" label=\"Date type field\" required=\"false\" input-type=\"date\" ff-ng-model=\"ctrl.formInput1.fld2\"></div>\n\n      <div form-input uid=\"formInput1_fld3\" name=\"formInput1_fld3\" label=\"Income\" required=\"true\" input-type=\"text\" input-prefix=\"$\" input-suffix=\"per month\" ff-ng-model=\"ctrl.formInput1.fld3\" field-errors=\"{required: 'Income is required'}\"></div>\n\n      \n      <div form-input label=\"Generated id field\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput1.fld4\" placeholder=\"This field has a generated name and id\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formInputUsage\">Usage</h2>\n  <p>Add the <code>form-input</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>field-hint</td>\n          <td>string</td>\n          <td></td>\n          <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field.</td>\n        </tr>\n        <tr>\n          <td>input-prefix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups\" target=\"_blank\">input group</a> around the input\n            element and displays the <strong>input-prefix</strong> string inside a <code>&lt;span class=\"input-group-addon\"&gt;&lt;/span&gt;</code> element, which appears <strong>before</strong> the <code>input</code> element.\n          </td>\n        </tr>\n        <tr>\n          <td>input-suffix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups\" target=\"_blank\">input group</a> around the input\n            element and displays the <strong>input-suffix</strong> string inside a <code>&lt;span class=\"input-group-addon\"&gt;&lt;/span&gt;</code> element, which appears <strong>after</strong> the <code>input</code> element.\n          </td>\n        </tr>\n        <tr>\n          <td>placeholder</td>\n          <td>string</td>\n          <td></td>\n          <td>Placeholder text that appears inside the input element when there is no existing value. Alias for <code>ff-placeholder</code>.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
+	module.exports = "<div class=\"bs-docs-section\">\n\n  <div class=\"page-header\">\n    <h1 id=\"formInput\">Form Input <a class=\"small\" href=\"{{mainCtrl.REPO}}src/modules/ngFormLib/controls/formInput/FormInput.js\" target=\"_blank\">FormInput.js</a>\n    </h1>\n    <code>ngFormLib.controls.formInput</code>\n  </div>\n\n  <p>The Form Input directive acts like a macro in that it expands into a <code>&lt;label&gt;</code><code>&lt;input&gt;</code> and some auxillary HTML elements, but does change the <code>$scope</code> of those elements.</p>\n\n  <p>It works this way because the elements are inter-related. For example, when the <code>required</code> attribute is set to <code>true</code>\n    the <code>&lt;label&gt;</code> element is changed so that a required-indicator-CSS-class is applied to the element.\n  </p>\n\n  <div class=\"callout callout-danger\">\n    <h4>Plugin dependency</h4>\n    <p>Form Input requires the <a ahref=\"#formControlService\" use-hash=\"true\" scroll-offset=\"50\">FormControlService module</a>, the <a href=\"#fieldErrorController\">field error controller module</a>\n      , the <a ahref=\"#errorMessageContainer\">error message container module</a> to be loaded.</p>\n  </div>\n\n  <h2 id=\"formInputExamples\">Examples</h2>\n  <p>Use <code>form-input</code> to create a complete HTML structure containing a <code>label</code> and <code>select</code> element that reacts to the error state of the field.</p>\n\n  <h3>Live demo</h3>\n\n  <div class=\"bs-example\" style=\"padding-bottom:24px\" append-source>\n\n    \n    <form name=\"formInput1\" class=\"form\" novalidate form-submit>\n\n      <div form-input uid=\"formInput1_fld1\" name=\"formInput1_fld1\" label=\"Text type field\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput1.fld1\" field-hint=\"{{'OTHER.HINT' | translate}}\" field-errors=\"{required: 'Title is required'}\" placeholder=\"Placeholder text\"></div>\n\n      <div form-input uid=\"formInput1_fld2\" name=\"formInput1_fld2\" label=\"Date type field\" required=\"false\" input-type=\"date\" ff-ng-model=\"ctrl.formInput1.fld2\"></div>\n\n      <div form-input uid=\"formInput1_fld3\" name=\"formInput1_fld3\" label=\"Income\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput1.fld3\" input-prefix=\"$\" input-button-suffix=\"per month\" input-button-suffix-click=\"$ctrl.igbSuffixHandler()\" field-errors=\"{required: 'Income is required'}\"></div>\n\n      \n      <div form-input label=\"Generated id field\" required=\"true\" input-type=\"text\" ff-ng-model=\"ctrl.formInput1.fld4\" placeholder=\"This field has a generated name and id\" input-button-prefix=\"$\" input-button-prefix-click=\"$ctrl.igbPrefixHandler()\" input-suffix=\"per month\" field-errors=\"{required: 'FIELD_ERROR.TEMPLATE.REQUIRED'}\"></div>\n\n      <button type=\"submit\" class=\"btn btn-primary\">Submit button</button>\n    </form>\n\n  </div>\n\n  <h2 id=\"formInputUsage\">Usage</h2>\n  <p>Add the <code>form-input</code> directive to an element.</p>\n\n  <h3>Options</h3>\n  <p>Options can be passed via attributes on the directive.</p>\n  <div class=\"table-responsive\">\n    <table class=\"table table-bordered table-striped\">\n      <thead>\n        <tr>\n          <th style=\"width:100px\">Name</th>\n          <th style=\"width:100px\">Type</th>\n          <th style=\"width:50px\">Default</th>\n          <th>Description</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>field-hint</td>\n          <td>string</td>\n          <td></td>\n          <td>Text that is related to the field but is not the field's label. Often used to provide additional information about the field.</td>\n        </tr>\n        <tr>\n          <td>input-button-prefix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups-buttons\" target=\"_blank\">input group button</a> at the front of an input control.\n            To handle the button click, call a controller/scope function inside of the `input-button-prefix-click` attribute (see example above).\n          </td>\n        </tr>\n        <tr>\n          <td>input-button-suffix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups-buttons\" target=\"_blank\">input group button</a> at the end of an input control.\n            To handle the button click, call a controller/scope function inside of the `input-button-suffix-click` attribute (see example above).\n          </td>\n        </tr>\n        <tr>\n          <td>input-prefix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups\" target=\"_blank\">input group</a> around the input\n            element and displays the <strong>input-prefix</strong> string inside a <code>&lt;span class=\"input-group-addon\"&gt;&lt;/span&gt;</code> element, which appears <strong>before</strong> the <code>input</code> element.\n          </td>\n        </tr>\n        <tr>\n          <td>input-suffix</td>\n          <td>string</td>\n          <td></td>\n          <td>Creates a Bootstrap <a href=\"http://getbootstrap.com/components/#input-groups\" target=\"_blank\">input group</a> around the input\n            element and displays the <strong>input-suffix</strong> string inside a <code>&lt;span class=\"input-group-addon\"&gt;&lt;/span&gt;</code> element, which appears <strong>after</strong> the <code>input</code> element.\n          </td>\n        </tr>\n        <tr>\n          <td>placeholder</td>\n          <td>string</td>\n          <td></td>\n          <td>Placeholder text that appears inside the input element when there is no existing value. Alias for <code>ff-placeholder</code>.</td>\n        </tr>\n      </tbody>\n      <tbody form-controls-common-properties-docs></tbody>\n    </table>\n  </div>\n</div>\n";
 
 /***/ },
 /* 75 */
@@ -8405,4 +8435,4 @@ webpackJsonp([1],[
 
 /***/ }
 ]);
-//# sourceMappingURL=docs.7013f6ed.js.map
+//# sourceMappingURL=docs.896ab23e.js.map
