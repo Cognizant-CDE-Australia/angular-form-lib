@@ -58,28 +58,24 @@ describe('Form Input Directive', function() {
 
   it('should hide the label if the label should not be shown', function() {
     elem = compileElement('<form name="frm"><form-input uid="fld" name="fldName" label="hi" hide-label="true" input-type="text" required="some.value"></form>');
-
     expect(elem.find('label').hasClass('sr-only')).toEqual(true);
   });
 
 
   it('should create a form input element and apply all ff- prefixed attributes to the <input element (except for the type attribute, which is read-only and must come from the template)', function() {
     elem = compileElement('<form-input uid="fld" name="name" label="Some field" input-type="text" ff-a="1" ff-b="true" ff-maxlength="8" ff-class="newClass">');
-
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control newClass" id="fld" name="name" a="1" b="true" maxlength="8" ng-required="false" aria-required="false">');
   });
 
 
   it('should allow the placeholder attribute to be specified as "placeholder"', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" placeholder="direct">');
-
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false" placeholder="direct">');
   });
 
 
   it('should show a label-suffix when one is provided AND show the required indicator at the same time', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" label-suffix="(please)" required="true">');
-
     expect(elem.find('label')[0].outerHTML).toEqual('<label class="control-label" for="fld">label&nbsp;(please)<span class="required ng-isolate-scope" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" required-marker="" hide="!(true)"></span></label>');
   });
 
@@ -87,29 +83,60 @@ describe('Form Input Directive', function() {
   it('should allow the placeholder attribute to be specified as "ff-placeholder" too', function() {
     // Now use ff-placeholder
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" ff-placeholder="indirect">');
-
     expect(elem.find('input')[0].outerHTML).toEqual('<input type="text" class="form-control" id="fld" name="fld" placeholder="indirect" ng-required="false" aria-required="false">');
   });
 
-
   it('should support input-prefix to add a Bootstrap input group addon before the field', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-prefix="AUD">');
-
     expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-addon">AUD</span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"></div>');
   });
 
-
   it('should support input-suffix to add a Bootstrap input group addon after the field', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-suffix="per hour">');
-
     expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-addon">per hour</span></div>');
   });
 
-
   it('should support both input-prefix and input-suffix to add a Bootstrap input group addons before and after the field', function() {
     elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-prefix="$" input-suffix="per hour">');
-
     expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-addon">$</span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-addon">per hour</span></div>');
+  });
+
+
+  it('should support input-button-prefix to add a Bootstrap input group button addon before the field, without a click handler', function() {
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-button-prefix="Open">');
+    expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-btn"><button type="button" class="btn btn-default">Open</button></span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"></div>');
+  });
+
+  it('should support input-button-prefix to add a Bootstrap input group button addon before the field, with a click handler', function() {
+    scope.foo = jasmine.createSpy('foo');
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-button-prefix="Open" input-button-prefix-click="foo()">');
+    expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="foo()">Open</button></span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"></div>');
+
+    expect(scope.foo).not.toHaveBeenCalled();
+    elem.find('button').triggerHandler('click');
+    expect(scope.foo).toHaveBeenCalled();
+  });
+
+
+  it('should support input-button-suffix to add a Bootstrap input group button addon after the field, without a click handler', function() {
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-button-suffix="Close">');
+    expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-btn"><button type="button" class="btn btn-default">Close</button></span></div>');
+  });
+
+  it('should support input-button-prefix and input-button-suffix with a click handlers', function() {
+    scope.foo = jasmine.createSpy('foo');
+    scope.bar = jasmine.createSpy('bar');
+    elem = compileElement('<form-input uid="fld" input-type="text" label="label" input-button-prefix="Open" input-button-prefix-click="foo()" input-button-suffix="Close" input-button-suffix-click="bar()">');
+    expect(elem.find('input').parent()[0].outerHTML).toEqual('<div class="input-group"><span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="foo()">Open</button></span><input type="text" class="form-control" id="fld" name="fld" ng-required="false" aria-required="false"><span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="bar()">Close</button></span></div>');
+
+    expect(scope.foo).not.toHaveBeenCalled();
+    expect(scope.bar).not.toHaveBeenCalled();
+    elem.find('button').eq(0).triggerHandler('click');
+    expect(scope.foo).toHaveBeenCalled();
+    expect(scope.bar).not.toHaveBeenCalled();
+
+    elem.find('button').eq(1).triggerHandler('click');
+    expect(scope.bar).toHaveBeenCalled();
   });
 
 

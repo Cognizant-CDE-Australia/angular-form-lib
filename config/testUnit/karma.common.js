@@ -46,7 +46,6 @@ var karmaConfig = {
     'karma-coverage',
     'karma-chrome-launcher',
     require('karma-webpack'),
-    'karma-spec-reporter',
     'karma-sourcemap-loader',
     'karma-threshold-reporter'
   ],
@@ -79,10 +78,10 @@ var karmaConfig = {
   },
 
   thresholdReporter: {
-    statements: 80,
+    statements: 90,
     branches: 80,
     functions: 80,
-    lines: 80
+    lines: 90
   },
 
 

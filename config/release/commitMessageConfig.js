@@ -35,12 +35,12 @@ module.exports = {
   scopeOverrides: {
     feat: featFixScopes,
     fix: featFixScopes,
-    docs: featFixScopes.concat(['readme', 'site']),
+    docs: featFixScopes.concat([{name: 'readme'}, {name: 'site'}]),
     style: featFixScopes,
     refactor: featFixScopes,
     perf: featFixScopes,
     test: featFixScopes,
-    chore: ['build']
+    chore: [{name: 'build'}]
   },
 
 

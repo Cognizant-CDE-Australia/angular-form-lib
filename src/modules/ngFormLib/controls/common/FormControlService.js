@@ -47,6 +47,7 @@ mod.provider('formControlService', function() {
   //
   self.defaults = {
     idPrefix: 'fpFld',
+    inputGroupButtonTemplateFunction: (val, handler) => `<button type="button" class="btn btn-default" ${handler ? 'ng-click="' + handler + '"' : ''}>${val}</button>`,
     templates: {
       formCheckbox: {
         template:           'ngFormLib/template/formCheckbox.html'
@@ -185,20 +186,33 @@ mod.provider('formControlService', function() {
         labelElem.prepend(service.translate(labelText));
       },
 
-      addInputGroup: function(inputElem, inputGroupPrefix, inputGroupSuffix) {
-        if (inputGroupPrefix || inputGroupSuffix) {
-          inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element//wrap('<div class="input-group">');
-          var wrapper = inputElem.parent();
+      addInputGroup: function(inputElem, attr) {
 
-          if (inputGroupPrefix) {
-            wrapper.prepend('<span class="input-group-addon">' + inputGroupPrefix + '</span>');
+        const inputGroupMapping = [
+          {inputAttr: 'inputPrefix', className: 'input-group-addon', attachFn: 'prepend', clickHandler: '', content: (val) => val},
+          {inputAttr: 'inputSuffix', className: 'input-group-addon', attachFn: 'append', clickHandler: '', content: (val) => val},
+          {inputAttr: 'inputButtonPrefix', className: 'input-group-btn', attachFn: 'prepend', clickHandler: 'inputButtonPrefixClick', content: self.defaults.inputGroupButtonTemplateFunction},
+          {inputAttr: 'inputButtonSuffix', className: 'input-group-btn', attachFn: 'append', clickHandler: 'inputButtonSuffixClick', content: self.defaults.inputGroupButtonTemplateFunction}
+        ];
+        let contentToAppend = [];
+
+        inputGroupMapping.forEach(igConfig => {
+          if (attr[igConfig.inputAttr]) {
+            contentToAppend.push({
+              attachFn: igConfig.attachFn,
+              html: `<span class="${igConfig.className}">${igConfig.content(attr[igConfig.inputAttr], attr[igConfig.clickHandler])}</span>`
+            });
           }
-          if (inputGroupSuffix) {
-            wrapper.append('<span class="input-group-addon">' + inputGroupSuffix + '</span>');
-          }
-          return true;
+        });
+
+        if (contentToAppend.length) {
+          inputElem.wrap('<div class="input-group">');// This should be the 'control-row' element
+          let wrapper = inputElem.parent();
+
+          contentToAppend.forEach(content => wrapper[content.attachFn](content.html));
         }
-        return false;
+
+        return !!contentToAppend.length;
       },
 
       decorateLabel: function(labelElem, required, id, labelClass, hideLabelExpr, hideRequiredIndicator, labelSuffix) {

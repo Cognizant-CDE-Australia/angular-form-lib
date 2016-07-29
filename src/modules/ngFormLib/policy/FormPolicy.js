@@ -79,7 +79,7 @@ function formDirective(formPolicyService) {
       // Will storing an element this way cause a memory leak? Or should I just store the data I currently need (attr.class)
       // This has to happen during the compile step, as the children need access to the variable when they are compiled
       //  ('class' is a reserved word to JavaScript, so we need to treat it as a string)
-      tElement.data('formElementClasses', tAttr['class']);  //jscs:ignore
+      tElement.data('formElementClasses', tAttr['class']);
 
       return {
         pre: function(scope, element, attr, controller) {
