@@ -40,7 +40,7 @@ module.exports = {
     refactor: featFixScopes,
     perf: featFixScopes,
     test: featFixScopes,
-    chore: ['build']
+    chore: [{name: 'build'}]
   },
 
 
