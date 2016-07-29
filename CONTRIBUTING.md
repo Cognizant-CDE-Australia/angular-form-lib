@@ -92,9 +92,10 @@ Command | Description
 Command | Description
 :------ | :----------
 <pre>npm test</pre> | Alias for `npm run test:unit` task
+<pre>npm run test:coverage</pre> | Alias for test:unit:once, which also does test coverage checks and will fail if test coverage is not sufficient
 <pre>npm run test:unit</pre> | Run unit tests whenever JS source or tests change<ul><li>Uses Karma and Jasmine 2</li><li>Code coverage</li><li>Runs continuously (best to run in a separate window)</li></ul>
-<pre>npm run test:unit:debug</pre> | Run unit tests but disable code coverage to make debugging in a browser easier<ul><li>no code coverage to make it easier to read source code</li></ul>
-<pre>npm run test:unit:once</pre> | Run unit tests once
+<pre>npm run test:unit:debug</pre> | Run unit tests but disable code coverage to make debugging in a browser easier<ul><li>Runs continuously (best to run in a separate window)</li><li>No code coverage to make it easier to read source & testcode</li></ul>
+<pre>npm run test:unit:once</pre> | Run unit tests once<ul><li>Tests are run a single time</li><li>Good command for continuous integration testing</li></ul>
 <pre>npm run test:browser</pre> | Run browser tests against the *development* web server (the development server **must** be running)
 
 
@@ -136,9 +137,12 @@ Command | Description
 
 Command | Description
 :------ | :----------
-<pre>npm run release</pre> | Create production version of software, verify code, run unit tests. This task is designed to be run before
+<pre>npm run pre-release</pre> | Verify code, run unit tests, check test coverage, build software. This task is designed to be run before
 the `semantic-release` task.
-<ul><li>Run `semantic-release-cli setup` once you have a remote repository. See https://github.com/semantic-release/cli for details</li><li>Generates release notes against each release in the "Releases" section in GitHub</li><li>Publishes package to NPM</li><li>Integrates with Travis CI</li></ul>
+<ul><li>Run `semantic-release-cli setup` once you have a remote repository. See https://github.com/semantic-release/cli for details.</li><li>Semantic-release integrates with Travis CI (or similar tools) to generate release notes
+for each release (which appears in the "Releases" section in GitHub) and
+publishes the package to NPM (when all the tests are successful) with a semantic version number.
+</li></ul>
 
 
 

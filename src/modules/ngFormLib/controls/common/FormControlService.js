@@ -47,6 +47,7 @@ mod.provider('formControlService', function() {
   //
   self.defaults = {
     idPrefix: 'fpFld',
+    inputGroupButtonTemplateFunction: (val, handler) => `<button type="button" class="btn btn-default" ${handler ? 'ng-click="' + handler + '"' : ''}>${val}</button>`,
     templates: {
       formCheckbox: {
         template:           'ngFormLib/template/formCheckbox.html'
@@ -187,30 +188,31 @@ mod.provider('formControlService', function() {
 
       addInputGroup: function(inputElem, attr) {
 
-        const inputGroupMapping = {
-          inputPrefix: {className: 'input-group-addon', prepend: true},
-          inputSuffix: {className: 'input-group-addon', prepend: false},
-          inputButtonPrefix: {className: 'input-group-btn', prepend: true},
-          inputButtonSuffix: {className: 'input-group-btn', prepend: false}
-        };
+        const inputGroupMapping = [
+          {inputAttr: 'inputPrefix', className: 'input-group-addon', attachFn: 'prepend', clickHandler: '', content: (val) => val},
+          {inputAttr: 'inputSuffix', className: 'input-group-addon', attachFn: 'append', clickHandler: '', content: (val) => val},
+          {inputAttr: 'inputButtonPrefix', className: 'input-group-btn', attachFn: 'prepend', clickHandler: 'inputButtonPrefixClick', content: self.defaults.inputGroupButtonTemplateFunction},
+          {inputAttr: 'inputButtonSuffix', className: 'input-group-btn', attachFn: 'append', clickHandler: 'inputButtonSuffixClick', content: self.defaults.inputGroupButtonTemplateFunction}
+        ];
+        let contentToAppend = [];
 
-        if (attr.inputPrefix || attr.inputSuffix || attr.inputButtonPrefix || attr.inputButtonSuffix) {
-          inputElem.wrap('<div class="input-group">');//inputElem.parent(); // This should be the 'control-row' element//wrap('<div class="input-group">');
+        inputGroupMapping.forEach(igConfig => {
+          if (attr[igConfig.inputAttr]) {
+            contentToAppend.push({
+              attachFn: igConfig.attachFn,
+              html: `<span class="${igConfig.className}">${igConfig.content(attr[igConfig.inputAttr], attr[igConfig.clickHandler])}</span>`
+            });
+          }
+        });
+
+        if (contentToAppend.length) {
+          inputElem.wrap('<div class="input-group">');// This should be the 'control-row' element
           let wrapper = inputElem.parent();
 
-          Object.keys(inputGroupMapping).forEach((inputGroupName) => {
-
-            if (attr[inputGroupName]) {
-              const inputGroupConfig = inputGroupMapping[inputGroupName];
-              const inputGroupContent = `<span class="${inputGroupConfig.className}">${attr[inputGroupName]}</span>`;
-              inputGroupConfig.prepend ? wrapper.prepend(inputGroupContent) : wrapper.append(inputGroupContent);
-            }
-          });
-
-          return true;
+          contentToAppend.forEach(content => wrapper[content.attachFn](content.html));
         }
 
-        return false;
+        return !!contentToAppend.length;
       },
 
       decorateLabel: function(labelElem, required, id, labelClass, hideLabelExpr, hideRequiredIndicator, labelSuffix) {

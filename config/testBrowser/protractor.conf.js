@@ -54,7 +54,8 @@ var config = {
 
 
   onPrepare: function() {
-    // Turn off the angular-sync part-of-Protractor, as we are using Protractor in a generic way
+    
+    // Turn off the Angular-sync part-of-Protractor when not using AngularJS 1.x
     browser.ignoreSynchronization = true;
 
     return browser.getProcessedConfig().then(function(config) {

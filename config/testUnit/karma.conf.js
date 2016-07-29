@@ -24,6 +24,11 @@ function getConfitConfig(config) {
     commonConfig.webpack.module.preLoaders = commonConfig.webpack.module.preLoaders.filter(function (loader) {
       return (loader.loader.indexOf('isparta-instrumenter-loader') === -1);
     });
+
+    // No point checking threshold if we removing the the coverage tool
+    commonConfig.reporters = commonConfig.reporters.filter(function(reporter) {
+      return reporter !== 'threshold' || reporter !== 'coverage';
+    });
   }
 
   if (noCoverage) {
