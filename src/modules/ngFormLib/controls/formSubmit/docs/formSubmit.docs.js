@@ -9,11 +9,11 @@ mod.directive('formSubmitDocs', function() {
     restrict: 'A',
     controller: 'FormSubmitDemoController',
     template: require('./formSubmit.docs.html')
-  }
+  };
 });
 
-mod.controller('FormSubmitDemoController', function() {
-  var vm = this;
+mod.controller('FormSubmitDemoController', function Controller() {
+  let vm = this;
 
   vm.callWhenValid = function() {
     window.alert('Form is valid');

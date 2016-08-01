@@ -33,8 +33,8 @@ mod.directive('formDate', ['formControlService', function(formControlService) {
       addPlaceholder(inputElem, formControlService.translate(tAttr.placeholder)); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 
       // If the user wants to use addons (either text or buttons), change the DOM
-      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
-      var parentElemForErrors = (hasInputGroup) ? inputElem.parent().parent() : inputElem.parent();
+      let hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
+      let parentElemForErrors = hasInputGroup ? inputElem.parent().parent() : inputElem.parent();
 
       formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
       formControlService.createErrorFeatures(parentElemForErrors, inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);
@@ -63,7 +63,7 @@ function addPlaceholder(inputElem, placeholderText) {
 mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
   // All dates greater than AD 0 and less than AD 10000 in dd/mm/yyyy format
   // RegEx behaves oddly if /g is uses in Regexp.test() situations
-  var dateRegEx = /^(((0[1-9]|[12][0-9]|3[01])([\/])(0[13578]|10|12)([\/])(\d{4}))|(([0][1-9]|[12][0-9]|30)([\/])(0[469]|11)([\/])(\d{4}))|((0[1-9]|1[0-9]|2[0-8])([\/])(02)([\/])(\d{4}))|((29)(\/)(02)([\/])([02468][048]00))|((29)([\/])(02)([\/])([13579][26]00))|((29)([\/])(02)([\/])([0-9][0-9][0][48]))|((29)([\/])(02)([\/])([0-9][0-9][2468][048]))|((29)([\/])(02)([\/])([0-9][0-9][13579][26])))$/;
+  let dateRegEx = /^(((0[1-9]|[12][0-9]|3[01])([\/])(0[13578]|10|12)([\/])(\d{4}))|(([0][1-9]|[12][0-9]|30)([\/])(0[469]|11)([\/])(\d{4}))|((0[1-9]|1[0-9]|2[0-8])([\/])(02)([\/])(\d{4}))|((29)(\/)(02)([\/])([02468][048]00))|((29)([\/])(02)([\/])([13579][26]00))|((29)([\/])(02)([\/])([0-9][0-9][0][48]))|((29)([\/])(02)([\/])([0-9][0-9][2468][048]))|((29)([\/])(02)([\/])([0-9][0-9][13579][26])))$/;
 
   return {
     require: 'ngModel',
@@ -95,24 +95,27 @@ mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
         }
 
         // Check that it is a valid date
-        var dateFormatValid = dateRegEx.test(viewValue) || typeof viewValue === 'undefined' || !viewValue;
+        let dateFormatValid = dateRegEx.test(viewValue) || typeof viewValue === 'undefined' || !viewValue;
+
         ctrl.$setValidity('dateFormat', dateFormatValid);
 
         //console.log('dateInput: ' + viewValue + ', ' + ctrl.$modelValue);
 
         // If the date is valid
         if (dateFormatValid && viewValue) {
-          var fieldDate = DateUtil.getDate(viewValue);
+          let fieldDate = DateUtil.getDate(viewValue);
+
           // and there is a min date, check if the value is greater than the min date
           if (attrs.minDate) {
-            var minDate = DateUtil.getDate(attrs.minDate);
+            let minDate = DateUtil.getDate(attrs.minDate);
+
             ctrl.$setValidity('minDate', fieldDate.getTime() >= minDate.getTime());
           } else {
             ctrl.$setValidity('minDate', true);
           }
           // and there is a max date, check if the value is less than the max date
           if (attrs.maxDate) {
-            var maxDate;
+            let maxDate;
 
             if (attrs.maxDate === 'today') {
               maxDate = DateUtil.getDate(DateUtil.getToday());

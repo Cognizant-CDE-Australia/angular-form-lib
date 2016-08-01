@@ -9,31 +9,30 @@ mod.directive('formReset', ['$parse', function($parse) {
 
   function resetFieldState(controlMap) {
     // Loops through the controlMap and reset's each field's state
-    for (var item in controlMap) {
+    for (let item in controlMap) {
       if (controlMap.hasOwnProperty(item)) {
-        var controlList = controlMap[item];
-        for (var j = 0, jLen = controlList.length; j < jLen; j++) {
-          var control = controlList[j].controller;
-          control.fieldState = '';
+        let controlList = controlMap[item];
+
+        for (let j = 0, jLen = controlList.length; j < jLen; j++) {
+          controlList[j].controller.fieldState = '';
         }
       }
     }
   }
 
-
   return {
     restrict: 'A',
     require: '^form',
     link: function(scope, element, attr, controller) {
-      var ngModelGet = $parse(attr.formReset),
-          ngModelSet = ngModelGet.assign;
+      let ngModelGet = $parse(attr.formReset);
+      let ngModelSet = ngModelGet.assign;
 
       if (!ngModelSet) {
         throw Error('formReset requires an assignable scope-expression. "' + attr.formReset + '" is un-assignable.');
       }
 
       // Get a copy of the data as soon as the directive is created, which is after the scope/controller has been initialised (safe)
-      var originalData = angular.copy(ngModelGet(scope));
+      let originalData = angular.copy(ngModelGet(scope));
 
       element.on('click', function() {
         if (typeof controller.setSubmitted === 'function') {

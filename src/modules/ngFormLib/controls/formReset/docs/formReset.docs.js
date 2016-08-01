@@ -9,10 +9,10 @@ mod.directive('formResetDocs', function() {
     restrict: 'A',
     controller: 'FormResetDemoController',
     template: require('./formReset.docs.html')
-  }
+  };
 });
 
-mod.controller('FormResetDemoController', function() {
+mod.controller('FormResetDemoController', function Controller() {
   var vm = this;
 
   vm.titleData = [

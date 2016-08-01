@@ -11,7 +11,7 @@ export default mod.name;
 // This is a configurable service
 // It should contain the _default_ values for form policies
 
-mod.provider('formPolicyService', function() {
+mod.provider('formPolicyService', function Provider() {
   let self = this;
   let noop = () => {};
   let nullBehaviourOnStateChange = {
@@ -19,7 +19,7 @@ mod.provider('formPolicyService', function() {
       return {
         applyBehaviour: noop,
         resetBehaviour: noop
-      }
+      };
     }
   };
   let nullStateDefinitions = {
@@ -85,6 +85,7 @@ function formDirective(formPolicyService) {
         pre: function(scope, element, attr, controller) {
           // We want to extend the FormController by adding a form policy
           var formController = controller[0];
+
           formController._policy = angular.extend(formPolicyService.getCurrentPolicy(), scope.$eval(attr.formPolicy));
 
           // Add a reference to the <form> element's scope to the formController, to support showing errors for nested components
@@ -147,6 +148,7 @@ angular.forEach(inputElements, function(inputElem) {
     function hookupElementToNameToElementMap(formController, element, fieldName, fieldController) {
       // Each element in the map is an array, because form elements *can have the same name*!
       var map = formController._controls;
+
       if (!map[fieldName]) {
         map[fieldName] = [];
       }
@@ -158,6 +160,7 @@ angular.forEach(inputElements, function(inputElem) {
         // Delete just this element from the map of controls
         var map = formController._controls[element.attr('name')];
         var elementId = element.attr('id');
+
         for (var i = 0; i < map.length; i++) {
           if (map[i].element.attr('id') === elementId) {
             map.splice(i, 1);
@@ -176,9 +179,9 @@ angular.forEach(inputElements, function(inputElem) {
             return;
           }
 
-          var rootFormController = controllers[0]._parentController || controllers[0],
-              fieldController = controllers[1],
-              name = attr.name;
+          let rootFormController = controllers[0]._parentController || controllers[0];
+          let fieldController = controllers[1];
+          let name = attr.name;
 
           if (rootFormController && rootFormController._controls) {
             hookupElementToNameToElementMap(rootFormController, element, name, fieldController);

@@ -2,7 +2,7 @@ import componentUnderTest from '../FormSelect';
 
 describe('Form Select directive', function() {
 
-  var compileElement, scope, elem;
+  let compileElement, scope, elem;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest);
@@ -11,7 +11,8 @@ describe('Form Select directive', function() {
       scope = $rootScope.$new();
 
       compileElement = function(html) {
-        var element = $compile(html)(scope);
+        let element = $compile(html)(scope);
+
         scope.$digest();
         return element;
       };

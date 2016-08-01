@@ -3,15 +3,15 @@ import componentUnderTest from '../FormPolicy';
 describe('Form Policy Service configuration', function() {
 
   describe('has default settings', function() {
-    var defaultFormSettings = {}, formPolicyService;
+    let defaultFormSettings = {};
 
     beforeEach(function() {
       angular.mock.module(componentUnderTest, function(formPolicyServiceProvider) {
         defaultFormSettings = formPolicyServiceProvider.defaults;
       });
 
-      angular.mock.inject(function(_formPolicyService_) {
-        formPolicyService = _formPolicyService_;
+      angular.mock.inject(function(formPolicyService) {
+        formPolicyService = formPolicyService;
       });
     });
 
@@ -30,7 +30,7 @@ describe('Form Policy Service configuration', function() {
     let mockFnA = function a() { return 'a'; };
     let mockFnB = function b() { return 'b'; };
     let mockFnC = function c() { return 'c'; };
-    let a11yMock = { d: 'd' };
+    let a11yMock = {d: 'd'};
     let mockDefaults = {
       formSubmitAttemptedClass: 'abc',
       behaviourOnError: mockFnA,
@@ -52,7 +52,8 @@ describe('Form Policy Service configuration', function() {
     });
 
     it('should have the new default settings', function() {
-      var policyConfig = formPolicyService.getCurrentPolicy();
+      let policyConfig = formPolicyService.getCurrentPolicy();
+
       expect(policyConfig).toEqual(mockDefaults);
     });
   });

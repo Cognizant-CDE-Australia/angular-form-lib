@@ -1,7 +1,7 @@
 import componentUnderTest from '../FormCheckbox';
 
 describe('when I use the Form Checkbox button it', function() {
-  var compileElement, scope, elem;
+  let compileElement, scope, elem;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest);
@@ -9,7 +9,8 @@ describe('when I use the Form Checkbox button it', function() {
     angular.mock.inject(($compile, $rootScope) => {
       scope = $rootScope.$new();
       compileElement = function(html) {
-        var element = $compile(html)(scope);
+        let element = $compile(html)(scope);
+
         scope.$digest();
         return element;
       };

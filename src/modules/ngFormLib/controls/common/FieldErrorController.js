@@ -78,7 +78,7 @@ mod.directive('fieldErrorController', ['formControlService', '$timeout', functio
 mod.directive('formGroup', [function() {
   return {
     restrict: 'C',
-    controller: ['$scope', '$element', function($scope, $element) {
+    controller: ['$scope', '$element', function Controller($scope, $element) {
       this.$element = $element;
     }]
   };

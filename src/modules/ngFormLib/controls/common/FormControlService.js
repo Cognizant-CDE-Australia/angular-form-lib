@@ -11,9 +11,11 @@ export default mod.name;
 // Not so great for IE8, but necessary for using radio buttons inside of dynamic forms (ng-repeat)
 mod.config(['$provide', function($provide) {
   $provide.decorator('ngModelDirective', ['$delegate', function($delegate) {
-    var ngModel = $delegate[0], controller = ngModel.controller;
-    ngModel.controller = ['$scope', '$element', '$attrs', '$injector', function(scope, element, attrs, $injector) {
-      var $interpolate = $injector.get('$interpolate');
+    let ngModel = $delegate[0], controller = ngModel.controller;
+
+    ngModel.controller = ['$scope', '$element', '$attrs', '$injector', function Controller(scope, element, attrs, $injector) {
+      let $interpolate = $injector.get('$interpolate');
+
       attrs.$set('name', $interpolate(attrs.name || '')(scope));
       $injector.invoke(controller, this, {
         '$scope': scope,
@@ -24,9 +26,11 @@ mod.config(['$provide', function($provide) {
     return $delegate;
   }]);
   $provide.decorator('formDirective', ['$delegate', function($delegate) {
-    var form = $delegate[0], controller = form.controller;
-    form.controller = ['$scope', '$element', '$attrs', '$injector', function(scope, element, attrs, $injector) {
-      var $interpolate = $injector.get('$interpolate');
+    let form = $delegate[0], controller = form.controller;
+
+    form.controller = ['$scope', '$element', '$attrs', '$injector', function Controller(scope, element, attrs, $injector) {
+      let $interpolate = $injector.get('$interpolate');
+
       attrs.$set('name', $interpolate(attrs.name || attrs.ngForm || '')(scope));
       $injector.invoke(controller, this, {
         '$scope': scope,
@@ -40,9 +44,8 @@ mod.config(['$provide', function($provide) {
 
 
 // Shared code for the accessible controls
-mod.provider('formControlService', function() {
-  var self = this,
-      counter = 0;    // Private variable
+mod.provider('formControlService', function Provider() {
+  let self = this, counter = 0;    // Private variable
 
   //
   self.defaults = {
@@ -50,34 +53,34 @@ mod.provider('formControlService', function() {
     inputGroupButtonTemplateFunction: (val, handler) => `<button type="button" class="btn btn-default" ${handler ? 'ng-click="' + handler + '"' : ''}>${val}</button>`,
     templates: {
       formCheckbox: {
-        template:           'ngFormLib/template/formCheckbox.html'
+        template: 'ngFormLib/template/formCheckbox.html'
       },
       formDate: {
-        template:           'ngFormLib/template/formDate.html'
+        template: 'ngFormLib/template/formDate.html'
       },
       formInput: {
-        template:           'ngFormLib/template/formInput.html'
+        template: 'ngFormLib/template/formInput.html'
       },
       formRadioButton: {
-        template:           'ngFormLib/template/formRadioButton.html'
+        template: 'ngFormLib/template/formRadioButton.html'
       },
       formSelect: {
-        template:           'ngFormLib/template/formSelect.html'
+        template: 'ngFormLib/template/formSelect.html'
       },
       requiredMarker: {
-        template:           'ngFormLib/template/requiredMarker.html'
+        template: 'ngFormLib/template/requiredMarker.html'
       }
     }
   };
 
   this.$get = ['ngFormLibStringUtil', '$injector', function(StringUtil, $injector) {
     let translator;
+
     try {
       translator = $injector.get('$translate').instant;
     } catch (e) {
       translator = angular.identity;
     }
-
 
     let service = {
       defaults: self.defaults,
@@ -133,7 +136,8 @@ mod.provider('formControlService', function() {
         var result = self.defaults.templates[type].template;  // The default template, if nothing else is specified.
 
         for (var i = 0; i < parentFormClasses.length; i++) {
-          var template = self.defaults.templates[type][parentFormClasses[i]];
+          let template = self.defaults.templates[type][parentFormClasses[i]];
+
           if (template) {
             result = template;
             break;
@@ -282,8 +286,9 @@ mod.provider('formControlService', function() {
           // Add an fieldErrorControllers attribute to the element, to hook-up the error features
           inputElement.attr('field-error-controller', '');
 
-          var fieldLabelStr = (fieldLabel) ? ' field-label="' + fieldLabel + '"' : '';
-          var errorContainerElem = angular.element('<div error-container field-name="' + name + '"' + fieldLabelStr + '></div>');
+          let fieldLabelStr = fieldLabel ? ' field-label="' + fieldLabel + '"' : '';
+          let errorContainerElem = angular.element('<div error-container field-name="' + name + '"' + fieldLabelStr + '></div>');
+
           if (fieldErrors) {
             errorContainerElem.attr('field-errors', fieldErrors);
           }
@@ -299,6 +304,7 @@ mod.provider('formControlService', function() {
 
         if (fieldHint) {
           let hintText = service.translate(fieldHint);
+
           // If we have a field hint, add that as well
           if (fieldHintDisplay) {
             // If a field hint display rule exists, implement.
@@ -314,12 +320,12 @@ mod.provider('formControlService', function() {
       buildNgClassExpression: function(inputElem, targetElem) {
         // If the inputElem has an ngModel and/or ngChecked attribute, create the ng-class attribute
         //todo.. test checkbox implementation
-        var modelStr = inputElem.attr('ng-model'),
-            checkedStr = inputElem.attr('ng-checked'),
-            disabledStr = inputElem.attr('ng-disabled'),
-            value = inputElem.attr('value'),        // a string - used for Radio buttons
-            ngValue = inputElem.attr('ng-value'),   // an expression - used for Radio buttons
-            ngTrueValue = inputElem.attr('ng-true-value');
+        let modelStr = inputElem.attr('ng-model'),
+          checkedStr = inputElem.attr('ng-checked'),
+          disabledStr = inputElem.attr('ng-disabled'),
+          value = inputElem.attr('value'),        // a string - used for Radio buttons
+          ngValue = inputElem.attr('ng-value'),   // an expression - used for Radio buttons
+          ngTrueValue = inputElem.attr('ng-true-value');
 
         if (modelStr) {
           if (ngValue || ngTrueValue) {
@@ -362,6 +368,7 @@ mod.provider('formControlService', function() {
       }
 
     };
+
     return service;
   }];
 });

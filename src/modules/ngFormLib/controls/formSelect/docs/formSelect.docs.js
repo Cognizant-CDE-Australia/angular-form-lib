@@ -9,10 +9,10 @@ mod.directive('formSelectDocs', function() {
     restrict: 'A',
     controller: 'FormSelectDemoController',
     template: require('./formSelect.docs.html')
-  }
+  };
 });
 
-mod.controller('FormSelectDemoController', function() {
+mod.controller('FormSelectDemoController', function Controller() {
   var vm = this;
 
   vm.titleData = [

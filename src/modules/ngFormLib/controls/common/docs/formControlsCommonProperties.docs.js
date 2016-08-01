@@ -8,5 +8,5 @@ mod.directive('formControlsCommonPropertiesDocs', function() {
   return {
     restrict: 'A',
     template: require('./formControlsCommonProperties.docs.html')
-  }
+  };
 });

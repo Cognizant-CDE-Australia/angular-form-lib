@@ -9,10 +9,10 @@ mod.directive('formCheckboxDocs', function() {
     restrict: 'A',
     controller: 'FormCheckboxDemoController',
     template: require('./formCheckbox.docs.html')
-  }
+  };
 });
 
-mod.controller('FormCheckboxDemoController', function() {
+mod.controller('FormCheckboxDemoController', function Controller() {
   var vm = this;
 
   vm.titleData = [

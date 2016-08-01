@@ -9,12 +9,12 @@ mod.directive('formRadioButtonDocs', function() {
     restrict: 'A',
     controller: 'FormRadioButtonDemoController',
     template: require('./formRadioButton.docs.html')
-  }
+  };
 });
 
 
-mod.controller('FormRadioButtonDemoController', function() {
-  var vm = this;
+mod.controller('FormRadioButtonDemoController', function Controller() {
+  let vm = this;
 
   vm.titleData = [
     {label: 'Amazing Spiderman, The'},
