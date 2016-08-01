@@ -52,8 +52,8 @@ export function combineBehaviours(a, b) {
         resultA.resetBehaviour.apply(null, args2);
         resultB.resetBehaviour.apply(null, args2);
       }
-    }
-  }
+    };
+  };
 }
 
 /**
@@ -82,21 +82,23 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
       return {
 
         // This function is called by the fieldErrorController when the fieldState changes and when the form is submitted
-        applyBehaviour: function(fieldElem, fieldState, formSubmitAttempted, formName, fieldName) {
+        applyBehaviour: function(fieldElem, fieldState, formSubmitAttempted/*, formName, fieldName*/) {
           // Set the focus to the field if there is an error showing and a form-submit has been attempted
           if (fieldState === ERROR_STATE && formSubmitAttempted) {
             // Make sure element is the first field with an error based on DOM order
             let elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
             let firstElement;
+
             angular.forEach(elems, function(elem) {
               if (isElementVisible(elem) && !firstElement) {
                 firstElement = elem;
               }
             });
-            var isFirstElement = firstElement ? (firstElement.id === fieldElem[0].id) : false;
+            let isFirstElement = firstElement ? firstElement.id === fieldElem[0].id : false;
 
             // ...and if the focusErrorElement is blank...
             let scrollOffset = formController._policy.behaviourOnStateChange.fieldFocusScrollOffset;
+
             if (!focusController._focusErrorElement && isFirstElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, scrollOffset)) {
               focusController._focusErrorElement = fieldElem;
             }
@@ -110,7 +112,7 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
     }
 
 
-    function onErrorSetAriaDescribedByToAriaErrorElement(formController) {
+    function onErrorSetAriaDescribedByToAriaErrorElement(/*formController*/) {
       return {
         applyBehaviour: function(fieldElem, fieldState, formSubmitAttempted, formName, fieldName) {
           fieldElem.attr('aria-invalid', fieldState === ERROR_STATE);
@@ -133,11 +135,12 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
       return {
         applyBehaviour: (fieldElem, fieldState, formSubmitAttempted, formName, fieldName, formGroupElement) => {
           let policy = formController._policy.behaviourOnStateChange;
-          formGroupElement[(fieldState === ERROR_STATE) ? 'addClass' : 'removeClass'](policy.fieldErrorClass);
-          formGroupElement[(fieldState === 'success') ? 'addClass' : 'removeClass'](policy.fieldSuccessClass);
+
+          formGroupElement[fieldState === ERROR_STATE ? 'addClass' : 'removeClass'](policy.fieldErrorClass);
+          formGroupElement[fieldState === 'success' ? 'addClass' : 'removeClass'](policy.fieldSuccessClass);
         },
         resetBehaviour: () => {}
-      }
+      };
     }
 
     return {
@@ -149,7 +152,7 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
 ]);
 
 
-mod.provider('formPolicyBehaviourOnStateChange', function() {
+mod.provider('formPolicyBehaviourOnStateChange', function Provider() {
   let config = this.config = {
     behaviour: undefined,
     fieldErrorClass: 'has-error',

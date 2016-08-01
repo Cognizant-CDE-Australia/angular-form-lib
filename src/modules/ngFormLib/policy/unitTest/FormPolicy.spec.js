@@ -22,7 +22,8 @@ describe('Form Policy Service', function() {
       scope.returnFalse = function() { return false; };
 
       compileElement = function(html) {
-        var element = $compile(html)(scope);
+        let element = $compile(html)(scope);
+
         scope.$digest();
         return element;
       };
@@ -153,8 +154,9 @@ describe('Form Policy Service', function() {
 
     it('should extend the existing form policy with a custom form policy when one is supplied', function() {
       scope.myPolicy = {foo: 'bar', extendWith: {car: 'this too'}};
-      var elem = compileElement('<form form-policy="myPolicy"></form>');
-      var formController = elem.controller('form');
+      let elem = compileElement('<form form-policy="myPolicy"></form>');
+      let formController = elem.controller('form');
+
       expect(formController._policy.foo).toEqual('bar');
       expect(formController._policy.extendWith).toEqual({car: 'this too'});
     });

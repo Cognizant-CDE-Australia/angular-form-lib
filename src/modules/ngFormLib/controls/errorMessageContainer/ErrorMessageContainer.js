@@ -6,7 +6,7 @@ const mod = angular.module('ngFormLib.controls.errorMessageContainer', [FormCont
 
 export default mod.name;
 
-/**
+/*
  * This directive is really a FIELD error message container - it is designed to work with fields exclusively
  */
 mod.directive('errorContainer', ['$compile', 'formControlService',  function($compile, formControlService) {
@@ -24,7 +24,8 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
   }
 
   function translateError(errorMessage, fieldLabel) {
-    var firstLetterIsAVowel = fieldLabel ? ('aeiou'.indexOf(fieldLabel[0].toLowerCase()) !== -1) : undefined;
+    let firstLetterIsAVowel = fieldLabel ? 'aeiou'.indexOf(fieldLabel[0].toLowerCase() !== -1) : undefined;
+
     return formControlService.translate(errorMessage, {pronoun: firstLetterIsAVowel ? 'an' : 'a', fieldLabel: fieldLabel});
   }
 
@@ -33,7 +34,7 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
     return '<div class="text-error ec2-' + errorType + '"><span class="text-error-wrap">' + translateError(errorText, fieldLabel) + '</span></div>';
   }
 
-  /**
+  /*
    * Handle the field-based error messages
    */
   function toggleErrorVisibilityOnError(errorController, formController, scope, element, watchExpr, errorType, errorText, fieldLabel) {
@@ -41,7 +42,8 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
     formController._scope.$watch(watchExpr, function(newValue) {
       if (newValue) {
         // The error text could contain an interpolation string, so we need to compile it
-        var val = $compile(generateErrorTag(errorType, errorText, fieldLabel))(scope);
+        let val = $compile(generateErrorTag(errorType, errorText, fieldLabel))(scope);
+
         element.append(val);
         errorController.addError(errorType, errorText, fieldLabel);
       } else {
@@ -53,8 +55,9 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
 
   function removeErrorMessage(controller, formController, element, errorType) {
     // find the div with our special class, then remove it
-    var divs = element.find('div');
-    for (var len = divs.length, i = len - 1; i > -1; i--) {
+    let divs = element.find('div');
+
+    for (let len = divs.length, i = len - 1; i > -1; i--) {
       if (divs.eq(i).hasClass('ec2-' + errorType)) {
         divs.eq(i).remove();
       }
@@ -62,7 +65,7 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
     controller.removeError(errorType);
   }
 
-  /**
+  /*
    * Handle text errors. Text errors are associated with a scope, rather than with a field.
    * This means we can clear them from the scope when the field-they-are-associated-with is changed.
    */
@@ -132,7 +135,7 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
       // Watch formController[fieldName] - it may not have loaded yet. When it loads, call the main function.
       if (textErrors) {
         //console.log('textErrors: ' + textErrors + ', fieldName = ' + fieldName);
-        var fieldWatcher = scope.$watch(function() {
+        let fieldWatcher = scope.$watch(function() {
           return formController[fieldName];
         }, function(newValue) {
           if (newValue) {
@@ -146,6 +149,7 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
             }
           }
         });
+
       }
 
       element.removeAttr('error-container').removeAttr('field-name').removeAttr('field-errors').removeAttr('text-errors');

@@ -9,12 +9,12 @@ mod.directive('formPolicyDocs', function() {
     restrict: 'A',
     controller: 'FormPolicyDemoCtrl',
     template: require('./formPolicy.docs.html')
-  }
+  };
 });
 
 
-mod.controller('FormPolicyDemoCtrl', ['formPolicyCheckForStateChangesLibrary', function(formPolicyCheckForStateChangesLibrary) {
-  var vm = this;
+mod.controller('FormPolicyDemoCtrl', ['formPolicyCheckForStateChangesLibrary', function Controller(formPolicyCheckForStateChangesLibrary) {
+  let vm = this;
 
   vm.titleData = [
     {label: 'Dr'},

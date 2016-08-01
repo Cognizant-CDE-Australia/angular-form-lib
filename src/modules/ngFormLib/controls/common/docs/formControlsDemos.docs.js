@@ -9,11 +9,11 @@ mod.directive('formControlsDemosDocs', function() {
     restrict: 'A',
     controller: 'FormControlsDemosController',
     template: require('./formControlsDemos.docs.html')
-  }
+  };
 });
 
-mod.controller('FormControlsDemosController', function() {
-  var vm = this;
+mod.controller('FormControlsDemosController', function Controller() {
+  let vm = this;
 
   vm.titleData = [
     {label: 'Dr'},
@@ -47,5 +47,5 @@ mod.controller('FormControlsDemosController', function() {
 
   vm.submit = function() {
     alert('Submitted');
-  }
+  };
 });

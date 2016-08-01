@@ -11,7 +11,8 @@ describe('Form Input Directive', function() {
       scope = $rootScope.$new();
 
       compileElement = function(html) {
-        var element = $compile(html)(scope);
+        let element = $compile(html)(scope);
+
         scope.$digest();
         return element;
       };

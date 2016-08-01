@@ -1,8 +1,7 @@
 import componentUnderTest from '../FormRadioButton';
 
 describe('when I use the Form Radio Button it', function() {
-  'use strict';
-  var compileElement, scope, elem;
+  let compileElement, scope, elem;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest);
@@ -11,7 +10,8 @@ describe('when I use the Form Radio Button it', function() {
       scope = $rootScope.$new();
 
       compileElement = function(html) {
-        var element = $compile(html)(scope);
+        let element = $compile(html)(scope);
+
         scope.$digest();
         return element;
       };

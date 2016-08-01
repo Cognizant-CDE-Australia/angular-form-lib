@@ -3,7 +3,7 @@ import componentUnderTest from '../Utility';
 describe('Utility', function() {
 
   beforeEach(() => {
-    angular.mock.module(componentUnderTest)
+    angular.mock.module(componentUnderTest);
   });
 
   describe('ngFormLib StringUtil', function() {
@@ -14,14 +14,14 @@ describe('Utility', function() {
 
 
     it('should be able to call trim() and get a valid response', angular.mock.inject(function(ngFormLibStringUtil) {
-      var testData = [
+      let testData = [
         {input: '    ab c  ',    expectedOutput: 'ab c'},
         {input: '_88 ',        expectedOutput: '_88'},
         {input: 88,          expectedOutput: 88},
         {input: {'a': 'b'},      expectedOutput: {'a': 'b'}}
       ];
 
-      for (var i = 0; i < testData.length; i++) {
+      for (let i = 0; i < testData.length; i++) {
         expect(ngFormLibStringUtil.trim(testData[i].input)).toEqual(testData[i].expectedOutput);
       }
     }));
@@ -29,7 +29,7 @@ describe('Utility', function() {
 
   describe('ngFormLib NumberUtil', function() {
     it('should be able to call isDigits() and get a valid response', angular.mock.inject(function(ngFormLibNumberUtil) {
-      var testData = [
+      let testData = [
         {input: 8,              expectedOutput: true},
         {input: '0',            expectedOutput: true},
         {input: 'a',            expectedOutput: false},
@@ -43,7 +43,7 @@ describe('Utility', function() {
         {input: 9 * '5',          expectedOutput: true}
       ];
 
-      for (var i = 0; i < testData.length; i++) {
+      for (let i = 0; i < testData.length; i++) {
         expect(ngFormLibNumberUtil.isDigits(testData[i].input)).toEqual(testData[i].expectedOutput);
       }
     }));
@@ -51,7 +51,7 @@ describe('Utility', function() {
 
   describe('ngFormLib DateUtil', function() {
     it('should be able to call convertDate() and get a valid response', angular.mock.inject(function(ngFormLibDateUtil) {
-      var testData = [
+      let testData = [
         {input: '31/01/2012',  newSep: '-',  expectedOutput: '2012-01-31'},
         {input: '31/01/2012',  newSep: '/',  expectedOutput: '31/01/2012'},
         {input: '',        newSep: '/',  expectedOutput: ''},
@@ -63,7 +63,7 @@ describe('Utility', function() {
         {input: '2012-01-31',  newSep: '',    expectedOutput: '2012-01-31'}
       ];
 
-      for (var i = 0; i < testData.length; i++) {
+      for (let i = 0; i < testData.length; i++) {
         expect(ngFormLibDateUtil.convertDate(testData[i].input, testData[i].newSep)).toEqual(testData[i].expectedOutput);
       }
     }));
@@ -71,7 +71,7 @@ describe('Utility', function() {
 
     it('should be able to call isISODate() and get a valid response', angular.mock.inject(function(ngFormLibDateUtil) {
       // This is a pretty lazy function - just checks if there is a '-' in the string
-      var testData = [
+      let testData = [
         {input: '31/01/2012',  expectedOutput: false},
         {input: '',        expectedOutput: false},
         {input: '//',      expectedOutput: false},
@@ -82,7 +82,7 @@ describe('Utility', function() {
         {input: '2012-01-31',  expectedOutput: true}
       ];
 
-      for (var i = 0; i < testData.length; i++) {
+      for (let i = 0; i < testData.length; i++) {
         expect(ngFormLibDateUtil.isISODate(testData[i].input)).toEqual(testData[i].expectedOutput);
       }
     }));
@@ -90,7 +90,7 @@ describe('Utility', function() {
 
     it('should be able to call getDate() and get a valid response', angular.mock.inject(function(ngFormLibDateUtil) {
       // This is a pretty lazy function - just checks if there is a '-' in the string
-      var testData = [
+      let testData = [
         {input: '31/01/2012',  expectedOutput: 31},
         {input: '2012-01-09',  expectedOutput: 9},
         {input: '//',      expectedOutput: 'NaN'},
@@ -100,7 +100,7 @@ describe('Utility', function() {
         {input: '20-01-2031',  expectedOutput: 'NaN'}
       ];
 
-      for (var i = 0; i < testData.length; i++) {
+      for (let i = 0; i < testData.length; i++) {
         if (testData[i].expectedOutput === 'NaN') {
           expect(isNaN(ngFormLibDateUtil.getDate(testData[i].input).getDate())).toBe(true);
         } else {
@@ -112,7 +112,7 @@ describe('Utility', function() {
 
     it('should be able to call dateAdd() and get a valid response', angular.mock.inject(function(ngFormLibDateUtil) {
       // This is a pretty lazy function - just checks if there is a '-' in the string
-      var testData = [
+      let testData = [
         {input: '31/01/2012',  daysToAdd: 1,    expectedOutput: '01/02/2012'},
         {input: '2012-01-31',  daysToAdd: 1,    expectedOutput: '01/02/2012'},
         {input: '31/01/2012',  daysToAdd: 0,    expectedOutput: '31/01/2012'},
@@ -125,8 +125,9 @@ describe('Utility', function() {
         {input: '31/12/2012',  daysToAdd: 366,    expectedOutput: '01/01/2014'}
       ];
 
-      for (var i = 0; i < testData.length; i++) {
-        var result = ngFormLibDateUtil.dateAdd(testData[i].input, testData[i].daysToAdd);
+      for (let i = 0; i < testData.length; i++) {
+        let result = ngFormLibDateUtil.dateAdd(testData[i].input, testData[i].daysToAdd);
+
         expect(result).toEqual(testData[i].expectedOutput);
       }
     }));
@@ -134,7 +135,8 @@ describe('Utility', function() {
 
     it('should be able to call getToday() and get a valid response', angular.mock.inject(function(ngFormLibDateUtil) {
       // For testing purposes, we can pass in the optional date object
-      var formattedDate = ngFormLibDateUtil.getToday(new Date(2014, 7, 1, 0));
+      let formattedDate = ngFormLibDateUtil.getToday(new Date(2014, 7, 1, 0));
+
       expect(formattedDate).toEqual('01/08/2014');
 
       formattedDate = ngFormLibDateUtil.getToday();
@@ -144,7 +146,8 @@ describe('Utility', function() {
 
     it('should be able to call formatDay() and get a valid response', angular.mock.inject(function(ngFormLibDateUtil) {
       // For testing purposes, we can pass in the optional date object
-      var formattedDate = ngFormLibDateUtil.formatDay(new Date(2014, 7, 1, 0));
+      let formattedDate = ngFormLibDateUtil.formatDay(new Date(2014, 7, 1, 0));
+
       expect(formattedDate).toEqual('01/08/2014');
 
       formattedDate = ngFormLibDateUtil.formatDay(1, 2, 3);
@@ -153,7 +156,7 @@ describe('Utility', function() {
 
 
     it('should be able to call monthsBetween() and get a valid response', angular.mock.inject(function(ngFormLibDateUtil) {
-      var testData = [
+      let testData = [
         {input: '2015-01-31', input2: '2015-02-01', expectedOutput: 1},
         {input: '2014-01-31', input2: '2015-01-01', expectedOutput: 12},
         {input: '2014-01-01', input2: '2015-01-31', expectedOutput: 12},
@@ -164,8 +167,9 @@ describe('Utility', function() {
         {input: '1976-07-01', input2: '1976-12-25', expectedOutput: 5}
       ];
 
-      for (var i = 0; i < testData.length; i++) {
-        var result = ngFormLibDateUtil.monthsBetween(new Date(testData[i].input), new Date(testData[i].input2));
+      for (let i = 0; i < testData.length; i++) {
+        let result = ngFormLibDateUtil.monthsBetween(new Date(testData[i].input), new Date(testData[i].input2));
+
         if (isNaN(testData[i].expectedOutput)) {
           expect(isNaN(result)).toEqual(true);
         } else {
@@ -178,12 +182,13 @@ describe('Utility', function() {
 
   describe('ngFormLib ObjectUtil', function() {
     it('should be able to call getUniqueId() and get a valid response', angular.mock.inject(function(ngFormLibObjectUtil) {
-      var id = ngFormLibObjectUtil.getUniqueId();
+      let id = ngFormLibObjectUtil.getUniqueId();
 
       expect(id).not.toContain('.');
       expect(id).toMatch(/^\d+$/g);    // It must be all digits
 
-      var nextId = ngFormLibObjectUtil.getUniqueId();
+      let nextId = ngFormLibObjectUtil.getUniqueId();
+
       expect(id).not.toEqual(nextId);
     }));
 
@@ -195,17 +200,18 @@ describe('Utility', function() {
 
       ColoredTriangle.prototype = {a: 1, b: 'two'};
 
-      var myObj = new ColoredTriangle();
+      let myObj = new ColoredTriangle();
 
-      var testData = [
+      let testData = [
         {input: {key: 'val'}, expectedOutput: [{key: 'key', value: 'val'}]},
         {input: {some: 12, thing: {orOther: true}}, expectedOutput: [{key: 'some', value: 12}, {key: 'thing', value: {orOther: true}}]},
         {input: {}, expectedOutput: []},
         {input: myObj, expectedOutput: [{key: 'color', value: 'red'}]}
       ];
 
-      for (var i = 0; i < testData.length; i++) {
-        var result = ngFormLibObjectUtil.toArray(testData[i].input);
+      for (let i = 0; i < testData.length; i++) {
+        let result = ngFormLibObjectUtil.toArray(testData[i].input);
+
         expect(result).toEqual(testData[i].expectedOutput);
       }
     }));

@@ -1,5 +1,10 @@
 import angular from 'angular';
 
+// TODO: What if the state definition expressions returned the statename, rather than true or false, so we wouldn't need
+// to create a watch for each state definition. Instead, the expressions for each state would be like a big
+// switch statement, returning a state name or undefined.
+
+
 // Define the different display trigger implementations available
 const mod = angular.module('ngFormLib.policy.stateDefinitions', []);
 
@@ -66,7 +71,7 @@ mod.constant('formPolicySuccessDefinitionLibrary', {
 });
 
 
-mod.provider('formPolicyStateDefinitions', ['formPolicyErrorDefinitionLibrary', 'formPolicySuccessDefinitionLibrary', function(errorLib, successLib) {
+mod.provider('formPolicyStateDefinitions', ['formPolicyErrorDefinitionLibrary', 'formPolicySuccessDefinitionLibrary', function Provider(errorLib, successLib) {
   let config = this.config = {
     states: {
       [ERROR_STATE]: errorLib.onSubmitOrDirty,
@@ -76,6 +81,7 @@ mod.provider('formPolicyStateDefinitions', ['formPolicyErrorDefinitionLibrary', 
 
   config.create = (formName, fieldName) => {
     let result = {};
+
     for (var state in config.states) {
       if (config.states.hasOwnProperty(state)) {
         result[state] = config.states[state](formName, fieldName);

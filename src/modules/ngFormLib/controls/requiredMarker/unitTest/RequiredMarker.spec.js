@@ -2,7 +2,7 @@ import componentUnderTest from '../RequiredMarker';
 
 describe('Required Marker tag', function() {
 
-  var compileElement, scope, elem;
+  let compileElement, scope, elem;
 
   beforeEach(() => {
     angular.mock.module(componentUnderTest);
@@ -11,7 +11,8 @@ describe('Required Marker tag', function() {
       scope = $rootScope.$new();
 
       compileElement = function(html) {
-        var element = $compile(html)(scope);
+        let element = $compile(html)(scope);
+
         scope.$digest();
         return element;
       };

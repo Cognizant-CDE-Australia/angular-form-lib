@@ -32,7 +32,7 @@ mod.directive('formInput', ['formControlService', function(formControlService) {
 
       // If the user wants to use addons (either text or buttons), change the DOM
       var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
-      var parentElemForErrors = (hasInputGroup) ? inputElem.parent().parent() : inputElem.parent();
+      var parentElemForErrors = hasInputGroup ? inputElem.parent().parent() : inputElem.parent();
 
       formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
       formControlService.createErrorFeatures(parentElemForErrors, inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);

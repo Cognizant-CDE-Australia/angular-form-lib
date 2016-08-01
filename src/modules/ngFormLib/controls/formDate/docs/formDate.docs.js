@@ -10,10 +10,10 @@ mod.directive('formDateDocs', function() {
     restrict: 'A',
     controller: 'FormDateDocsController',
     template: require('./formDate.docs.html')
-  }
+  };
 });
 
 
-mod.controller('FormDateDocsController', ['ngFormLibDateUtil', function(DateUtil) {
+mod.controller('FormDateDocsController', ['ngFormLibDateUtil', function Controller(DateUtil) {
   this.date1 = DateUtil.getToday();
 }]);

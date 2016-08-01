@@ -1,5 +1,5 @@
 # START_CONFIT_GENERATED_CONTENT
-######extends: defaults/configurations/google
+extends: defaults/configurations/google
 
 env:
   jasmine: true
@@ -24,3 +24,10 @@ rules:
     - 2       # Warning
     ####- 200     # Line Length
     - 500
+
+  dot-location:
+    - 1       #error
+    - property
+
+  no-unused-vars:
+    - 1

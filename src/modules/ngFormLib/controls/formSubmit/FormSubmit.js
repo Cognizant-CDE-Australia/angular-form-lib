@@ -6,10 +6,13 @@ export default mod.name;
 
 
 /**
- *  formSubmit - Executes an expression when the form is valid (essentially a form.submit() handler).
+ * formSubmit - Executes an expression when the form is valid (essentially a form.submit() handler).
  *
- *  It can be applied to either the form element or to a button.
+ * It can be applied to either the form element or to a button.
  *
+ * @param {Object} $parse   The $parse service
+ *
+ * @returns {Object} Directive definition object
  */
 mod.directive('formSubmit', ['$parse', function($parse) {
   return {
@@ -17,7 +20,7 @@ mod.directive('formSubmit', ['$parse', function($parse) {
     require: ['^form'],   // Get the form controller
     link: function(scope, element, attr, controller) {
 
-      var fn = $parse(attr.formSubmit) || angular.noop,
+      let fn = $parse(attr.formSubmit) || angular.noop,
         isForm = element[0].tagName === 'FORM',
         formController = controller[0];
 

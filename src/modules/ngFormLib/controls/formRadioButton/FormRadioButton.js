@@ -23,7 +23,8 @@ mod.directive('formRadioButton', ['formControlService', function(formControlServ
     expectedAttributes: [], // The template should NOT have a form-group element inside it, as this has to be specified externally (due to the group-nature of radio buttons)
     configFn: function(tElement, tAttr, id, name, inputElem) {
       // Move the class attribute from the outer-DIV to the radio-button DIV (special case)
-      var rbDiv = tElement.find('div');
+      let rbDiv = tElement.find('div');
+
       rbDiv.addClass(tElement.attr('class'));
       tElement.removeAttr('class');
 

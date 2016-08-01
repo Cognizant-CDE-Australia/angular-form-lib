@@ -9,10 +9,10 @@ mod.directive('formControlServiceDocs', function() {
     restrict: 'A',
     controller: 'FormControlServiceDemoCtrl',
     template: require('./formControlService.docs.html')
-  }
+  };
 });
 
-mod.controller('FormControlServiceDemoCtrl', function() {
+mod.controller('FormControlServiceDemoCtrl', function Controller() {
   // var vm = this;
   //
   // vm.titleData = [

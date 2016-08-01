@@ -9,10 +9,10 @@ mod.directive('errorMessageContainerDocs', function() {
     restrict: 'A',
     controller: 'ErrorMessageContainerDemoController',
     template: require('./errorMessageContainer.docs.html')
-  }
+  };
 });
 
-mod.controller('ErrorMessageContainerDemoController', function() {
+mod.controller('ErrorMessageContainerDemoController', function Controller() {
   var vm = this;
 
   vm.titleData = [
@@ -22,8 +22,8 @@ mod.controller('ErrorMessageContainerDemoController', function() {
   ];
 
   vm.toggleTextError = function() {
-    vm.myTextError = (vm.myTextError) ? '' : 'My text error. ';
-    vm.translationKey = (vm.translationKey) ? '' : 'FIELD_ERROR.TEXT_ERROR';
+    vm.myTextError = vm.myTextError ? '' : 'My text error. ';
+    vm.translationKey = vm.translationKey ? '' : 'FIELD_ERROR.TEXT_ERROR';
   };
 });
 

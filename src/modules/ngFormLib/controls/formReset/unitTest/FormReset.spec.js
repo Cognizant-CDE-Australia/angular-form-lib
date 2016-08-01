@@ -34,9 +34,10 @@ describe('FormReset', function() {
       scope.myModel.testValue1 = 'someVal';
       scope.$digest();
 
-      var inputElem1 = elem.find('input').eq(0);
-      var inputElem2 = elem.find('input').eq(1);
-      var formController = elem.controller('form');
+      let inputElem1 = elem.find('input').eq(0);
+      let inputElem2 = elem.find('input').eq(1);
+      let formController = elem.controller('form');
+
       // Spy on the setSubmitted function, which should be exist because we are using ngFormLib
       spyOn(formController, 'setSubmitted');
 
@@ -58,7 +59,7 @@ describe('FormReset', function() {
     it('should throw an error when form-reset is used without a model-domain-object expression', function() {
       scope.testVal = 'someVal';
 
-      var comp = function() {
+      let comp = function() {
         elem = compileElement('<form name="frm2">' +
           '<input type="text" name="testVal" ng-model="testVal" />' +
           '<button type="button" form-reset>Cancel</button>' +
@@ -99,9 +100,9 @@ describe('FormReset', function() {
       scope.myModel.testValue1 = 'someVal';
       scope.$digest();
 
-      var inputElem1 = elem.find('input').eq(0);
-      var inputElem2 = elem.find('input').eq(1);
-      var formController = elem.controller('form');
+      let inputElem1 = elem.find('input').eq(0);
+      let inputElem2 = elem.find('input').eq(1);
+      let formController = elem.controller('form');
 
       expect(formController.setSubmitted).toBeUndefined();    // setSubmitted is not defined
 

@@ -59,11 +59,11 @@ function watchForErrorChanges(scope, stateDefinitions, ngModelController) {
     }
   }
 
-  // Return a deregistration function
+  // Return a de-registration function
   return () => {
     //console.log('Remove error watchers...', watchers);
     watchers.forEach(deregistrationFn => deregistrationFn());
-  }
+  };
 }
 
 function evaluateFieldStates(scope, stateDefinitions, ngModelController) {
@@ -112,7 +112,7 @@ mod.constant('formPolicyCheckForStateChangesLibrary', (function() {
 })());
 
 
-mod.provider('formPolicyCheckForStateChanges', ['formPolicyCheckForStateChangesLibrary', function(lib) {
+mod.provider('formPolicyCheckForStateChanges', ['formPolicyCheckForStateChangesLibrary', function Provider(lib) {
   let config = this.config = {
     checker: lib.onBlurUntilSubmitThenOnChange
   };

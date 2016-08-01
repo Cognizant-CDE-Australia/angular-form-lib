@@ -9,10 +9,10 @@ mod.directive('requiredMarkerDocs', function() {
     restrict: 'A',
     controller: 'RequiredMarkerDemoController',
     template: require('./requiredMarker.docs.html')
-  }
+  };
 });
 
-mod.controller('RequiredMarkerDemoController', function() {
+mod.controller('RequiredMarkerDemoController', function Controller() {
   var vm = this;
 
   vm.titleData = [

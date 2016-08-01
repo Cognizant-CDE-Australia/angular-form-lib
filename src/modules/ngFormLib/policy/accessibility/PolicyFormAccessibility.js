@@ -10,6 +10,7 @@ const ariaErrorElementTemplate = '<span class="sr-only" aria-hidden="true"></spa
 
 function createAriaErrorElement(formName, fieldName) {
   let elem = angular.element(ariaErrorElementTemplate);
+
   elem.attr('id', getAriaErrorElementId(formName, fieldName));
   return elem;
 }
@@ -21,10 +22,11 @@ export function getAriaErrorElementId(formName, fieldName) {
 }
 
 function createLongErrorDescription(ariaElement, errors) {
-  var str = '', i = 0;
-  for (var type in errors) {
+  let str = '', i = 0;
+
+  for (let type in errors) {
     if (errors.hasOwnProperty(type)) {
-      str += 'Error ' + (++i) + ', ' + errors[type] + ',';
+      str += 'Error ' + ++i + ', ' + errors[type] + ',';
     }
   }
 
@@ -38,14 +40,15 @@ function createLongErrorDescription(ariaElement, errors) {
 
 
 function createShortErrorDescription(ariaElement, errors) {
-  var errorMsgs = [];
-  for (var type in errors) {
+  let errorMsgs = [];
+  let prefix = '';
+
+  for (let type in errors) {
     if (errors.hasOwnProperty(type)) {
       errorMsgs.push(errors[type]);
     }
   }
 
-  let prefix = '';
   if (errorMsgs.length > 1) {
     prefix = errorMsgs.length + ' errors: ';
   }
@@ -61,8 +64,7 @@ mod.constant('formPolicyAccessibilityLibrary', {
 });
 
 
-mod.provider('formPolicyAccessibilityBehaviour', ['formPolicyAccessibilityLibrary', function(lib) {
-
+mod.provider('formPolicyAccessibilityBehaviour', ['formPolicyAccessibilityLibrary', function Provider(lib) {
   let config = this.config = {
     createAriaErrorElement: lib.createAriaErrorElement,
     onErrorChangeBehaviour: lib.createLongErrorDescription

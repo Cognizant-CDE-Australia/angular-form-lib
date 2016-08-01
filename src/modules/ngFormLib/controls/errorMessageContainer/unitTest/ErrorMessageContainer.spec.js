@@ -6,11 +6,10 @@ import formPolicy from '../../../policy/FormPolicy';
 import defaultPolicies from '../../../policy/defaultPolicies';
 
 describe('Error Message Container directive', function() {
-  var compileElement, scope;
+  let compileElement, scope;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest, controlsCommon, formInput, formSubmit, formPolicy, defaultPolicies);
-
 
     // Just in case the $sceProvider is enabled, we need to disable it for this test (I think?)
     angular.mock.module(['$sceProvider', function($sceProvider) {
@@ -26,7 +25,8 @@ describe('Error Message Container directive', function() {
         scope = $rootScope.$new();
 
         compileElement = function(html) {
-          var element = $compile(html)(scope);
+          let element = $compile(html)(scope);
+
           scope.$digest();
           return element;
         };
@@ -35,7 +35,7 @@ describe('Error Message Container directive', function() {
 
 
     it('should create an error message container with minimum markup', function() {
-      var elem = compileElement('<form name="frm"><error-container field-name="someName"></error-container></form>');
+      let elem = compileElement('<form name="frm"><error-container field-name="someName"></error-container></form>');
 
       //<div class="container-error" id="frm-someName-errors"><span class="sr-only" aria-hidden="true" id="frm-someName-errors-aria"></span></div>
       //<div class="container-error" id="frm-someName-errors"><span class="sr-only" aria-hidden="true" id="frm-someName-errors-aria"></span></div>
@@ -82,12 +82,12 @@ describe('Error Message Container directive', function() {
 
 
     it('should create error messages when supplied with a text-errors attribute', function() {
-      var elem = compileElement('<form name="frm">' +
+      let elem = compileElement('<form name="frm">' +
         '<form-input input-type="text" name="someName" uid="x" label="y" ff-ng-model="something"></form-input>' +
         '<error-container field-name="someName" text-errors="[\'msg1\', \'msg2\']"></error-container>' +
         '</form>');
 
-      var errorDiv = elem.find('div').eq(2);
+      let errorDiv = elem.find('div').eq(2);
 
       expect(errorDiv[0].outerHTML).toEqual('<div class="container-error" id="frm-someName-errors"><span class="sr-only" aria-hidden="true" id="frm-someName-errors-aria"></span></div>');
 
@@ -123,7 +123,8 @@ describe('Error Message Container directive', function() {
         scope.returnFalse = function() { return false; };
 
         compileElement = function(html) {
-          var element = $compile(html)(scope);
+          let element = $compile(html)(scope);
+
           scope.$digest();
           return element;
         };
@@ -137,7 +138,7 @@ describe('Error Message Container directive', function() {
         postcode2: '3000'
       };
 
-      var elem = compileElement('<form name="frm" novalidate form-submit>' +
+      let elem = compileElement('<form name="frm" novalidate form-submit>' +
         '<my-isolate-scope-directive model="address"></my-isolate-scope-directive>' +
         '<form-input input-type="text" name="normalField" uid="normalField" label="Normal Postcode" ff-ng-model="address.postcode2" ff-ng-pattern="/^\\d{4}$/" field-errors="{pattern: \'msg3\'}"></form-input>' +
         '</form>');

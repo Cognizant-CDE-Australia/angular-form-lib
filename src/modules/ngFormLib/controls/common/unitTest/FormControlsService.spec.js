@@ -1,9 +1,8 @@
 import componentUnderTest from '../FormControlService';
 
 describe('Form controls common library', function() {
-  'use strict';
 
-  var formControlService;
+  let formControlService;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest);
@@ -17,14 +16,14 @@ describe('Form controls common library', function() {
   describe('addToAttribute()', function() {
 
     it('should add a new attribute if the attribute did not exist', function() {
-      var elem = angular.element('<div></div>');
+      let elem = angular.element('<div></div>');
 
       formControlService.addToAttribute(elem, 'some-attribute', '777');
       expect(elem[0].outerHTML).toEqual('<div some-attribute="777"></div>');
     });
 
     it('should add to an existing attribute if the attribute already exists', function() {
-      var elem = angular.element('<div existing-attribute="Brett"></div>');
+      let elem = angular.element('<div existing-attribute="Brett"></div>');
 
       formControlService.addToAttribute(elem, 'existing-attribute', 'Uglow');
       expect(elem[0].outerHTML).toEqual('<div existing-attribute="Brett Uglow"></div>');
@@ -38,7 +37,7 @@ describe('Form controls common library', function() {
   describe('removeAttribute()', function() {
 
     it('should remove a value from the attribute if the value existed', function() {
-      var elem = angular.element('<div names="a Waltzing Matilda"></div>');
+      let elem = angular.element('<div names="a Waltzing Matilda"></div>');
 
       // In-exact value match, so no change
       formControlService.removeFromAttribute(elem, 'names', 'Waltzin');
@@ -51,7 +50,7 @@ describe('Form controls common library', function() {
 
 
     it('should remove a value from the attribute and the attribute as well if it is empty', function() {
-      var elem = angular.element('<div country="Malaysia"></div>');
+      let elem = angular.element('<div country="Malaysia"></div>');
 
       // In-exact value match, so no change
       formControlService.removeFromAttribute(elem, 'country', 'Malaysia');
@@ -63,7 +62,7 @@ describe('Form controls common library', function() {
   describe('getRequiredAttribute()', function() {
 
     it('should get the required attribute as the string "true" when it is "required"', function() {
-      var testData = [
+      let testData = [
         {input: 'required', expectedOutput: 'true'},
         {input: 'true', expectedOutput: 'true'},
         {input: undefined, expectedOutput: 'false'},
@@ -76,7 +75,7 @@ describe('Form controls common library', function() {
         {input: 1, expectedOutput: 1}
       ];
 
-      for (var i = i; i < testData.length; i++) {
+      for (let i = i; i < testData.length; i++) {
         expect(formControlService.getRequiredAttribute(testData[i].input)).toEqual(testData[i].expectedOutput);
       }
     });
@@ -86,7 +85,7 @@ describe('Form controls common library', function() {
   describe('decorateLabel()', function() {
 
     it('should not decorate the label when it doesn\'t need to', function() {
-      var elem = angular.element('<label></label>');
+      let elem = angular.element('<label></label>');
 
       // Minimal decorations to the label - last param: hide required label
       formControlService.decorateLabel(elem, 'false', '', undefined, '', true);
@@ -95,7 +94,7 @@ describe('Form controls common library', function() {
 
 
     it('should decorate the label when it needs to', function() {
-      var elem = angular.element('<frankfurt></frankfurt>');
+      let elem = angular.element('<frankfurt></frankfurt>');
 
       // Minimal decorations to the label - last param: hide required label
       formControlService.decorateLabel(elem, 'true', 'myId', 'myLabelClass', 'false', false);
@@ -108,14 +107,14 @@ describe('Form controls common library', function() {
   describe('decorateInputField()', function() {
 
     it('should add an id, name, label and required attributes as the bare minimum', function() {
-      var elem = angular.element('<input>');
-      var attr = {
+      let elem = angular.element('<input>');
+      let attr = {
         '$attr': {'noFfAttributes': 'no-ff-attributes', 'soNothingWillBeCopiedFromHere': 'so-nothing-will-be-copied-from-here'},
         'noFfAttributes': 'ok',
         'soNothingWillBeCopiedFromHere': 'cool'
       };
 
-      var hostElem = angular.element('<div no-ff-attributes="ok" so-nothing-will-be-copied-from-here="cool"></div>');
+      let hostElem = angular.element('<div no-ff-attributes="ok" so-nothing-will-be-copied-from-here="cool"></div>');
 
       formControlService.decorateInputField(elem, hostElem, attr, 'myId', 'myName', 'state === \'VIC\'');
 
@@ -125,14 +124,14 @@ describe('Form controls common library', function() {
 
 
     it('should preserve existing content and add new attributes to the target element, EXCEPT the type attribute which is ignored', function() {
-      var hostElem = angular.element('<div ff-type="checkbox" class="row" ff-ng-pattern="[0-9]{4}"></div>');
-      var elem = angular.element('<input class="inline"><span>some text</span></input>');
+      let hostElem = angular.element('<div ff-type="checkbox" class="row" ff-ng-pattern="[0-9]{4}"></div>');
+      let elem = angular.element('<input class="inline"><span>some text</span></input>');
       // All of the attributes that start with "ff" will be copied from the hostElem(ent) to the (input) elem(ent)
-      var attr = {
-          '$attr': {'ffType': 'ff-type', 'ffNgPattern': 'ff-ng-pattern'},
-          'ffType': 'checkbox',
-          'ffNgPattern': '[0-9]{4}'
-        };
+      let attr = {
+        '$attr': {'ffType': 'ff-type', 'ffNgPattern': 'ff-ng-pattern'},
+        'ffType': 'checkbox',
+        'ffNgPattern': '[0-9]{4}'
+      };
 
       formControlService.decorateInputField(elem, hostElem, attr, 'myId', 'myName', 'true');
 
@@ -145,8 +144,8 @@ describe('Form controls common library', function() {
   describe('createErrorFeatures()', function() {
 
     it('should not create any error features when the element has no error messages to show', function() {
-      var elem = angular.element('<input>');
-      var hostElem = angular.element('<div></div>');
+      let elem = angular.element('<input>');
+      let hostElem = angular.element('<div></div>');
 
       formControlService.createErrorFeatures(hostElem, elem, 'myName', 'myLabel', '', '');
       expect(elem[0].outerHTML).toEqual('<input>');
@@ -155,8 +154,8 @@ describe('Form controls common library', function() {
 
 
     it('should create some error features when the element has field error messages to show', function() {
-      var elem = angular.element('<input>');
-      var hostElem = angular.element('<div></div>');
+      let elem = angular.element('<input>');
+      let hostElem = angular.element('<div></div>');
 
       // Field errors
       formControlService.createErrorFeatures(hostElem, elem, 'myName', 'myLabel', '{required: \'Please enter a valid email address\', email: \'Please enter a valid email address\'}', '');
@@ -166,8 +165,9 @@ describe('Form controls common library', function() {
 
 
     it('should create some error features when the element has text error messages to show', function() {
-      var elem = angular.element('<input>');
-      var hostElem = angular.element('<div></div>');
+      let elem = angular.element('<input>');
+      let hostElem = angular.element('<div></div>');
+
       // Text errors
       formControlService.createErrorFeatures(hostElem, elem, 'myName', '', '', '[\'myScopeVar1\', \'myScopeVar2\']');
       expect(elem[0].outerHTML).toEqual('<input field-error-controller="">');
@@ -176,8 +176,9 @@ describe('Form controls common library', function() {
 
 
     it('should create some error features when the element has field and text error messages to show', function() {
-      var elem = angular.element('<input>');
-      var hostElem = angular.element('<div></div>');
+      let elem = angular.element('<input>');
+      let hostElem = angular.element('<div></div>');
+
       // Text errors
       formControlService.createErrorFeatures(hostElem, elem, 'myName', 'myLabel', '{required: \'Please enter a valid email address\'}', '[\'myScopeVar1\', \'myScopeVar2\']');
       expect(elem[0].outerHTML).toEqual('<input field-error-controller="">');
@@ -189,8 +190,8 @@ describe('Form controls common library', function() {
   describe('createFieldHint()', function() {
 
     it('should not create a field hint when it doesn\'t need to', function() {
-      var elem = angular.element('<anything></anything>');
-      var hostElem = angular.element('<youlike></youlike>');
+      let elem = angular.element('<anything></anything>');
+      let hostElem = angular.element('<youlike></youlike>');
 
       formControlService.createFieldHint(hostElem, elem, '', '');
       expect(elem[0].outerHTML).toEqual('<anything></anything>');
@@ -199,8 +200,8 @@ describe('Form controls common library', function() {
 
 
     it('should create a field hint the label when it needs to', function() {
-      var elem = angular.element('<anything></anything>');
-      var hostElem = angular.element('<youlike></youlike>');
+      let elem = angular.element('<anything></anything>');
+      let hostElem = angular.element('<youlike></youlike>');
 
       formControlService.createFieldHint(hostElem, elem, 'Format: dd/mm/yyyy', 'hint-id');
       expect(elem[0].outerHTML).toEqual('<anything aria-describedby="hint-id"></anything>');

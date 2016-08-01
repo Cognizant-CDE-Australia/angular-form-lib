@@ -28,7 +28,7 @@ mod.directive('bindCompile', ['$compile', function($compile) {
   return {
     restrict: 'A',
     replace: true,
-    link: function (scope, element, attrs) {
+    link: function(scope, element, attrs) {
       scope.$watch(attrs.bindCompile, function(html) {
         element[0].innerHTML = html;
         $compile(element.contents())(scope);
@@ -48,6 +48,7 @@ mod.config(['$anchorScrollProvider', function($anchorScrollProvider) {
 
 mod.config(['$translateProvider', function($translateProvider) {
   let translations = require('json!./assets/language/enAU.json');
+
   $translateProvider.translations('enAU', translations);
   $translateProvider.preferredLanguage('enAU');
   $translateProvider.useSanitizeValueStrategy(null);
@@ -64,22 +65,23 @@ mod.config(['formPolicyAccessibilityBehaviourProvider', 'formPolicyAccessibility
 }]);
 
 
-mod.config(['formPolicyCheckForStateChangesProvider', 'formPolicyCheckForStateChangesLibrary', function(statePolicy, lib) {
-  // DEMO: Check for errors as soon as the control is changed
-  //statePolicy.config.checker = lib.onChange;
-}]);
+//mod.config(['formPolicyCheckForStateChangesProvider', 'formPolicyCheckForStateChangesLibrary', function(statePolicy, lib) {
+//  // DEMO: Check for errors as soon as the control is changed
+//  statePolicy.config.checker = lib.onChange;
+//}]);
 
-mod.config(['formPolicyStateDefinitionsProvider', 'formPolicyErrorDefinitionLibrary', function(stateDefs, errorLib) {
-  // DEMO: Show errors immediately
-  //stateDefs.config.states.error = errorLib.immediately;
-}]);
+//mod.config(['formPolicyStateDefinitionsProvider', 'formPolicyErrorDefinitionLibrary', function(stateDefs, errorLib) {
+//  // DEMO: Show errors immediately
+//  stateDefs.config.states.error = errorLib.immediately;
+//}]);
 
 
-mod.controller('MainController', ['$http', function($http) {
+mod.controller('MainController', ['$http', function Controller($http) {
   var vm = this; // view-model
 
   // Fetch the documentation config and store it on the rootScope (for laughs :)
   let fileName = require('file?name=assets/config/[name].[ext]!./assets/config/docsConfig.json');
+
   $http.get(fileName).then(function(result) {
     vm.DOC_CONFIG = result.data;
     vm.REPO_HOST = result.data.repository.host;
@@ -155,16 +157,18 @@ mod.directive('appendSource', ['$compile', 'indent', function($compile, indent) 
     compile: function(element, attr) {
 
       // Directive options
-      var options = {placement: 'after'};
+      let options = {placement: 'after'};
+
       angular.forEach(['placement', 'hlClass'], function(key) {
         if (angular.isDefined(attr[key])) {
           options[key] = attr[key];
         }
       });
 
-      var hlElement = angular.element('<div class="highlight" ng-non-bindable><pre><code class="html" style="margin:0"></code></pre></div>');
-      var codeElement = hlElement.children('pre').children('code');
-      var elementHtml = indent(element.html());
+      let hlElement = angular.element('<div class="highlight" ng-non-bindable><pre><code class="html" style="margin:0"></code></pre></div>');
+      let codeElement = hlElement.children('pre').children('code');
+      let elementHtml = indent(element.html());
+
       codeElement.text(elementHtml);
       if (options.hlClass) {
         codeElement.addClass(options.hlClass);
@@ -193,9 +197,9 @@ mod.value('indent', function(text, spaces) {
   if (!text) {
     return text;
   }
-  var lines = text.split(/\r?\n/);
-  var prefix = '      '.substr(0, spaces || 0);
-  var i;
+  let lines = text.split(/\r?\n/);
+  let prefix = '      '.substr(0, spaces || 0);
+  let i;
 
   // Remove any leading blank lines
   while (lines.length && lines[0].match(/^\s*$/)) {
@@ -206,10 +210,12 @@ mod.value('indent', function(text, spaces) {
     lines.pop();
   }
   // Calculate proper indent
-  var minIndent = 999;
+  let minIndent = 999;
+
   for (i = 0; i < lines.length; i++) {
-    var line = lines[0];
-    var indent = line.match(/^\s*/)[0];
+    let line = lines[0];
+    let indent = line.match(/^\s*/)[0];
+
     if (indent !== line && indent.length < minIndent) {
       minIndent = indent.length;
     }
@@ -232,25 +238,28 @@ mod.directive('ahref', ['$location', '$document', 'scrollContainerAPI', 'duScrol
       link: function(scope, element, attrs) {
         element.on('click', function() {
           // The anchor reference should be valid
-          var ahref = attrs.ahref;
+          let ahref = attrs.ahref;
+
           if (!ahref || ahref.indexOf('#') === -1) {
             return;
           }
-          var elemId = ahref.replace(/.*(?=#[^\s]+$)/, '').substring(1);
+          let elemId = ahref.replace(/.*(?=#[^\s]+$)/, '').substring(1);
 
           // Only add the scroll to the history if directed to
           if (attrs.useHash) {
             $location.hash(elemId);  // Change the URL
             scope.$apply();
           }
-          var target = $document[0].getElementById(elemId);
+          let target = $document[0].getElementById(elemId);
+
           if (!target || !target.getBoundingClientRect) {
             return;
           }
 
-          var offset = parseInt(attrs.scrollOffset || 0) + (attrs.scrollBottom === 'true' ? -target.offsetHeight : 0);
-          var duration = attrs.duration ? parseInt(attrs.duration, 10) : duScrollDuration;
-          var container = scrollContainerAPI.getContainer(scope);
+          let offset = parseInt(attrs.scrollOffset || 0) + (attrs.scrollBottom === 'true' ? -target.offsetHeight : 0);
+          let duration = attrs.duration ? parseInt(attrs.duration, 10) : duScrollDuration;
+          let container = scrollContainerAPI.getContainer(scope);
+
           container.scrollToElement(angular.element(target), isNaN(offset) ? 0 : offset, isNaN(duration) ? 0 : duration);
         });
       }
