@@ -1,5 +1,6 @@
 import angular from 'angular';
 import FormControlService from '../common/FormControlService';
+import {ERROR_STATE} from '../../policy/stateDefinitions/PolicyStateDefinitions';
 
 const mod = angular.module('ngFormLib.controls.errorMessageContainer', [FormControlService]);
 
@@ -117,11 +118,13 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
       let a11yPolicy = formController._policy.accessibilityBehaviour;
       let ariaElement = a11yPolicy.createAriaErrorElement(formName, fieldName);
       let errorController = new ErrorController(ariaElement, a11yPolicy);   // This controller contains state pertaining to this error container instance. Not a shareable controller across multiple instances.
+
       element.append(ariaElement);
 
       for (var error in fieldErrors) {
         if (fieldErrors.hasOwnProperty(error)) {
-          let errorShowCondition = formField + '.fieldState === "error" && ' + formField + '.$error.' + error;
+          let errorShowCondition = `${formField}.fieldState === "${ERROR_STATE}" && ${formField}.$error.${error}`;
+
           toggleErrorVisibilityOnError(errorController, formController, scope, element, errorShowCondition, error, fieldErrors[error], fieldLabel);
         }
       }

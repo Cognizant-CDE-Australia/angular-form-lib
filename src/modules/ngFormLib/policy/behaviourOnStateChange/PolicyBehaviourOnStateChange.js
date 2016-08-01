@@ -2,6 +2,7 @@ import angular from 'angular';
 import 'angular-scroll';
 import FormControlService from '../../controls/common/FormControlService';
 import {getAriaErrorElementId} from '../accessibility/PolicyFormAccessibility';
+import {ERROR_STATE} from '../stateDefinitions/PolicyStateDefinitions';
 
 // The form policy intentionally has no hard dependencies.
 // If there are form-policy values that exist when the service is being constructed, it will use them.
@@ -83,7 +84,7 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
         // This function is called by the fieldErrorController when the fieldState changes and when the form is submitted
         applyBehaviour: function(fieldElem, fieldState, formSubmitAttempted, formName, fieldName) {
           // Set the focus to the field if there is an error showing and a form-submit has been attempted
-          if (fieldState === 'error' && formSubmitAttempted) {
+          if (fieldState === ERROR_STATE && formSubmitAttempted) {
             // Make sure element is the first field with an error based on DOM order
             let elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
             let firstElement;
@@ -112,12 +113,12 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
     function onErrorSetAriaDescribedByToAriaErrorElement(formController) {
       return {
         applyBehaviour: function(fieldElem, fieldState, formSubmitAttempted, formName, fieldName) {
-          fieldElem.attr('aria-invalid', fieldState === 'error');
+          fieldElem.attr('aria-invalid', fieldState === ERROR_STATE);
           // Get a reference to the error element
           let errorElemId = getAriaErrorElementId(formName, fieldName);
 
           // Link the field to the ariaErrorElement.
-          if (fieldState === 'error') {
+          if (fieldState === ERROR_STATE) {
             formControlService.addToAttribute(fieldElem, 'aria-describedby', errorElemId);
           } else {
             formControlService.removeFromAttribute(fieldElem, 'aria-describedby', errorElemId);
@@ -132,7 +133,7 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
       return {
         applyBehaviour: (fieldElem, fieldState, formSubmitAttempted, formName, fieldName, formGroupElement) => {
           let policy = formController._policy.behaviourOnStateChange;
-          formGroupElement[(fieldState === 'error') ? 'addClass' : 'removeClass'](policy.fieldErrorClass);
+          formGroupElement[(fieldState === ERROR_STATE) ? 'addClass' : 'removeClass'](policy.fieldErrorClass);
           formGroupElement[(fieldState === 'success') ? 'addClass' : 'removeClass'](policy.fieldSuccessClass);
         },
         resetBehaviour: () => {}

@@ -3,7 +3,8 @@ import angular from 'angular';
 // Define the different display trigger implementations available
 const mod = angular.module('ngFormLib.policy.stateDefinitions', []);
 
-export default mod.name
+export default mod.name;
+export const ERROR_STATE = 'error';
 
 // Error Conditions
 function errorOnSubmit(formName, fieldName) {
@@ -68,7 +69,7 @@ mod.constant('formPolicySuccessDefinitionLibrary', {
 mod.provider('formPolicyStateDefinitions', ['formPolicyErrorDefinitionLibrary', 'formPolicySuccessDefinitionLibrary', function(errorLib, successLib) {
   let config = this.config = {
     states: {
-      error: errorLib.onSubmitOrDirty,
+      [ERROR_STATE]: errorLib.onSubmitOrDirty,
       success: successLib.onSubmitOrDirty
     }
   };
