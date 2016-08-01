@@ -2,7 +2,7 @@ webpackJsonp([2],[
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(18);
+	module.exports = __webpack_require__(19);
 
 
 /***/ },
@@ -24,13 +24,15 @@ webpackJsonp([2],[
 	
 	var _FormControlService2 = _interopRequireDefault(_FormControlService);
 	
+	var _PolicyStateDefinitions = __webpack_require__(5);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var mod = _angular2.default.module('ngFormLib.controls.errorMessageContainer', [_FormControlService2.default]);
 	
 	exports.default = mod.name;
 	
-	/**
+	/*
 	 * This directive is really a FIELD error message container - it is designed to work with fields exclusively
 	 */
 	
@@ -53,7 +55,8 @@ webpackJsonp([2],[
 	  }
 	
 	  function translateError(errorMessage, fieldLabel) {
-	    var firstLetterIsAVowel = fieldLabel ? 'aeiou'.indexOf(fieldLabel[0].toLowerCase()) !== -1 : undefined;
+	    var firstLetterIsAVowel = fieldLabel ? 'aeiou'.indexOf(fieldLabel[0].toLowerCase() !== -1) : undefined;
+	
 	    return formControlService.translate(errorMessage, { pronoun: firstLetterIsAVowel ? 'an' : 'a', fieldLabel: fieldLabel });
 	  }
 	
@@ -61,7 +64,7 @@ webpackJsonp([2],[
 	    return '<div class="text-error ec2-' + errorType + '"><span class="text-error-wrap">' + translateError(errorText, fieldLabel) + '</span></div>';
 	  }
 	
-	  /**
+	  /*
 	   * Handle the field-based error messages
 	   */
 	  function toggleErrorVisibilityOnError(errorController, formController, scope, element, watchExpr, errorType, errorText, fieldLabel) {
@@ -70,6 +73,7 @@ webpackJsonp([2],[
 	      if (newValue) {
 	        // The error text could contain an interpolation string, so we need to compile it
 	        var val = $compile(generateErrorTag(errorType, errorText, fieldLabel))(scope);
+	
 	        element.append(val);
 	        errorController.addError(errorType, errorText, fieldLabel);
 	      } else {
@@ -82,6 +86,7 @@ webpackJsonp([2],[
 	  function removeErrorMessage(controller, formController, element, errorType) {
 	    // find the div with our special class, then remove it
 	    var divs = element.find('div');
+	
 	    for (var len = divs.length, i = len - 1; i > -1; i--) {
 	      if (divs.eq(i).hasClass('ec2-' + errorType)) {
 	        divs.eq(i).remove();
@@ -90,7 +95,7 @@ webpackJsonp([2],[
 	    controller.removeError(errorType);
 	  }
 	
-	  /**
+	  /*
 	   * Handle text errors. Text errors are associated with a scope, rather than with a field.
 	   * This means we can clear them from the scope when the field-they-are-associated-with is changed.
 	   */
@@ -145,32 +150,36 @@ webpackJsonp([2],[
 	      var a11yPolicy = formController._policy.accessibilityBehaviour;
 	      var ariaElement = a11yPolicy.createAriaErrorElement(formName, fieldName);
 	      var errorController = new ErrorController(ariaElement, a11yPolicy); // This controller contains state pertaining to this error container instance. Not a shareable controller across multiple instances.
+	
 	      element.append(ariaElement);
 	
 	      for (var error in fieldErrors) {
 	        if (fieldErrors.hasOwnProperty(error)) {
-	          var errorShowCondition = formField + '.fieldState === "error" && ' + formField + '.$error.' + error;
+	          var errorShowCondition = formField + '.fieldState === "' + _PolicyStateDefinitions.ERROR_STATE + '" && ' + formField + '.$error.' + error;
+	
 	          toggleErrorVisibilityOnError(errorController, formController, scope, element, errorShowCondition, error, fieldErrors[error], fieldLabel);
 	        }
 	      }
 	
 	      // Watch formController[fieldName] - it may not have loaded yet. When it loads, call the main function.
 	      if (textErrors) {
-	        //console.log('textErrors: ' + textErrors + ', fieldName = ' + fieldName);
-	        var fieldWatcher = scope.$watch(function () {
-	          return formController[fieldName];
-	        }, function (newValue) {
-	          if (newValue) {
-	            fieldWatcher(); // Cancel the watcher
+	        (function () {
+	          //console.log('textErrors: ' + textErrors + ', fieldName = ' + fieldName);
+	          var fieldWatcher = scope.$watch(function () {
+	            return formController[fieldName];
+	          }, function (newValue) {
+	            if (newValue) {
+	              fieldWatcher(); // Cancel the watcher
 	
-	            // Do the actual thing you planned to do...
-	            for (var item in textErrors) {
-	              if (textErrors.hasOwnProperty(item)) {
-	                toggleErrorVisibilityForTextError(errorController, formController, formController[fieldName], scope, element, textErrors[item], fieldLabel);
+	              // Do the actual thing you planned to do...
+	              for (var item in textErrors) {
+	                if (textErrors.hasOwnProperty(item)) {
+	                  toggleErrorVisibilityForTextError(errorController, formController, formController[fieldName], scope, element, textErrors[item], fieldLabel);
+	                }
 	              }
 	            }
-	          }
-	        });
+	          });
+	        })();
 	      }
 	
 	      element.removeAttr('error-container').removeAttr('field-name').removeAttr('field-errors').removeAttr('text-errors');
@@ -193,7 +202,7 @@ webpackJsonp([2],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _FieldErrorController = __webpack_require__(8);
+	var _FieldErrorController = __webpack_require__(9);
 	
 	var _FieldErrorController2 = _interopRequireDefault(_FieldErrorController);
 	
@@ -201,7 +210,7 @@ webpackJsonp([2],[
 	
 	var _FormControlService2 = _interopRequireDefault(_FormControlService);
 	
-	var _RequiredMarker = __webpack_require__(17);
+	var _RequiredMarker = __webpack_require__(18);
 	
 	var _RequiredMarker2 = _interopRequireDefault(_RequiredMarker);
 	
@@ -228,7 +237,7 @@ webpackJsonp([2],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _Utility = __webpack_require__(7);
+	var _Utility = __webpack_require__(8);
 	
 	var _Utility2 = _interopRequireDefault(_Utility);
 	
@@ -247,8 +256,10 @@ webpackJsonp([2],[
 	  $provide.decorator('ngModelDirective', ['$delegate', function ($delegate) {
 	    var ngModel = $delegate[0],
 	        controller = ngModel.controller;
-	    ngModel.controller = ['$scope', '$element', '$attrs', '$injector', function (scope, element, attrs, $injector) {
+	
+	    ngModel.controller = ['$scope', '$element', '$attrs', '$injector', function Controller(scope, element, attrs, $injector) {
 	      var $interpolate = $injector.get('$interpolate');
+	
 	      attrs.$set('name', $interpolate(attrs.name || '')(scope));
 	      $injector.invoke(controller, this, {
 	        '$scope': scope,
@@ -261,8 +272,10 @@ webpackJsonp([2],[
 	  $provide.decorator('formDirective', ['$delegate', function ($delegate) {
 	    var form = $delegate[0],
 	        controller = form.controller;
-	    form.controller = ['$scope', '$element', '$attrs', '$injector', function (scope, element, attrs, $injector) {
+	
+	    form.controller = ['$scope', '$element', '$attrs', '$injector', function Controller(scope, element, attrs, $injector) {
 	      var $interpolate = $injector.get('$interpolate');
+	
 	      attrs.$set('name', $interpolate(attrs.name || attrs.ngForm || '')(scope));
 	      $injector.invoke(controller, this, {
 	        '$scope': scope,
@@ -275,7 +288,7 @@ webpackJsonp([2],[
 	}]);
 	
 	// Shared code for the accessible controls
-	mod.provider('formControlService', function () {
+	mod.provider('formControlService', function Provider() {
 	  var self = this,
 	      counter = 0; // Private variable
 	
@@ -309,6 +322,7 @@ webpackJsonp([2],[
 	
 	  this.$get = ['ngFormLibStringUtil', '$injector', function (StringUtil, $injector) {
 	    var translator = void 0;
+	
 	    try {
 	      translator = $injector.get('$translate').instant;
 	    } catch (e) {
@@ -369,6 +383,7 @@ webpackJsonp([2],[
 	
 	        for (var i = 0; i < parentFormClasses.length; i++) {
 	          var template = self.defaults.templates[type][parentFormClasses[i]];
+	
 	          if (template) {
 	            result = template;
 	            break;
@@ -514,6 +529,7 @@ webpackJsonp([2],[
 	
 	          var fieldLabelStr = fieldLabel ? ' field-label="' + fieldLabel + '"' : '';
 	          var errorContainerElem = _angular2.default.element('<div error-container field-name="' + name + '"' + fieldLabelStr + '></div>');
+	
 	          if (fieldErrors) {
 	            errorContainerElem.attr('field-errors', fieldErrors);
 	          }
@@ -529,6 +545,7 @@ webpackJsonp([2],[
 	
 	        if (fieldHint) {
 	          var hintText = service.translate(fieldHint);
+	
 	          // If we have a field hint, add that as well
 	          if (fieldHintDisplay) {
 	            // If a field hint display rule exists, implement.
@@ -596,6 +613,7 @@ webpackJsonp([2],[
 	      }
 	
 	    };
+	
 	    return service;
 	  }];
 	});
@@ -603,6 +621,117 @@ webpackJsonp([2],[
 
 /***/ },
 /* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ERROR_STATE = undefined;
+	
+	var _angular = __webpack_require__(1);
+	
+	var _angular2 = _interopRequireDefault(_angular);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	
+	// TODO: What if the state definition expressions returned the statename, rather than true or false, so we wouldn't need
+	// to create a watch for each state definition. Instead, the expressions for each state would be like a big
+	// switch statement, returning a state name or undefined.
+	
+	
+	// Define the different display trigger implementations available
+	var mod = _angular2.default.module('ngFormLib.policy.stateDefinitions', []);
+	
+	exports.default = mod.name;
+	var ERROR_STATE = exports.ERROR_STATE = 'error';
+	
+	// Error Conditions
+	function errorOnSubmit(formName, fieldName) {
+	  return formName + '._formSubmitAttempted && ' + fieldName + '.$invalid';
+	}
+	
+	function errorOnDirty(formName, fieldName) {
+	  return fieldName + '.$dirty && ' + fieldName + '.$invalid';
+	}
+	
+	function errorImmediately(formName, fieldName) {
+	  return fieldName + '.$invalid';
+	}
+	
+	function errorOnSubmitAndDirty(formName, fieldName) {
+	  return formName + '._formSubmitAttempted && ' + fieldName + '.$dirty && ' + fieldName + '.$invalid';
+	}
+	
+	function errorOnSubmitOrDirty(formName, fieldName) {
+	  return '(' + formName + '._formSubmitAttempted || ' + fieldName + '.$dirty) && ' + fieldName + '.$invalid';
+	}
+	
+	mod.constant('formPolicyErrorDefinitionLibrary', {
+	  onSubmit: errorOnSubmit,
+	  onDirty: errorOnDirty,
+	  immediately: errorImmediately,
+	  onSubmitAndDirty: errorOnSubmitAndDirty,
+	  onSubmitOrDirty: errorOnSubmitOrDirty
+	});
+	
+	// Success Definitions
+	function successOnSubmit(formName, fieldName) {
+	  return formName + '._formSubmitAttempted && ' + fieldName + '.$valid';
+	}
+	
+	function successOnDirty(formName, fieldName) {
+	  return fieldName + '.$dirty && ' + fieldName + '.$valid';
+	}
+	
+	function successImmediately(formName, fieldName) {
+	  return fieldName + '.$valid';
+	}
+	
+	function successOnSubmitAndDirty(formName, fieldName) {
+	  return formName + '._formSubmitAttempted && ' + fieldName + '.$dirty && ' + fieldName + '.$valid';
+	}
+	
+	function successOnSubmitOrDirty(formName, fieldName) {
+	  return '(' + formName + '._formSubmitAttempted || ' + fieldName + '.$dirty) && ' + fieldName + '.$valid';
+	}
+	
+	mod.constant('formPolicySuccessDefinitionLibrary', {
+	  onSubmit: successOnSubmit,
+	  onDirty: successOnDirty,
+	  immediately: successImmediately,
+	  onSubmitAndDirty: successOnSubmitAndDirty,
+	  onSubmitOrDirty: successOnSubmitOrDirty
+	});
+	
+	mod.provider('formPolicyStateDefinitions', ['formPolicyErrorDefinitionLibrary', 'formPolicySuccessDefinitionLibrary', function Provider(errorLib, successLib) {
+	  var _states;
+	
+	  var config = this.config = {
+	    states: (_states = {}, _defineProperty(_states, ERROR_STATE, errorLib.onSubmitOrDirty), _defineProperty(_states, 'success', successLib.onSubmitOrDirty), _states)
+	  };
+	
+	  config.create = function (formName, fieldName) {
+	    var result = {};
+	
+	    for (var state in config.states) {
+	      if (config.states.hasOwnProperty(state)) {
+	        result[state] = config.states[state](formName, fieldName);
+	      }
+	    }
+	    return result;
+	  };
+	
+	  this.$get = function () {
+	    return config;
+	  };
+	}]);
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -628,6 +757,7 @@ webpackJsonp([2],[
 	
 	function createAriaErrorElement(formName, fieldName) {
 	  var elem = _angular2.default.element(ariaErrorElementTemplate);
+	
 	  elem.attr('id', getAriaErrorElementId(formName, fieldName));
 	  return elem;
 	}
@@ -641,6 +771,7 @@ webpackJsonp([2],[
 	function createLongErrorDescription(ariaElement, errors) {
 	  var str = '',
 	      i = 0;
+	
 	  for (var type in errors) {
 	    if (errors.hasOwnProperty(type)) {
 	      str += 'Error ' + ++i + ', ' + errors[type] + ',';
@@ -657,13 +788,14 @@ webpackJsonp([2],[
 	
 	function createShortErrorDescription(ariaElement, errors) {
 	  var errorMsgs = [];
+	  var prefix = '';
+	
 	  for (var type in errors) {
 	    if (errors.hasOwnProperty(type)) {
 	      errorMsgs.push(errors[type]);
 	    }
 	  }
 	
-	  var prefix = '';
 	  if (errorMsgs.length > 1) {
 	    prefix = errorMsgs.length + ' errors: ';
 	  }
@@ -677,8 +809,7 @@ webpackJsonp([2],[
 	  createShortErrorDescription: createShortErrorDescription
 	});
 	
-	mod.provider('formPolicyAccessibilityBehaviour', ['formPolicyAccessibilityLibrary', function (lib) {
-	
+	mod.provider('formPolicyAccessibilityBehaviour', ['formPolicyAccessibilityLibrary', function Provider(lib) {
 	  var config = this.config = {
 	    createAriaErrorElement: lib.createAriaErrorElement,
 	    onErrorChangeBehaviour: lib.createLongErrorDescription
@@ -690,8 +821,8 @@ webpackJsonp([2],[
 	}]);
 
 /***/ },
-/* 6 */,
-/* 7 */
+/* 7 */,
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -734,6 +865,7 @@ webpackJsonp([2],[
 	    var dd = dayOrDate,
 	        mm = month,
 	        yyyy = year;
+	
 	    if (dayOrDate.getUTCDay) {
 	      dd = dayOrDate.getDate();
 	      mm = dayOrDate.getMonth() + 1; //January is 0!`
@@ -744,6 +876,7 @@ webpackJsonp([2],[
 	  dateAdd: function dateAdd(dateStr, numDays) {
 	    // Return a modified date in ISO format
 	    var myDate = this.getDate(dateStr);
+	
 	    myDate.setDate(myDate.getDate() + numDays);
 	
 	    return this.formatDay(myDate);
@@ -761,7 +894,7 @@ webpackJsonp([2],[
 	    return new Date(dateStr);
 	  },
 	  monthsBetween: function monthsBetween(date1, date2) {
-	    return date2.getMonth() - date1.getMonth() + 12 * (date2.getFullYear() - date1.getFullYear());
+	    return date2.getMonth() - date1.getMonth() + 12 * (date2.getFullYear() - date1.getFullYear()); // eslint-disable-line no-extra-parens
 	  }
 	});
 	
@@ -794,6 +927,7 @@ webpackJsonp([2],[
 	  },
 	  toArray: function toArray(obj) {
 	    var arr = [];
+	
 	    for (var i in obj) {
 	      if (obj.hasOwnProperty(i)) {
 	        arr[arr.length] = { key: i, value: obj[i] };
@@ -808,7 +942,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -904,7 +1038,7 @@ webpackJsonp([2],[
 	mod.directive('formGroup', [function () {
 	  return {
 	    restrict: 'C',
-	    controller: ['$scope', '$element', function ($scope, $element) {
+	    controller: ['$scope', '$element', function Controller($scope, $element) {
 	      this.$element = $element;
 	    }]
 	  };
@@ -912,7 +1046,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -970,7 +1104,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1080,6 +1214,7 @@ webpackJsonp([2],[
 	
 	        // Check that it is a valid date
 	        var dateFormatValid = dateRegEx.test(viewValue) || typeof viewValue === 'undefined' || !viewValue;
+	
 	        ctrl.$setValidity('dateFormat', dateFormatValid);
 	
 	        //console.log('dateInput: ' + viewValue + ', ' + ctrl.$modelValue);
@@ -1087,16 +1222,18 @@ webpackJsonp([2],[
 	        // If the date is valid
 	        if (dateFormatValid && viewValue) {
 	          var fieldDate = DateUtil.getDate(viewValue);
+	
 	          // and there is a min date, check if the value is greater than the min date
 	          if (attrs.minDate) {
 	            var minDate = DateUtil.getDate(attrs.minDate);
+	
 	            ctrl.$setValidity('minDate', fieldDate.getTime() >= minDate.getTime());
 	          } else {
 	            ctrl.$setValidity('minDate', true);
 	          }
 	          // and there is a max date, check if the value is less than the max date
 	          if (attrs.maxDate) {
-	            var maxDate;
+	            var maxDate = void 0;
 	
 	            if (attrs.maxDate === 'today') {
 	              maxDate = DateUtil.getDate(DateUtil.getToday());
@@ -1127,7 +1264,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1200,7 +1337,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1244,6 +1381,7 @@ webpackJsonp([2],[
 	    configFn: function configFn(tElement, tAttr, id, name, inputElem) {
 	      // Move the class attribute from the outer-DIV to the radio-button DIV (special case)
 	      var rbDiv = tElement.find('div');
+	
 	      rbDiv.addClass(tElement.attr('class'));
 	      tElement.removeAttr('class');
 	
@@ -1260,7 +1398,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1287,9 +1425,9 @@ webpackJsonp([2],[
 	    for (var item in controlMap) {
 	      if (controlMap.hasOwnProperty(item)) {
 	        var controlList = controlMap[item];
+	
 	        for (var j = 0, jLen = controlList.length; j < jLen; j++) {
-	          var control = controlList[j].controller;
-	          control.fieldState = '';
+	          controlList[j].controller.fieldState = '';
 	        }
 	      }
 	    }
@@ -1299,8 +1437,8 @@ webpackJsonp([2],[
 	    restrict: 'A',
 	    require: '^form',
 	    link: function link(scope, element, attr, controller) {
-	      var ngModelGet = $parse(attr.formReset),
-	          ngModelSet = ngModelGet.assign;
+	      var ngModelGet = $parse(attr.formReset);
+	      var ngModelSet = ngModelGet.assign;
 	
 	      if (!ngModelSet) {
 	        throw Error('formReset requires an assignable scope-expression. "' + attr.formReset + '" is un-assignable.');
@@ -1327,7 +1465,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1394,7 +1532,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1414,10 +1552,13 @@ webpackJsonp([2],[
 	exports.default = mod.name;
 	
 	/**
-	 *  formSubmit - Executes an expression when the form is valid (essentially a form.submit() handler).
+	 * formSubmit - Executes an expression when the form is valid (essentially a form.submit() handler).
 	 *
-	 *  It can be applied to either the form element or to a button.
+	 * It can be applied to either the form element or to a button.
 	 *
+	 * @param {Object} $parse   The $parse service
+	 *
+	 * @returns {Object} Directive definition object
 	 */
 	
 	mod.directive('formSubmit', ['$parse', function ($parse) {
@@ -1456,7 +1597,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1473,31 +1614,31 @@ webpackJsonp([2],[
 	
 	var _ErrorMessageContainer2 = _interopRequireDefault(_ErrorMessageContainer);
 	
-	var _FormCheckbox = __webpack_require__(9);
+	var _FormCheckbox = __webpack_require__(10);
 	
 	var _FormCheckbox2 = _interopRequireDefault(_FormCheckbox);
 	
-	var _FormDate = __webpack_require__(10);
+	var _FormDate = __webpack_require__(11);
 	
 	var _FormDate2 = _interopRequireDefault(_FormDate);
 	
-	var _FormInput = __webpack_require__(11);
+	var _FormInput = __webpack_require__(12);
 	
 	var _FormInput2 = _interopRequireDefault(_FormInput);
 	
-	var _FormRadioButton = __webpack_require__(12);
+	var _FormRadioButton = __webpack_require__(13);
 	
 	var _FormRadioButton2 = _interopRequireDefault(_FormRadioButton);
 	
-	var _FormReset = __webpack_require__(13);
+	var _FormReset = __webpack_require__(14);
 	
 	var _FormReset2 = _interopRequireDefault(_FormReset);
 	
-	var _FormSelect = __webpack_require__(14);
+	var _FormSelect = __webpack_require__(15);
 	
 	var _FormSelect2 = _interopRequireDefault(_FormSelect);
 	
-	var _FormSubmit = __webpack_require__(15);
+	var _FormSubmit = __webpack_require__(16);
 	
 	var _FormSubmit2 = _interopRequireDefault(_FormSubmit);
 	
@@ -1510,7 +1651,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1565,7 +1706,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1578,15 +1719,15 @@ webpackJsonp([2],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	var _FormPolicy = __webpack_require__(19);
+	var _FormPolicy = __webpack_require__(20);
 	
 	var _FormPolicy2 = _interopRequireDefault(_FormPolicy);
 	
-	var _controls = __webpack_require__(16);
+	var _controls = __webpack_require__(17);
 	
 	var _controls2 = _interopRequireDefault(_controls);
 	
-	var _defaultPolicies = __webpack_require__(22);
+	var _defaultPolicies = __webpack_require__(23);
 	
 	var _defaultPolicies2 = _interopRequireDefault(_defaultPolicies);
 	
@@ -1605,7 +1746,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1630,7 +1771,7 @@ webpackJsonp([2],[
 	// This is a configurable service
 	// It should contain the _default_ values for form policies
 	
-	mod.provider('formPolicyService', function () {
+	mod.provider('formPolicyService', function Provider() {
 	  var self = this;
 	  var noop = function noop() {};
 	  var nullBehaviourOnStateChange = {
@@ -1709,6 +1850,7 @@ webpackJsonp([2],[
 	        pre: function pre(scope, element, attr, controller) {
 	          // We want to extend the FormController by adding a form policy
 	          var formController = controller[0];
+	
 	          formController._policy = _angular2.default.extend(formPolicyService.getCurrentPolicy(), scope.$eval(attr.formPolicy));
 	
 	          // Add a reference to the <form> element's scope to the formController, to support showing errors for nested components
@@ -1772,6 +1914,7 @@ webpackJsonp([2],[
 	    function hookupElementToNameToElementMap(formController, element, fieldName, fieldController) {
 	      // Each element in the map is an array, because form elements *can have the same name*!
 	      var map = formController._controls;
+	
 	      if (!map[fieldName]) {
 	        map[fieldName] = [];
 	      }
@@ -1782,6 +1925,7 @@ webpackJsonp([2],[
 	        // Delete just this element from the map of controls
 	        var map = formController._controls[element.attr('name')];
 	        var elementId = element.attr('id');
+	
 	        for (var i = 0; i < map.length; i++) {
 	          if (map[i].element.attr('id') === elementId) {
 	            map.splice(i, 1);
@@ -1800,9 +1944,9 @@ webpackJsonp([2],[
 	            return;
 	          }
 	
-	          var rootFormController = controllers[0]._parentController || controllers[0],
-	              fieldController = controllers[1],
-	              name = attr.name;
+	          var rootFormController = controllers[0]._parentController || controllers[0];
+	          var fieldController = controllers[1];
+	          var name = attr.name;
 	
 	          if (rootFormController && rootFormController._controls) {
 	            hookupElementToNameToElementMap(rootFormController, element, name, fieldController);
@@ -1815,7 +1959,7 @@ webpackJsonp([2],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1829,13 +1973,15 @@ webpackJsonp([2],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
-	__webpack_require__(6);
+	__webpack_require__(7);
 	
 	var _FormControlService = __webpack_require__(4);
 	
 	var _FormControlService2 = _interopRequireDefault(_FormControlService);
 	
-	var _PolicyFormAccessibility = __webpack_require__(5);
+	var _PolicyFormAccessibility = __webpack_require__(6);
+	
+	var _PolicyStateDefinitions = __webpack_require__(5);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -1931,25 +2077,24 @@ webpackJsonp([2],[
 	    return {
 	
 	      // This function is called by the fieldErrorController when the fieldState changes and when the form is submitted
-	      applyBehaviour: function applyBehaviour(fieldElem, fieldState, formSubmitAttempted, formName, fieldName) {
+	      applyBehaviour: function applyBehaviour(fieldElem, fieldState, formSubmitAttempted /*, formName, fieldName*/) {
 	        // Set the focus to the field if there is an error showing and a form-submit has been attempted
-	        if (fieldState === 'error' && formSubmitAttempted) {
-	          var isFirstElement;
-	
+	        if (fieldState === _PolicyStateDefinitions.ERROR_STATE && formSubmitAttempted) {
 	          (function () {
 	            // Make sure element is the first field with an error based on DOM order
 	            var elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
 	            var firstElement = void 0;
+	
 	            _angular2.default.forEach(elems, function (elem) {
 	              if (isElementVisible(elem) && !firstElement) {
 	                firstElement = elem;
 	              }
 	            });
-	            isFirstElement = firstElement ? firstElement.id === fieldElem[0].id : false;
+	            var isFirstElement = firstElement ? firstElement.id === fieldElem[0].id : false;
 	
 	            // ...and if the focusErrorElement is blank...
-	
 	            var scrollOffset = formController._policy.behaviourOnStateChange.fieldFocusScrollOffset;
+	
 	            if (!focusController._focusErrorElement && isFirstElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, scrollOffset)) {
 	              focusController._focusErrorElement = fieldElem;
 	            }
@@ -1963,15 +2108,15 @@ webpackJsonp([2],[
 	    };
 	  }
 	
-	  function onErrorSetAriaDescribedByToAriaErrorElement(formController) {
+	  function onErrorSetAriaDescribedByToAriaErrorElement() /*formController*/{
 	    return {
 	      applyBehaviour: function applyBehaviour(fieldElem, fieldState, formSubmitAttempted, formName, fieldName) {
-	        fieldElem.attr('aria-invalid', fieldState === 'error');
+	        fieldElem.attr('aria-invalid', fieldState === _PolicyStateDefinitions.ERROR_STATE);
 	        // Get a reference to the error element
 	        var errorElemId = (0, _PolicyFormAccessibility.getAriaErrorElementId)(formName, fieldName);
 	
 	        // Link the field to the ariaErrorElement.
-	        if (fieldState === 'error') {
+	        if (fieldState === _PolicyStateDefinitions.ERROR_STATE) {
 	          formControlService.addToAttribute(fieldElem, 'aria-describedby', errorElemId);
 	        } else {
 	          formControlService.removeFromAttribute(fieldElem, 'aria-describedby', errorElemId);
@@ -1985,7 +2130,8 @@ webpackJsonp([2],[
 	    return {
 	      applyBehaviour: function applyBehaviour(fieldElem, fieldState, formSubmitAttempted, formName, fieldName, formGroupElement) {
 	        var policy = formController._policy.behaviourOnStateChange;
-	        formGroupElement[fieldState === 'error' ? 'addClass' : 'removeClass'](policy.fieldErrorClass);
+	
+	        formGroupElement[fieldState === _PolicyStateDefinitions.ERROR_STATE ? 'addClass' : 'removeClass'](policy.fieldErrorClass);
 	        formGroupElement[fieldState === 'success' ? 'addClass' : 'removeClass'](policy.fieldSuccessClass);
 	      },
 	      resetBehaviour: function resetBehaviour() {}
@@ -1999,7 +2145,7 @@ webpackJsonp([2],[
 	  };
 	}]);
 	
-	mod.provider('formPolicyBehaviourOnStateChange', function () {
+	mod.provider('formPolicyBehaviourOnStateChange', function Provider() {
 	  var config = this.config = {
 	    behaviour: undefined,
 	    fieldErrorClass: 'has-error',
@@ -2016,7 +2162,7 @@ webpackJsonp([2],[
 	});
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2029,6 +2175,8 @@ webpackJsonp([2],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
+	var _PolicyStateDefinitions = __webpack_require__(5);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var mod = _angular2.default.module('ngFormLib.policy.checkForStateChanges', []);
@@ -2038,7 +2186,7 @@ webpackJsonp([2],[
 	// Policy implementation functions
 	
 	function checkForStateChangesOnBlurUntilSubmitThenOnChange(scope, element, name, stateDefinitions, ngModelController) {
-	  var errorWatch;
+	  var errorWatch = void 0;
 	
 	  scope.$on('event:FormSubmitAttempted', function () {
 	    (errorWatch || _angular2.default.noop)(); // Remove the error watcher, which may-or-may-not be present
@@ -2049,15 +2197,17 @@ webpackJsonp([2],[
 	  // Listen for the form reset event and cancel the submit-watcher
 	  scope.$on('event:FormReset', function () {
 	    (errorWatch || _angular2.default.noop)(); // Remove the error watcher, which may-or-may-not be present
+	    errorWatch = undefined;
 	    //console.log('heard formReset');
 	  });
 	
+	  // Initially just watch for blur event. But once there's an error, watch for keyup events too
 	  watchForBlurEvent(scope, element, name, stateDefinitions, ngModelController);
 	}
 	
 	function checkForStateChangesOnChange(scope, element, name, stateDefinitions, ngModelController) {
 	  // Watch the error condition for changes, and flag the field as inErrorShowing when the errorCondition is true
-	  watchForErrorChanges(scope, stateDefinitions, ngModelController);
+	  return watchForErrorChanges(scope, stateDefinitions, ngModelController);
 	}
 	
 	function checkForStateChangesOnBlur(scope, element, name, stateDefinitions, ngModelController) {
@@ -2066,7 +2216,7 @@ webpackJsonp([2],[
 	
 	// Helper methods
 	function createWatch(scope, ngModelController, stateName, stateCondition) {
-	  scope.$watch(stateCondition, function (value) {
+	  return scope.$watch(stateCondition, function (value) {
 	    if (value === true) {
 	      ngModelController.fieldState = stateName; // THIS IS THE KEY FLAG
 	      //console.log('A: ' + stateCondition + ' = ' + value);
@@ -2076,11 +2226,21 @@ webpackJsonp([2],[
 	
 	function watchForErrorChanges(scope, stateDefinitions, ngModelController) {
 	  // Set up a watch for each state definition... expensive?
+	  var watchers = [];
+	
 	  for (var stateName in stateDefinitions) {
 	    if (stateDefinitions.hasOwnProperty(stateName)) {
-	      createWatch(scope, ngModelController, stateName, stateDefinitions[stateName]);
+	      watchers.push(createWatch(scope, ngModelController, stateName, stateDefinitions[stateName]));
 	    }
 	  }
+	
+	  // Return a de-registration function
+	  return function () {
+	    //console.log('Remove error watchers...', watchers);
+	    watchers.forEach(function (deregistrationFn) {
+	      return deregistrationFn();
+	    });
+	  };
 	}
 	
 	function evaluateFieldStates(scope, stateDefinitions, ngModelController) {
@@ -2097,8 +2257,24 @@ webpackJsonp([2],[
 	  // Determine the initial field state. First state to evaluate to TRUE wins
 	  evaluateFieldStates(scope, stateDefinitions, ngModelController);
 	
+	  var handleErrorsOnKeyChangeWatcher = void 0;
+	
 	  element.bind('blur', function ngShowWatchAction() {
+	    var initialFieldState = ngModelController.fieldState;
+	
 	    evaluateFieldStates(scope, stateDefinitions, ngModelController);
+	    //console.log(initialFieldState, '=>', ngModelController.fieldState);
+	
+	    // If onBlur we change into an error state (from a non error state), start watching for error-changes (as soon as the field become valid).
+	    if (initialFieldState !== ngModelController.fieldState && ngModelController.fieldState === _PolicyStateDefinitions.ERROR_STATE && !handleErrorsOnKeyChangeWatcher) {
+	      //console.log('adding change watchers');
+	      handleErrorsOnKeyChangeWatcher = watchForErrorChanges(scope, stateDefinitions, ngModelController);
+	      // If we are already watching for error-changes and the field is no longer in error, stop watching for error changes
+	    } else if (handleErrorsOnKeyChangeWatcher && ngModelController.fieldState !== _PolicyStateDefinitions.ERROR_STATE) {
+	      handleErrorsOnKeyChangeWatcher(); // Remove the watcher
+	      handleErrorsOnKeyChangeWatcher = undefined;
+	    }
+	
 	    scope.$apply(); // We are in a jQueryLite handler and have changed a scope property - fire the watchers!
 	  });
 	}
@@ -2112,7 +2288,7 @@ webpackJsonp([2],[
 	  };
 	}());
 	
-	mod.provider('formPolicyCheckForStateChanges', ['formPolicyCheckForStateChangesLibrary', function (lib) {
+	mod.provider('formPolicyCheckForStateChanges', ['formPolicyCheckForStateChangesLibrary', function Provider(lib) {
 	  var config = this.config = {
 	    checker: lib.onBlurUntilSubmitThenOnChange
 	  };
@@ -2121,43 +2297,6 @@ webpackJsonp([2],[
 	    return config;
 	  };
 	}]);
-	module.exports = exports['default'];
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _angular = __webpack_require__(1);
-	
-	var _angular2 = _interopRequireDefault(_angular);
-	
-	var _PolicyFormAccessibility = __webpack_require__(5);
-	
-	var _PolicyFormAccessibility2 = _interopRequireDefault(_PolicyFormAccessibility);
-	
-	var _PolicyBehaviourOnStateChange = __webpack_require__(20);
-	
-	var _PolicyBehaviourOnStateChange2 = _interopRequireDefault(_PolicyBehaviourOnStateChange);
-	
-	var _PolicyCheckForStateChanges = __webpack_require__(21);
-	
-	var _PolicyCheckForStateChanges2 = _interopRequireDefault(_PolicyCheckForStateChanges);
-	
-	var _PolicyStateDefinitions = __webpack_require__(23);
-	
-	var _PolicyStateDefinitions2 = _interopRequireDefault(_PolicyStateDefinitions);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var mod = _angular2.default.module('ngFormLib.defaultPolicies', [_PolicyFormAccessibility2.default, _PolicyBehaviourOnStateChange2.default, _PolicyCheckForStateChanges2.default, _PolicyStateDefinitions2.default]);
-	
-	exports.default = mod.name;
 	module.exports = exports['default'];
 
 /***/ },
@@ -2174,94 +2313,27 @@ webpackJsonp([2],[
 	
 	var _angular2 = _interopRequireDefault(_angular);
 	
+	var _PolicyFormAccessibility = __webpack_require__(6);
+	
+	var _PolicyFormAccessibility2 = _interopRequireDefault(_PolicyFormAccessibility);
+	
+	var _PolicyBehaviourOnStateChange = __webpack_require__(21);
+	
+	var _PolicyBehaviourOnStateChange2 = _interopRequireDefault(_PolicyBehaviourOnStateChange);
+	
+	var _PolicyCheckForStateChanges = __webpack_require__(22);
+	
+	var _PolicyCheckForStateChanges2 = _interopRequireDefault(_PolicyCheckForStateChanges);
+	
+	var _PolicyStateDefinitions = __webpack_require__(5);
+	
+	var _PolicyStateDefinitions2 = _interopRequireDefault(_PolicyStateDefinitions);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// Define the different display trigger implementations available
-	var mod = _angular2.default.module('ngFormLib.policy.stateDefinitions', []);
+	var mod = _angular2.default.module('ngFormLib.defaultPolicies', [_PolicyFormAccessibility2.default, _PolicyBehaviourOnStateChange2.default, _PolicyCheckForStateChanges2.default, _PolicyStateDefinitions2.default]);
 	
 	exports.default = mod.name;
-	
-	// Error Conditions
-	
-	function errorOnSubmit(formName, fieldName) {
-	  return formName + '._formSubmitAttempted && ' + fieldName + '.$invalid';
-	}
-	
-	function errorOnDirty(formName, fieldName) {
-	  return fieldName + '.$dirty && ' + fieldName + '.$invalid';
-	}
-	
-	function errorImmediately(formName, fieldName) {
-	  return fieldName + '.$invalid';
-	}
-	
-	function errorOnSubmitAndDirty(formName, fieldName) {
-	  return formName + '._formSubmitAttempted && ' + fieldName + '.$dirty && ' + fieldName + '.$invalid';
-	}
-	
-	function errorOnSubmitOrDirty(formName, fieldName) {
-	  return '(' + formName + '._formSubmitAttempted || ' + fieldName + '.$dirty) && ' + fieldName + '.$invalid';
-	}
-	
-	mod.constant('formPolicyErrorDefinitionLibrary', {
-	  onSubmit: errorOnSubmit,
-	  onDirty: errorOnDirty,
-	  immediately: errorImmediately,
-	  onSubmitAndDirty: errorOnSubmitAndDirty,
-	  onSubmitOrDirty: errorOnSubmitOrDirty
-	});
-	
-	// Success Definitions
-	function successOnSubmit(formName, fieldName) {
-	  return formName + '._formSubmitAttempted && ' + fieldName + '.$valid';
-	}
-	
-	function successOnDirty(formName, fieldName) {
-	  return fieldName + '.$dirty && ' + fieldName + '.$valid';
-	}
-	
-	function successImmediately(formName, fieldName) {
-	  return fieldName + '.$valid';
-	}
-	
-	function successOnSubmitAndDirty(formName, fieldName) {
-	  return formName + '._formSubmitAttempted && ' + fieldName + '.$dirty && ' + fieldName + '.$valid';
-	}
-	
-	function successOnSubmitOrDirty(formName, fieldName) {
-	  return '(' + formName + '._formSubmitAttempted || ' + fieldName + '.$dirty) && ' + fieldName + '.$valid';
-	}
-	
-	mod.constant('formPolicySuccessDefinitionLibrary', {
-	  onSubmit: successOnSubmit,
-	  onDirty: successOnDirty,
-	  immediately: successImmediately,
-	  onSubmitAndDirty: successOnSubmitAndDirty,
-	  onSubmitOrDirty: successOnSubmitOrDirty
-	});
-	
-	mod.provider('formPolicyStateDefinitions', ['formPolicyErrorDefinitionLibrary', 'formPolicySuccessDefinitionLibrary', function (errorLib, successLib) {
-	  var config = this.config = {
-	    states: {
-	      error: errorLib.onSubmitOrDirty,
-	      success: successLib.onSubmitOrDirty
-	    }
-	  };
-	
-	  config.create = function (formName, fieldName) {
-	    var result = {};
-	    for (var state in config.states) {
-	      if (config.states.hasOwnProperty(state)) {
-	        result[state] = config.states[state](formName, fieldName);
-	      }
-	    }
-	    return result;
-	  };
-	
-	  this.$get = function () {
-	    return config;
-	  };
-	}]);
 	module.exports = exports['default'];
 
 /***/ },
@@ -2308,4 +2380,4 @@ webpackJsonp([2],[
 
 /***/ }
 ]);
-//# sourceMappingURL=ngFormLib.896ab23e.js.map
+//# sourceMappingURL=ngFormLib.2aea8b57.js.map

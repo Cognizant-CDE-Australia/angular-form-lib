@@ -845,6 +845,9 @@
   border-color: #d9534f;
   border-radius: 5px 5px 0 0;
 }
+.has-error .ng-valid {
+  color: #800080;
+}
 .container-error {
   display: block;
   border-radius: 0 0 5px 5px;
