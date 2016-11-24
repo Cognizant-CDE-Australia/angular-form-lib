@@ -1,8 +1,10 @@
 import componentUnderTest from '../FormInput';
 
 describe('Form Input Directive', function() {
+  let compileElement;
+  let scope;
+  let elem;
 
-  let compileElement, scope, elem;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest);
@@ -142,21 +144,23 @@ describe('Form Input Directive', function() {
 
 
   it('should throw an error if any of the label, id and name attributes are missing', function() {
-    var controlName = 'formInput', directiveName = 'form-input';
-    var errorNoLabel = 'The ' + controlName + ' component requires a label attribute.';
-    var exceptionFn = function(html) {
+    let controlName = 'formInput';
+    let directiveName = 'form-input';
+    let errorNoLabel = 'The ' + controlName + ' component requires a label attribute.';
+    let exceptionFn = function(html) {
       compileElement(html);
     };
 
-    var testData = [
-      {html: '<' + directiveName + ' label="" uid="b" name="c"></' + directiveName + '>', expected: errorNoLabel}
+    let testData = [
+      {html: '<' + directiveName + ' label="" uid="b" name="c"></' + directiveName + '>', expected: errorNoLabel},
     ];
 
     testData.forEach(function(testData) {
-      expect(function() {exceptionFn(testData.html);}).toThrow(new Error(testData.expected));
+      expect(function() {
+        exceptionFn(testData.html);
+      }).toThrow(new Error(testData.expected));
     });
   });
-
 
 
   // it('should show errors related to the field AKA fieldErrors', function() {
@@ -181,10 +185,7 @@ describe('Form Input Directive', function() {
   // });
 
 
-
-
   describe(', when inside a repeater,', function() {
-
     it('should generate valid IDs and names using $index', function() {
       scope.items = ['a', 'b', 'c'];
       elem = compileElement('<form name="frm"><div ng-repeat="item in items"><form-input uid="fld{{$index + item}}" name="fldName{{$index}}" label="hi {{item}}" input-type="text"></div></form>');
@@ -204,6 +205,5 @@ describe('Form Input Directive', function() {
       expect(elem.find('input').eq(1).attr('name')).toEqual('fldName1');
       expect(elem.find('input').eq(2).attr('name')).toEqual('fldName2');
     });
-
   });
 });

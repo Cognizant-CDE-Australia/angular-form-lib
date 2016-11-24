@@ -1,7 +1,9 @@
 import componentUnderTest from '../FormCheckbox';
 
 describe('when I use the Form Checkbox button it', function() {
-  let compileElement, scope, elem;
+  let compileElement;
+  let scope;
+  let elem;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest);
@@ -32,7 +34,6 @@ describe('when I use the Form Checkbox button it', function() {
     // Little bit weird: The checkbox has a ng-checked=true initial state, but the model value 'state' does not exist! So the field looks checked, but it is invalid!
     // In practice, ng-checked should be an expression, or even better, just put a value into the model.
     expect(elem.find('input')[0].outerHTML).toMatch('<input type="checkbox" field-error-controller="" id="fld" name="btn" ng-model="state" ng-checked="true" aria-label="My label" ng-change="testChange()" ng-required="true" aria-required="true" ng-class="{\'checked\': state === true || true}" class=".*" required="required" checked="checked">');
-    //expect(elem.find('label')[0].outerHTML).toEqual('<label for="fld" class="Amy checked" ng-class="{\'checked\': state === \'undefined\' || true}"><span ng-transclude=""></span><span class="required ng-isolate-scope" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" hide="!(true)"></span></label>');
+    // expect(elem.find('label')[0].outerHTML).toEqual('<label for="fld" class="Amy checked" ng-class="{\'checked\': state === \'undefined\' || true}"><span ng-transclude=""></span><span class="required ng-isolate-scope" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" hide="!(true)"></span></label>');
   });
-
 });

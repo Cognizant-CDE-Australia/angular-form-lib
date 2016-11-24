@@ -17,7 +17,6 @@ export default mod.name;
 //  <span class="required" aria-hidden="true" ng-class="{\'ng-hide\': hide}" ng-transclude="" hide="isNotRequired">Some Text</span>
 
 mod.directive('requiredMarker', ['formControlService', function(formControlService) {
-
   return {
     restrict: 'AE',
     replace: true,
@@ -26,8 +25,8 @@ mod.directive('requiredMarker', ['formControlService', function(formControlServi
       return attr.template || formControlService.getHTMLTemplate(element, 'requiredMarker');
     },
     scope: {
-      hide: '='
-    }
+      hide: '=',
+    },
   };
 }]);
 

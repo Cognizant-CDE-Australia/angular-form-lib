@@ -15,6 +15,6 @@ mod.directive('formInputDocs', function() {
       this.igbPrefixHandler = () => window.alert(`input group button prefix clicked ${++prefixCount} times`);
       this.igbSuffixHandler = () => window.alert(`input group button suffix clicked ${++suffixCount} times`);
     },
-    controllerAs: '$ctrl'
+    controllerAs: '$ctrl',
   };
 });

@@ -32,7 +32,7 @@ const mod = angular.module('ngFormLibDocs.docs.fixtures', [
   formSelectDocs,
   formDateDocs,
   errorMessageContainerDocs,
-  requiredMarkerDocs
+  requiredMarkerDocs,
 ]);
 
 export default mod.name;

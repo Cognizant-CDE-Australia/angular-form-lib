@@ -17,7 +17,7 @@ const mod = angular.module('ngFormLibDocs.docs', [
   ngTranslate,
 
   // require ALL of the docs /demo components
-  docFixtures
+  docFixtures,
 ]);
 
 export default mod.name;
@@ -33,7 +33,7 @@ mod.directive('bindCompile', ['$compile', function($compile) {
         element[0].innerHTML = html;
         $compile(element.contents())(scope);
       });
-    }
+    },
   };
 }]);
 
@@ -65,19 +65,19 @@ mod.config(['formPolicyAccessibilityBehaviourProvider', 'formPolicyAccessibility
 }]);
 
 
-//mod.config(['formPolicyCheckForStateChangesProvider', 'formPolicyCheckForStateChangesLibrary', function(statePolicy, lib) {
+// mod.config(['formPolicyCheckForStateChangesProvider', 'formPolicyCheckForStateChangesLibrary', function(statePolicy, lib) {
 //  // DEMO: Check for errors as soon as the control is changed
 //  statePolicy.config.checker = lib.onChange;
-//}]);
+// }]);
 
-//mod.config(['formPolicyStateDefinitionsProvider', 'formPolicyErrorDefinitionLibrary', function(stateDefs, errorLib) {
+// mod.config(['formPolicyStateDefinitionsProvider', 'formPolicyErrorDefinitionLibrary', function(stateDefs, errorLib) {
 //  // DEMO: Show errors immediately
 //  stateDefs.config.states.error = errorLib.immediately;
-//}]);
+// }]);
 
 
 mod.controller('MainController', ['$http', function Controller($http) {
-  var vm = this; // view-model
+  let vm = this; // view-model
 
   // Fetch the documentation config and store it on the rootScope (for laughs :)
   let fileName = require('file?name=assets/config/[name].[ext]!./assets/config/docsConfig.json');
@@ -96,37 +96,37 @@ mod.directive('docsComponent', [() => {
     restrict: 'A',    // IE8 support
     controller: 'MainController',
     controllerAs: 'mainCtrl',
-    template: require('./templates/docs-component.html')
+    template: require('./templates/docs-component.html'),
   };
 }]);
 
 
 mod.directive('docsNavbar', [() => {
-  require('file?name=/assets/aside.html!./templates/aside.inc');    // If the file is called *.html, it gets wrapped inside a JS module. This gives us just the HTML
+  require('file?name=assets/aside.html!./templates/aside.inc');    // If the file is called *.html, it gets wrapped inside a JS module. This gives us just the HTML
   return {
     restrict: 'A',    // IE8 support
-    template: require('./templates/navbar.html')
+    template: require('./templates/navbar.html'),
   };
 }]);
 
 mod.directive('docsHeader', [() => {
   return {
     restrict: 'A',    // IE8 support
-    template: require('./templates/header.html')
+    template: require('./templates/header.html'),
   };
 }]);
 
 mod.directive('docsFooter', [() => {
   return {
     restrict: 'A',    // IE8 support
-    template: require('./templates/footer.html')
+    template: require('./templates/footer.html'),
   };
 }]);
 
 mod.directive('docsAffixedSidenav', [() => {
   return {
     restrict: 'A',    // IE8 support
-    template: require('./templates/affixed-sidenav.html')
+    template: require('./templates/affixed-sidenav.html'),
   };
 }]);
 
@@ -134,14 +134,14 @@ mod.directive('docsAffixedSidenav', [() => {
 mod.directive('docsSidenav', [() => {
   return {
     restrict: 'A',    // IE8 support
-    template: require('./templates/sidenav.html')
+    template: require('./templates/sidenav.html'),
   };
 }]);
 
 mod.directive('docsGettingStarted', [() => {
   return {
     restrict: 'A',    // IE8 support
-    template: require('./templates/getting-started.html')
+    template: require('./templates/getting-started.html'),
   };
 }]);
 
@@ -155,7 +155,6 @@ mod.directive('code', function() {
 mod.directive('appendSource', ['$compile', 'indent', function($compile, indent) {
   return {
     compile: function(element, attr) {
-
       // Directive options
       let options = {placement: 'after'};
 
@@ -175,7 +174,7 @@ mod.directive('appendSource', ['$compile', 'indent', function($compile, indent) 
       }
       element[options.placement](hlElement);
       highlightjs.highlightBlock(codeElement[0]);
-    }
+    },
   };
 }]);
 
@@ -187,13 +186,12 @@ mod.directive('highlightBlock', ['indent', function(indent) {
       return function postLink(scope, element) {
         highlightjs.highlightBlock(element[0]);
       };
-    }
+    },
   };
 }]);
 
 
 mod.value('indent', function(text, spaces) {
-
   if (!text) {
     return text;
   }
@@ -262,7 +260,7 @@ mod.directive('ahref', ['$location', '$document', 'scrollContainerAPI', 'duScrol
 
           container.scrollToElement(angular.element(target), isNaN(offset) ? 0 : offset, isNaN(duration) ? 0 : duration);
         });
-      }
+      },
     };
-  }
+  },
 ]);

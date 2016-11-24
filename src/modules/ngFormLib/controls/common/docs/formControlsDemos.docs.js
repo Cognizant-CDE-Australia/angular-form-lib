@@ -8,7 +8,7 @@ mod.directive('formControlsDemosDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormControlsDemosController',
-    template: require('./formControlsDemos.docs.html')
+    template: require('./formControlsDemos.docs.html'),
   };
 });
 
@@ -18,13 +18,13 @@ mod.controller('FormControlsDemosController', function Controller() {
   vm.titleData = [
     {label: 'Dr'},
     {label: 'Mr'},
-    {label: 'Ms'}
+    {label: 'Ms'},
   ];
 
   vm.schoolData = [
     {label: 'Primary'},
     {label: 'Secondary'},
-    {label: 'Tertiary'}
+    {label: 'Tertiary'},
   ];
 
   vm.formDemo4 = {
@@ -32,13 +32,13 @@ mod.controller('FormControlsDemosController', function Controller() {
     education: [
       {
         name: 'Melbourne High School',
-        type: vm.schoolData[1]
+        type: vm.schoolData[1],
       },
       {
         name: undefined,
-        type: undefined
-      }
-    ]
+        type: undefined,
+      },
+    ],
   };
 
   vm.addSchool = function() {

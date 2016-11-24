@@ -8,7 +8,7 @@ mod.directive('formPolicyDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormPolicyDemoCtrl',
-    template: require('./formPolicy.docs.html')
+    template: require('./formPolicy.docs.html'),
   };
 });
 
@@ -19,12 +19,11 @@ mod.controller('FormPolicyDemoCtrl', ['formPolicyCheckForStateChangesLibrary', f
   vm.titleData = [
     {label: 'Dr'},
     {label: 'Mr'},
-    {label: 'Ms'}
+    {label: 'Ms'},
   ];
 
   vm.myCustomPolicy = {
-    checkForStateChanges: formPolicyCheckForStateChangesLibrary.onChange
+    checkForStateChanges: formPolicyCheckForStateChangesLibrary.onChange,
   };
-
 }]);
 

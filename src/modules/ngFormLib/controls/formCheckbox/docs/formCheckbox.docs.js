@@ -8,16 +8,16 @@ mod.directive('formCheckboxDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormCheckboxDemoController',
-    template: require('./formCheckbox.docs.html')
+    template: require('./formCheckbox.docs.html'),
   };
 });
 
 mod.controller('FormCheckboxDemoController', function Controller() {
-  var vm = this;
+  let vm = this;
 
   vm.titleData = [
     {label: 'Dr'},
     {label: 'Mr'},
-    {label: 'Ms'}
+    {label: 'Ms'},
   ];
 });

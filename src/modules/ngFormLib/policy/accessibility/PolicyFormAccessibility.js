@@ -22,7 +22,8 @@ export function getAriaErrorElementId(formName, fieldName) {
 }
 
 function createLongErrorDescription(ariaElement, errors) {
-  let str = '', i = 0;
+  let str = '';
+  let i = 0;
 
   for (let type in errors) {
     if (errors.hasOwnProperty(type)) {
@@ -60,14 +61,14 @@ function createShortErrorDescription(ariaElement, errors) {
 mod.constant('formPolicyAccessibilityLibrary', {
   createAriaErrorElement,
   createLongErrorDescription,
-  createShortErrorDescription
+  createShortErrorDescription,
 });
 
 
 mod.provider('formPolicyAccessibilityBehaviour', ['formPolicyAccessibilityLibrary', function Provider(lib) {
   let config = this.config = {
     createAriaErrorElement: lib.createAriaErrorElement,
-    onErrorChangeBehaviour: lib.createLongErrorDescription
+    onErrorChangeBehaviour: lib.createLongErrorDescription,
   };
 
   this.$get = () => config;

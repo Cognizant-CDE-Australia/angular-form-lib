@@ -2,10 +2,11 @@
 'use strict';
 
 // START_CONFIT_GENERATED_CONTENT
-var DefinePlugin = require('webpack').DefinePlugin;   // Needed to pass the testFilesRegEx to test.files.js
-var testFilesRegEx = /unitTest\/.*spec\.(js)$/;
+const DefinePlugin = require('webpack').DefinePlugin;   // Needed to pass the testFilesRegEx to test.files.js
+let testFilesRegEx = /unitTest\/.*spec\.(js|jsx)$/;
 
 // Customise the testFilesRegEx to filter which files to test, if desired.
+// Remember to also update .babelrc
 // E.g.
 // if (process.argv.indexOf('--spec') !== -1) {
 //   testFilesRegEx = ...
@@ -15,10 +16,10 @@ var testFilesRegEx = /unitTest\/.*spec\.(js)$/;
 
 // START_CONFIT_GENERATED_CONTENT
 // We want to re-use the loaders from the dev.webpack.config
-var webpackConfig = require('./../webpack/dev.webpack.config.js');
-var preprocessorList = ['coverage', 'webpack', 'sourcemap'];
+let webpackConfig = require('./../webpack/dev.webpack.config.js');
+let preprocessorList = ['webpack', 'sourcemap'];
 
-var karmaConfig = {
+let karmaConfig = {
   autoWatch: true,
 
   // base path, that will be used to resolve files and exclude
@@ -59,7 +60,6 @@ var karmaConfig = {
     'config/testUnit/test.files.js': preprocessorList
   },
 
-
   reporters: ['progress', 'junit', 'coverage', 'threshold'],
 
   coverageReporter: {
@@ -77,50 +77,31 @@ var karmaConfig = {
     outputDir: 'reports/unit/'
   },
 
-  thresholdReporter: {
-    statements: 90,
-    branches: 80,
-    functions: 80,
-    lines: 90
-  },
+  thresholdReporter: require('./thresholds.json'),
 
-
-
-  webpack: {
-    module: {
-      preLoaders: [
-        // instrument only testing sources
-        {
-          test: /src\/modules\/.*\.(js)$/,
-          loader: 'isparta-instrumenter-loader',
-          exclude: [
-            /node_modules|unitTest\/|browserTest\//
-          ],
-          query: {
-            'babel': {
-              'presets': [
-                'es2015'
-              ]
-            }
-          }
-        }
-      ],
-      loaders: webpackConfig.module.loaders
-    },
-    plugins: webpackConfig.plugins.concat([new DefinePlugin({
-      __karmaTestSpec: testFilesRegEx
-    })]),
-    resolve: webpackConfig.resolve,
-    devtool: 'inline-source-map'      // Changed to allow the sourcemap loader to work: https://github.com/webpack/karma-webpack
-  },
-
-  webpackServer: {
-    noInfo: true
-  },
+  // Webpack please don't spam the console when running in karma!
+  webpackMiddleware: { stats: 'errors-only'},
 
   singleRun: false,
   colors: true
 };
+
+
+
+
+
+
+
+
+
+webpackConfig.plugins.push(new DefinePlugin({
+  __karmaTestSpec: testFilesRegEx
+}));
+
+// Change devtool to allow the sourcemap loader to work: https://github.com/webpack/karma-webpack
+webpackConfig.devtool = 'inline-source-map';
+
+karmaConfig.webpack = webpackConfig;
 // END_CONFIT_GENERATED_CONTENT
 
 module.exports = karmaConfig;

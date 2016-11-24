@@ -8,7 +8,7 @@ mod.directive('formSubmitDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormSubmitDemoController',
-    template: require('./formSubmit.docs.html')
+    template: require('./formSubmit.docs.html'),
   };
 });
 

@@ -1,7 +1,6 @@
 import componentUnderTest from '../FormPolicy';
 
 describe('Form Policy Service configuration', function() {
-
   describe('has default settings', function() {
     let defaultFormSettings = {};
 
@@ -27,16 +26,16 @@ describe('Form Policy Service configuration', function() {
 
 
   describe('can be changed using the service provider', function() {
-    let mockFnA = function a() { return 'a'; };
-    let mockFnB = function b() { return 'b'; };
-    let mockFnC = function c() { return 'c'; };
+    let mockFnA = () => 'a';
+    let mockFnB = () => 'b';
+    let mockFnC = () => 'c';
     let a11yMock = {d: 'd'};
     let mockDefaults = {
       formSubmitAttemptedClass: 'abc',
       behaviourOnError: mockFnA,
       checkForStateChanges: mockFnB,
       stateDefinitions: mockFnC,
-      accessibilityBehaviour: a11yMock
+      accessibilityBehaviour: a11yMock,
     };
     let formPolicyService;
 
@@ -57,6 +56,4 @@ describe('Form Policy Service configuration', function() {
       expect(policyConfig).toEqual(mockDefaults);
     });
   });
-
-
 });

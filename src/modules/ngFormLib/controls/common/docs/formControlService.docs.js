@@ -8,7 +8,7 @@ mod.directive('formControlServiceDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormControlServiceDemoCtrl',
-    template: require('./formControlService.docs.html')
+    template: require('./formControlService.docs.html'),
   };
 });
 

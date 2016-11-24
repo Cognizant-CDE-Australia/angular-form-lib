@@ -8,7 +8,7 @@ const mod = angular.module('ngFormLib.defaultPolicies', [
   defaultFormAccessibility,
   defaultStateChangeBehaviour,
   defaultStateChangeChecks,
-  defaultStateDefinitions
+  defaultStateDefinitions,
 ]);
 
 export default mod.name;

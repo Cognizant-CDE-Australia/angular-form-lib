@@ -96,7 +96,6 @@ Command | Description
 <pre>npm run test:unit</pre> | Run unit tests whenever JS source or tests change<ul><li>Uses Karma and Jasmine 2</li><li>Code coverage</li><li>Runs continuously (best to run in a separate window)</li></ul>
 <pre>npm run test:unit:debug</pre> | Run unit tests but disable code coverage to make debugging in a browser easier<ul><li>Runs continuously (best to run in a separate window)</li><li>No code coverage to make it easier to read source & testcode</li></ul>
 <pre>npm run test:unit:once</pre> | Run unit tests once<ul><li>Tests are run a single time</li><li>Good command for continuous integration testing</li></ul>
-<pre>npm run test:browser</pre> | Run browser tests against the *development* web server (the development server **must** be running)
 
 
 
@@ -111,6 +110,7 @@ Command | Description
 <pre>npm run verify:css</pre> | Verify CSS code style and syntax
 <pre>npm run verify:css:watch</pre> | Verify CSS code style and syntax and watch files for changes
 <pre>npm run verify:js</pre> | Verify Javascript code style and syntax
+<pre>npm run verify:js:fix</pre> | Verify Javascript code style and syntax and fix any errors that can be fixed automatically
 <pre>npm run verify:js:watch</pre> | Verify Javascript code style and syntax and watch files for changes
 <pre>npm run verify:watch</pre> | Runs verify task whenever JS or CSS code is changed
 
@@ -143,6 +143,7 @@ the `semantic-release` task.
 for each release (which appears in the "Releases" section in GitHub) and
 publishes the package to NPM (when all the tests are successful) with a semantic version number.
 </li></ul>
+<pre>npm run upload-coverage</pre> | Uploads code-coverage metrics to Coveralls.io<ul><li>Setup - https://coveralls.zendesk.com/hc/en-us/articles/201347419-Coveralls-currently-supports</li><li>Define an environment variable called COVERALLS_REPO_TOKEN in your build environment with the repo token from https://coveralls.io/github/<repo-name>/settings</li></ul>
 
 
 
@@ -154,7 +155,7 @@ publishes the package to NPM (when all the tests are successful) with a semantic
 
 There are 3 ways you can change the build-tool configuration for this project:
 
-1. BEST: Modify the Confit configuration file ([confit.json](confit.json)) by hand, then re-run `yo confit` and tell it to use the existing configuration.
+1. BEST: Modify the Confit configuration file ([confit.yml](confit.yml)) by hand, then re-run `yo confit` and tell it to use the existing configuration.
 1. OK: Re-run `yo confit` and provide new answers to the questions. **Confit will attempt to overwrite your existing configuration (it will prompt for confirmation), so make sure you have committed your code to a source control (e.g. git) first**.
   There are certain configuration settings which can **only** be specified by hand, in which case the first approach is still best.
 1. RISKY: Modify the generated build-tool config by hand. Be aware that if you re-run `yo confit` it will attempt to overwrite your changes. So commit your changes to source control first.
@@ -164,17 +165,15 @@ Additionally, the **currently-generated** configuration can be extended in the f
 - The task configuration is defined in [package.json](package.json). It is possible to change the task definitions to add your own sub-tasks.
 You can also use the `pre...` and `post...` script-name prefixes to run commands before (pre) and after (post) the generated commands.
 
-- The `buildJS.frameworkScripts` array in [confit.json](confit.json) contains framework-specific scripts, and should not be modified. If a sample project is generated, the additional framework scripts needed by the sample app will also appear here. This property will be overwritten **every time** Confit is run.
+- The `buildJS.frameworkScripts` array in [confit.yml](confit.yml) contains framework-specific scripts, and should not be modified. If a sample project is generated, the additional framework scripts needed by the sample app will also appear here. This property will be overwritten **every time** Confit is run.
 
-- The `buildJS.vendorScripts` array in [confit.json](confit.json) is designed to be edited manually. This property should contain NPM module names and/or references to JavaScript files (files must start with `./`). For example: `vendorScripts: ['jquery', './module/path/to/jsFile.js', 'moment/timezone',  ...]`
+- The `buildJS.vendorScripts` array in [confit.yml](confit.yml) is designed to be edited manually. This property should contain NPM module names and/or references to JavaScript files (files must start with `./`). For example: `vendorScripts: ['jquery', './module/path/to/jsFile.js', 'moment/timezone',  ...]`
 
-- The `entryPoint.entryPoints` object in [confit.json](confit.json) is designed to be edited manually. It represents the starting-point(s) of the application (like a `main()` function). Normally an application has one entry point, but it is possible to have more than one. `entryPoint.entryPoints` must have at-least one property (e.g. `property: [file]`), where `file` is a list of NPM module names and/or references to JavaScript files (file references must start with `./`);
+- The `entryPoint.entryPoints` object in [confit.yml](confit.yml) is designed to be edited manually. It represents the starting-point(s) of the application (like a `main()` function). Normally an application has one entry point, but it is possible to have more than one. `entryPoint.entryPoints` must have at-least one property (e.g. `property: [file]`), where `file` is a list of NPM module names and/or references to JavaScript files (file references must start with `./`);
 
 - `npm start` can be extended by modifying [config/webpack/dev.webpack.config.js](config/webpack/dev.webpack.config.js) and [config/webpack/prod.webpack.config.js](config/webpack/prod.webpack.config.js). Confit will attempt to overwrite the contents files the next time `yo confit` is run, so make sure any modifications are committed to source control first.
 
-- `npm run test:browser` can be extended by modifying [config/testBrowser/protractor.conf.js](config/testBrowser/protractor.conf.js). This task uses Protractor to run Jasmine2 test specs (located in `src/modules/**/browserTest/`) against the development web server URL.
-
-- `npm test:unit` can be extended by modifying [config/testUnit/karma.conf.js](config/testUnit/karma.conf.js) and [config/testUnit/karma.common.js](config/testUnit/karma.common.js). [config/testUnit/test.files.js](config/testUnit/test.files.js) is generated from the entry points in the Confit configuration. It is **best** to modify the entry points in [confit.json](confit.json) then re-run `yo confit`.
+- `npm test:unit` can be extended by modifying [config/testUnit/karma.conf.js](config/testUnit/karma.conf.js) and [config/testUnit/karma.common.js](config/testUnit/karma.common.js). [config/testUnit/test.files.js](config/testUnit/test.files.js) is generated from the entry points in the Confit configuration. It is **best** to modify the entry points in [confit.yml](confit.yml) then re-run `yo confit`.
 Note that it is possible to run a subset of unit tests by passing a command line argument to Karma, and then modifying the `testFilesRegEx` variable in [config/testUnit/karma.common.js](config/testUnit/karma.common.js) to refer to the command line argument value. For example, if the command is `...karma.conf.js --spec=testb`, then `karma.common.js` can access this value through `process.argv.indexOf('--spec=testb')`, which can then be used to change the default value of `testFilesRegEx`.
 
 

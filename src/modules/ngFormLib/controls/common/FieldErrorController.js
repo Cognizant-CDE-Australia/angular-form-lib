@@ -26,7 +26,6 @@ export default mod.name;
 
 
 mod.directive('fieldErrorController', ['formControlService', '$timeout', function(formControlService, $timeout) {
-
   function setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name) {
     // Using the form policy, determine when to show errors for this field
     let formPolicy = formController._policy;
@@ -68,7 +67,7 @@ mod.directive('fieldErrorController', ['formControlService', '$timeout', functio
           $timeout(() => stateChangeBehaviour.applyBehaviour(element, ngModelController.fieldState, true, formName, name, formGroupElement), 1);
         });
       }
-    }
+    },
   };
 }]);
 
@@ -80,7 +79,7 @@ mod.directive('formGroup', [function() {
     restrict: 'C',
     controller: ['$scope', '$element', function Controller($scope, $element) {
       this.$element = $element;
-    }]
+    }],
   };
 }]);
 

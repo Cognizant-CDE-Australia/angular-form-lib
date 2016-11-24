@@ -12,8 +12,8 @@ mod.constant('ngFormLibDateUtil', {
     }
 
     // Choose a separator string that is the 'opposite' of the desired separator
-    let oldSep = newSep === '/' ? '-' : '/',
-      parts = dateStr.split(oldSep);
+    let oldSep = newSep === '/' ? '-' : '/';
+    let parts = dateStr.split(oldSep);
 
     // if we get a dodgy date OR you tried to convert a date that was already in the correct format, return the input
     if (isNaN(parts.join('')) || parts.length !== 3) {
@@ -24,11 +24,13 @@ mod.constant('ngFormLibDateUtil', {
     return parts[2] + newSep + parts[1] + newSep + parts[0];
   },
   formatDay: function(dayOrDate, month, year) {
-    let dd = dayOrDate, mm = month, yyyy = year;
+    let dd = dayOrDate;
+    let mm = month;
+    let yyyy = year;
 
     if (dayOrDate.getUTCDay) {
       dd = dayOrDate.getDate();
-      mm = dayOrDate.getMonth() + 1;//January is 0!`
+      mm = dayOrDate.getMonth() + 1;// January is 0!`
       yyyy = dayOrDate.getFullYear();
     }
     return (dd < 10 ? '0' + dd : dd) + '/' + (mm < 10 ? '0' + mm : mm) + '/' + yyyy;
@@ -55,7 +57,7 @@ mod.constant('ngFormLibDateUtil', {
   },
   monthsBetween: function(date1, date2) {
     return date2.getMonth() - date1.getMonth() + (12 * (date2.getFullYear() - date1.getFullYear()));  // eslint-disable-line no-extra-parens
-  }
+  },
 });
 
 
@@ -68,7 +70,7 @@ mod.constant('ngFormLibStringUtil', (function() {
         return text.replace(trimRegExp, '');
       }
       return text;
-    }
+    },
   };
 })());
 
@@ -79,7 +81,7 @@ mod.constant('ngFormLibNumberUtil', (function() {
   return {
     isDigits: function(text) {
       return isDigitsRegExp.test(text);
-    }
+    },
   };
 })());
 
@@ -100,5 +102,5 @@ mod.constant('ngFormLibObjectUtil', {
       return a.key < b.key;
     });
     return arr;
-  }
+  },
 });

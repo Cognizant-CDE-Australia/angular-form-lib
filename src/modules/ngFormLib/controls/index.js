@@ -17,7 +17,7 @@ const mod = angular.module('ngFormLib.controls', [
   FormRadioButton,
   FormReset,
   FormSelect,
-  FormSubmit
+  FormSubmit,
 ]);
 
 export default mod.name;

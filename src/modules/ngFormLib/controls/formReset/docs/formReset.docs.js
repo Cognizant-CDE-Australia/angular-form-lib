@@ -8,22 +8,22 @@ mod.directive('formResetDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormResetDemoController',
-    template: require('./formReset.docs.html')
+    template: require('./formReset.docs.html'),
   };
 });
 
 mod.controller('FormResetDemoController', function Controller() {
-  var vm = this;
+  let vm = this;
 
   vm.titleData = [
     {label: 'Dr'},
     {label: 'Mr'},
-    {label: 'Ms'}
+    {label: 'Ms'},
   ];
 
   // Demonstrate the reset directive with non-empty data models
   vm.data = {
     name: 'Not-empty-initially',
-    title: vm.titleData[2]
+    title: vm.titleData[2],
   };
 });

@@ -2,6 +2,8 @@
 // This file is run inside a Webpack context, which allows it to use require.context() to get a list of files to include at run time
 
 // START_CONFIT_GENERATED_CONTENT
+Error.stackTraceLimit = Infinity;
+
 // Polyfill required for PhantomJS
 require('phantomjs-polyfill');
 
@@ -11,6 +13,7 @@ require('angular-mocks');
 require('angular-animate');
 require('angular-scroll');
 require('angular-translate');
+
 
 // Don't load any source code! The unit tests are responsible for loading the code-under-test.
 // Includes the *.spec.<ext> files in the unitTest directory. The '../../' is the relative path from where

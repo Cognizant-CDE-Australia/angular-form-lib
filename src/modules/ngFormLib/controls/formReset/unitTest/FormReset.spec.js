@@ -2,11 +2,11 @@ import componentUnderTest from '../FormReset';
 import formPolicy from '../../../policy/FormPolicy';
 
 describe('FormReset', function() {
-
-  var compileElement, scope, elem;
+  let compileElement;
+  let scope;
+  let elem;
 
   describe('with ngFormLib', function() {
-
     beforeEach(() => {
       angular.mock.module(componentUnderTest, formPolicy);
 
@@ -20,7 +20,7 @@ describe('FormReset', function() {
 
     it('should reset the form and clear any values when using a proper model-domain-object expression', function() {
       scope.myModel = {
-        testValue2: 'initialValue'
+        testValue2: 'initialValue',
       };
       expect(scope.myModel.testValue1).toEqual(undefined);
 
@@ -66,12 +66,13 @@ describe('FormReset', function() {
           '</form>');
       };
 
-      expect(function() { comp(); }).toThrowError('formReset requires an assignable scope-expression. "" is un-assignable.');
+      expect(function() {
+        comp();
+      }).toThrowError('formReset requires an assignable scope-expression. "" is un-assignable.');
     });
   });
 
   describe('withOUT ngFormLib', function() {
-
     beforeEach(function() {
       angular.mock.module('ngFormLib.controls.formReset');
 
@@ -86,7 +87,7 @@ describe('FormReset', function() {
 
     it('should reset the form and clear any values when using a proper model-domain-object expression', function() {
       scope.myModel = {
-        testValue2: 'initialValue'
+        testValue2: 'initialValue',
       };
       expect(scope.myModel.testValue1).toEqual(undefined);
 
@@ -118,5 +119,4 @@ describe('FormReset', function() {
       expect(inputElem2.val()).toEqual('initialValue');
     });
   });
-
 });
