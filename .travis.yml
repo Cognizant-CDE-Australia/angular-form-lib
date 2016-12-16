@@ -3,6 +3,7 @@ language: node_js
 node_js:
   - '4'
   - '6'
+  - '7'
 
 # Need to specify a GCC compiler now!
 # https://docs.travis-ci.com/user/languages/javascript-with-nodejs#Node.js-v4-(or-io.js-v3)-compiler-requirements
@@ -17,6 +18,8 @@ addons:
       - g++-4.8
 
 before_install:
+  # Install NPM 3.9.5
+  - if [[ `npm -v` != 3* ]]; then npm i -g npm@3.9.5; fi
   - npm set progress=false
 
 install:
