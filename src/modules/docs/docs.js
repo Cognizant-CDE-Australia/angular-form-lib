@@ -47,7 +47,7 @@ mod.config(['$anchorScrollProvider', function($anchorScrollProvider) {
 }]);
 
 mod.config(['$translateProvider', function($translateProvider) {
-  let translations = require('json!./assets/language/enAU.json');
+  let translations = require('json-loader!./assets/language/enAU.json');
 
   $translateProvider.translations('enAU', translations);
   $translateProvider.preferredLanguage('enAU');
@@ -80,7 +80,7 @@ mod.controller('MainController', ['$http', function Controller($http) {
   let vm = this; // view-model
 
   // Fetch the documentation config and store it on the rootScope (for laughs :)
-  let fileName = require('file?name=assets/config/[name].[ext]!./assets/config/docsConfig.json');
+  let fileName = require('file-loader?name=assets/config/[name].[ext]!./assets/config/docsConfig.json');
 
   $http.get(fileName).then(function(result) {
     vm.DOC_CONFIG = result.data;
@@ -102,7 +102,7 @@ mod.directive('docsComponent', [() => {
 
 
 mod.directive('docsNavbar', [() => {
-  require('file?name=assets/aside.html!./templates/aside.inc');    // If the file is called *.html, it gets wrapped inside a JS module. This gives us just the HTML
+  require('file-loader?name=assets/aside.html!./templates/aside.inc');    // If the file is called *.html, it gets wrapped inside a JS module. This gives us just the HTML
   return {
     restrict: 'A',    // IE8 support
     template: require('./templates/navbar.html'),

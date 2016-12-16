@@ -1,7 +1,6 @@
-/.grunt
-/.tmp
 /.idea
 /dist
 /node_modules
 /reports
+/webdocs
 

@@ -71,4 +71,7 @@ config.plugins.push(loaderOptionsPlugin);
 
 // END_CONFIT_GENERATED_CONTENT
 
+// Modify the output to be the webdocs/ folder
+config.output.path = helpers.root('webdocs/');
+
 module.exports = config;

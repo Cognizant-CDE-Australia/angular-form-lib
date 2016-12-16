@@ -216,9 +216,8 @@ config.module.rules.push(mediaLoader);
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // Pass postCSS options onto the (temporary) loaderOptions property
 const autoprefixer = require('autoprefixer');
-config.loaderOptions.postcss = [
-  autoprefixer({
-    browsers: [
+let supportedBrowsers = {
+  browsers: [
       'last 1 version',
       'last 2 versions',
       'ie 8',
@@ -226,7 +225,9 @@ config.loaderOptions.postcss = [
       'ie 10',
       'ie 11'
     ]
-  })
+};
+config.loaderOptions.postcss = [
+  autoprefixer(supportedBrowsers)
 ];
 
 // ExtractTextPlugin still uses the older Webpack 1 syntax. See https://github.com/webpack/extract-text-webpack-plugin/issues/275
@@ -235,14 +236,14 @@ let cssLoader = {
   loader: ExtractTextPlugin.extract({
     fallbackLoader: 'style-loader',
     loader: 'css-loader!postcss-loader!stylus-loader',
-    publicPath: '/'   // If this is not specified or is blank, it defaults to 'css/'
+    publicPath: '/'   // This is relative to 'extractCSSTextPlugin.filename' below.
   })
 };
 config.module.rules.push(cssLoader);
 
 // For any entry-point CSS file definitions, extract them as text files as well
 let extractCSSTextPlugin = new ExtractTextPlugin({
-  filename: 'css/[name].[contenthash:8].css',
+  filename: 'css/[name].[contenthash:8].css',     // This affects the cssLoader.loader.publicPath (see above)
   allChunks: true
 });
 config.plugins.push(extractCSSTextPlugin);
@@ -283,7 +284,7 @@ const fs = require('fs');   // path is declared elsewhere
 const confitConfig = yaml.load(fs.readFileSync(path.join(process.cwd(), 'confit.yml')))['generator-confit'];  // Try to keep the code lively! If confit.json changes, this code still works.
 
 const HOST = process.env.HOST || confitConfig.serverDev.hostname;
-const PORT = process.env.PORT || confitConfig.serverDev.port;
+const PORT = Number(process.env.PORT || confitConfig.serverDev.port);
 
 /**
  * Webpack Development Server configuration
@@ -309,9 +310,8 @@ config.devServer = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
     'Access-Control-Allow-Headers': 'accept, content-type, authorization',
-    'Access-Control-Allow-Credentials': true
-  },
-  outputPath: helpers.root('dev/')
+    'Access-Control-Allow-Credentials': 'true'
+  }
 };
 /* **/
 

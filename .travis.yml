@@ -20,7 +20,6 @@ before_install:
   - npm set progress=false
 
 install:
-  - npm install -g grunt-cli
   - npm install
 
 before_script:
@@ -30,6 +29,7 @@ script:
   - npm run pre-release
 
 after_success:
+  - npm run upload-coverage
   - npm run semantic-release
 
 branches:
