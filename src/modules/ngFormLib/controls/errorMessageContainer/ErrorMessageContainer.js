@@ -9,8 +9,7 @@ export default mod.name;
 /*
  * This directive is really a FIELD error message container - it is designed to work with fields exclusively
  */
-mod.directive('errorContainer', ['$compile', 'formControlService',  function($compile, formControlService) {
-
+mod.directive('errorContainer', ['$compile', 'formControlService', function($compile, formControlService) {
   function ErrorController(ariaElement, a11yPolicy) {
     let errors = {};
 
@@ -19,7 +18,7 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
         errors[errorType] = translateError(errorMessage, fieldLabel);
       },
       removeError: (errorType) => delete errors[errorType],
-      updateAriaErrorElement: () => a11yPolicy.onErrorChangeBehaviour(ariaElement, errors)
+      updateAriaErrorElement: () => a11yPolicy.onErrorChangeBehaviour(ariaElement, errors),
     };
   }
 
@@ -38,7 +37,7 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
    * Handle the field-based error messages
    */
   function toggleErrorVisibilityOnError(errorController, formController, scope, element, watchExpr, errorType, errorText, fieldLabel) {
-    //console.log('watchExpr = ' + watchExpr);
+    // console.log('watchExpr = ' + watchExpr);
     formController._scope.$watch(watchExpr, function(newValue) {
       if (newValue) {
         // The error text could contain an interpolation string, so we need to compile it
@@ -70,10 +69,9 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
    * This means we can clear them from the scope when the field-they-are-associated-with is changed.
    */
   function toggleErrorVisibilityForTextError(errorController, formController, fieldController, scope, element, watchExpr, fieldLabel) {
-    //console.log('Watching error: ' + watchExpr);
+    // console.log('Watching error: ' + watchExpr);
 
     formController._scope.$watch(watchExpr, function(newValue) {
-
       // Update the validity of the field's "watchExpr" error-key to match the value of the errorText
       fieldController.$setValidity(watchExpr, !newValue);
 
@@ -99,21 +97,19 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
   }
 
 
-
   return {
     restrict: 'AE',
     require: ['^form'], // Require the formController controller somewhere in the parent hierarchy (mandatory for field-errors)
     template: '<div class="container-error"></div>',
     replace: true,
     link: function(scope, element, attr, controllers) {
-
-      let fieldName = attr.fieldName,
-        fieldLabel = attr.fieldLabel || '',
-        formController = controllers[0],
-        formName = formController.$name,
-        formField = formName + '["' + fieldName + '"]',
-        fieldErrors = scope.$eval(attr.fieldErrors || []),  // You can escape interpolation brackets inside strings by doing  \{\{   - wow!
-        textErrors = scope.$eval(attr.textErrors || []);
+      let fieldName = attr.fieldName;
+      let fieldLabel = attr.fieldLabel || '';
+      let formController = controllers[0];
+      let formName = formController.$name;
+      let formField = formName + '["' + fieldName + '"]';
+      let fieldErrors = scope.$eval(attr.fieldErrors || []);  // You can escape interpolation brackets inside strings by doing  \{\{   - wow!
+      let textErrors = scope.$eval(attr.textErrors || []);
 
       element.attr('id', formName + '-' + fieldName + '-errors');
 
@@ -124,7 +120,7 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
 
       element.append(ariaElement);
 
-      for (var error in fieldErrors) {
+      for (let error in fieldErrors) {
         if (fieldErrors.hasOwnProperty(error)) {
           let errorShowCondition = `${formField}.fieldState === "${ERROR_STATE}" && ${formField}.$error.${error}`;
 
@@ -134,7 +130,7 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
 
       // Watch formController[fieldName] - it may not have loaded yet. When it loads, call the main function.
       if (textErrors) {
-        //console.log('textErrors: ' + textErrors + ', fieldName = ' + fieldName);
+        // console.log('textErrors: ' + textErrors + ', fieldName = ' + fieldName);
         let fieldWatcher = scope.$watch(function() {
           return formController[fieldName];
         }, function(newValue) {
@@ -142,17 +138,16 @@ mod.directive('errorContainer', ['$compile', 'formControlService',  function($co
             fieldWatcher(); // Cancel the watcher
 
             // Do the actual thing you planned to do...
-            for (var item in textErrors) {
+            for (let item in textErrors) {
               if (textErrors.hasOwnProperty(item)) {
                 toggleErrorVisibilityForTextError(errorController, formController, formController[fieldName], scope, element, textErrors[item], fieldLabel);
               }
             }
           }
         });
-
       }
 
       element.removeAttr('error-container').removeAttr('field-name').removeAttr('field-errors').removeAttr('text-errors');
-    }
+    },
   };
 }]);

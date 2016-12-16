@@ -16,9 +16,7 @@ export default mod.name;
 // OUTPUT:
 
 
-
 mod.directive('formSelect', ['formControlService', function(formControlService) {
-
   function addPlaceholder(selectElem, placeholderText) {
     if (placeholderText) {
       selectElem.append('<option translate value="">' + placeholderText + '</option>');
@@ -36,7 +34,7 @@ mod.directive('formSelect', ['formControlService', function(formControlService) 
 
       formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
       formControlService.createErrorFeatures(inputElem.parent(), inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);
-    }
+    },
   });
 }]);
 

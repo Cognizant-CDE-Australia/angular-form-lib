@@ -1,7 +1,6 @@
 import componentUnderTest from '../FormControlService';
 
 describe('Form controls common library', function() {
-
   let formControlService;
 
   beforeEach(function() {
@@ -10,11 +9,9 @@ describe('Form controls common library', function() {
     angular.mock.inject(function(_formControlService_) {
       formControlService = _formControlService_;
     });
-
   });
 
   describe('addToAttribute()', function() {
-
     it('should add a new attribute if the attribute did not exist', function() {
       let elem = angular.element('<div></div>');
 
@@ -35,7 +32,6 @@ describe('Form controls common library', function() {
 
 
   describe('removeAttribute()', function() {
-
     it('should remove a value from the attribute if the value existed', function() {
       let elem = angular.element('<div names="a Waltzing Matilda"></div>');
 
@@ -60,7 +56,6 @@ describe('Form controls common library', function() {
 
 
   describe('getRequiredAttribute()', function() {
-
     it('should get the required attribute as the string "true" when it is "required"', function() {
       let testData = [
         {input: 'required', expectedOutput: 'true'},
@@ -72,7 +67,7 @@ describe('Form controls common library', function() {
         {input: true, expectedOutput: true},
         {input: false, expectedOutput: false},
         {input: 0, expectedOutput: 'false'},
-        {input: 1, expectedOutput: 1}
+        {input: 1, expectedOutput: 1},
       ];
 
       for (let i = i; i < testData.length; i++) {
@@ -83,7 +78,6 @@ describe('Form controls common library', function() {
 
 
   describe('decorateLabel()', function() {
-
     it('should not decorate the label when it doesn\'t need to', function() {
       let elem = angular.element('<label></label>');
 
@@ -105,13 +99,12 @@ describe('Form controls common library', function() {
 
 
   describe('decorateInputField()', function() {
-
     it('should add an id, name, label and required attributes as the bare minimum', function() {
       let elem = angular.element('<input>');
       let attr = {
         '$attr': {'noFfAttributes': 'no-ff-attributes', 'soNothingWillBeCopiedFromHere': 'so-nothing-will-be-copied-from-here'},
         'noFfAttributes': 'ok',
-        'soNothingWillBeCopiedFromHere': 'cool'
+        'soNothingWillBeCopiedFromHere': 'cool',
       };
 
       let hostElem = angular.element('<div no-ff-attributes="ok" so-nothing-will-be-copied-from-here="cool"></div>');
@@ -130,7 +123,7 @@ describe('Form controls common library', function() {
       let attr = {
         '$attr': {'ffType': 'ff-type', 'ffNgPattern': 'ff-ng-pattern'},
         'ffType': 'checkbox',
-        'ffNgPattern': '[0-9]{4}'
+        'ffNgPattern': '[0-9]{4}',
       };
 
       formControlService.decorateInputField(elem, hostElem, attr, 'myId', 'myName', 'true');
@@ -142,7 +135,6 @@ describe('Form controls common library', function() {
 
 
   describe('createErrorFeatures()', function() {
-
     it('should not create any error features when the element has no error messages to show', function() {
       let elem = angular.element('<input>');
       let hostElem = angular.element('<div></div>');
@@ -188,7 +180,6 @@ describe('Form controls common library', function() {
 
 
   describe('createFieldHint()', function() {
-
     it('should not create a field hint when it doesn\'t need to', function() {
       let elem = angular.element('<anything></anything>');
       let hostElem = angular.element('<youlike></youlike>');

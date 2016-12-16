@@ -6,7 +6,7 @@ import ErrorMessageContainer from '../errorMessageContainer/ErrorMessageContaine
 const mod = angular.module('ngFormLib.controls.formDate', [
   FormLibCommon,
   ErrorMessageContainer,
-  //'mgcrea.ngStrap.datepicker'   We are using this, but if it is not loaded, we can still offer basic functionality
+  // 'mgcrea.ngStrap.datepicker'   We are using this, but if it is not loaded, we can still offer basic functionality
 ]);
 
 export default mod.name;
@@ -23,7 +23,6 @@ export default mod.name;
 
 
 mod.directive('formDate', ['formControlService', function(formControlService) {
-
   return formControlService.buildDirective({
     controlName: 'formDate',
     expectedTemplateElements: ['input', 'label'],
@@ -38,7 +37,7 @@ mod.directive('formDate', ['formControlService', function(formControlService) {
 
       formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
       formControlService.createErrorFeatures(parentElemForErrors, inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);
-    }
+    },
   });
 }]);
 
@@ -69,7 +68,6 @@ mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
     require: 'ngModel',
     priority: 150,    // Higher priority than ui-mask (100), so the postLink function runs last
     link: function(scope, elem, attrs, ctrl) {
-
       function resetValidators() {
         ctrl.$setValidity('dateFormat', true);
         ctrl.$setValidity('minDate', true);  // Turn off the error if the date format isn't valid
@@ -77,7 +75,6 @@ mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
       }
 
       ctrl.$parsers.unshift(function(viewValue) {
-
         // If viewValue or modelValue is undefined or null, jump out
         if (!viewValue) {
           resetValidators();
@@ -99,7 +96,7 @@ mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
 
         ctrl.$setValidity('dateFormat', dateFormatValid);
 
-        //console.log('dateInput: ' + viewValue + ', ' + ctrl.$modelValue);
+        // console.log('dateInput: ' + viewValue + ', ' + ctrl.$modelValue);
 
         // If the date is valid
         if (dateFormatValid && viewValue) {
@@ -140,6 +137,6 @@ mod.directive('formDateFormat', ['ngFormLibDateUtil', function(DateUtil) {
           scope.$eval(attrs.dateChange);
         }
       });
-    }
+    },
   };
 }]);

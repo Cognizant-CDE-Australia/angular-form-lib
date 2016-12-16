@@ -19,7 +19,6 @@ export default mod.name;
 
 
 mod.directive('formCheckbox', ['formControlService', function(formControlService) {
-
   return formControlService.buildDirective({
     controlName: 'formCheckbox',
     expectedTemplateElements: ['input', 'label', 'div'],
@@ -27,7 +26,7 @@ mod.directive('formCheckbox', ['formControlService', function(formControlService
     configFn: function(tElement, tAttr, id, name, inputElem) {
       formControlService.createErrorFeatures(tElement, inputElem, name, '', tAttr.fieldErrors, tAttr.textErrors);
       formControlService.buildNgClassExpression(inputElem, inputElem);  // Put the ng-class onto the input element itself, as this makes styling easier
-    }
+    },
   });
 }]);
 

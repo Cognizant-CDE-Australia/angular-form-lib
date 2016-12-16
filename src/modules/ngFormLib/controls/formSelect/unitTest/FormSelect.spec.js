@@ -1,8 +1,9 @@
 import componentUnderTest from '../FormSelect';
 
 describe('Form Select directive', function() {
-
-  let compileElement, scope, elem;
+  let compileElement;
+  let scope;
+  let elem;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest);
@@ -36,18 +37,21 @@ describe('Form Select directive', function() {
 
 
   it('should throw an error if any of the label, id and name attributes are missing', function() {
-    var controlName = 'formSelect', directiveName = 'form-select';
-    var errorNoLabel = 'The ' + controlName + ' component requires a label attribute.';
-    var exceptionFn = function(html) {
+    let controlName = 'formSelect';
+    let directiveName = 'form-select';
+    let errorNoLabel = 'The ' + controlName + ' component requires a label attribute.';
+    let exceptionFn = function(html) {
       compileElement(html);
     };
 
-    var testData = [
-      {html: '<' + directiveName + ' label="" uid="b" name="c"></' + directiveName + '>', expected: errorNoLabel}
+    let testData = [
+      {html: '<' + directiveName + ' label="" uid="b" name="c"></' + directiveName + '>', expected: errorNoLabel},
     ];
 
     testData.forEach(function(testData) {
-      expect(function() {exceptionFn(testData.html);}).toThrow(new Error(testData.expected));
+      expect(function() {
+        exceptionFn(testData.html);
+      }).toThrow(new Error(testData.expected));
     });
   });
 });

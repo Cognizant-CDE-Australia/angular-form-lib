@@ -37,7 +37,7 @@ mod.constant('formPolicyErrorDefinitionLibrary', {
   onDirty: errorOnDirty,
   immediately: errorImmediately,
   onSubmitAndDirty: errorOnSubmitAndDirty,
-  onSubmitOrDirty: errorOnSubmitOrDirty
+  onSubmitOrDirty: errorOnSubmitOrDirty,
 });
 
 
@@ -67,7 +67,7 @@ mod.constant('formPolicySuccessDefinitionLibrary', {
   onDirty: successOnDirty,
   immediately: successImmediately,
   onSubmitAndDirty: successOnSubmitAndDirty,
-  onSubmitOrDirty: successOnSubmitOrDirty
+  onSubmitOrDirty: successOnSubmitOrDirty,
 });
 
 
@@ -75,14 +75,14 @@ mod.provider('formPolicyStateDefinitions', ['formPolicyErrorDefinitionLibrary', 
   let config = this.config = {
     states: {
       [ERROR_STATE]: errorLib.onSubmitOrDirty,
-      success: successLib.onSubmitOrDirty
-    }
+      success: successLib.onSubmitOrDirty,
+    },
   };
 
   config.create = (formName, fieldName) => {
     let result = {};
 
-    for (var state in config.states) {
+    for (let state in config.states) {
       if (config.states.hasOwnProperty(state)) {
         result[state] = config.states[state](formName, fieldName);
       }

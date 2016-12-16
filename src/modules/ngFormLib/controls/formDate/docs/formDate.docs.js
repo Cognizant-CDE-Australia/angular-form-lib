@@ -9,7 +9,7 @@ mod.directive('formDateDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormDateDocsController',
-    template: require('./formDate.docs.html')
+    template: require('./formDate.docs.html'),
   };
 });
 

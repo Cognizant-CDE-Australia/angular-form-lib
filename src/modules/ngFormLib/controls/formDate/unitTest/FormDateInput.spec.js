@@ -1,15 +1,15 @@
 import componentUnderTest from '../FormDate';
 
 describe('Date Directives spec,', function() {
-
-  let compileElement, scope, elem;
+  let compileElement;
+  let scope;
+  let elem;
 
   beforeEach(() => {
     angular.mock.module(componentUnderTest);
   });
 
   describe('formDateFormat', function() {
-
     let DateUtil;
 
     beforeEach(() => {
@@ -36,12 +36,12 @@ describe('Date Directives spec,', function() {
 
       for (let i = 0; i < testData.length; i++) {
         inputElem.val(testData[i].input).triggerHandler('change');
-        //scope.$digest();
+        // scope.$digest();
 
         expect(inputElem.val()).toEqual(testData[i].output);
 
         for (let c = 0; c < testData[i].expectedClasses.length; c++) {
-          //console.log(inputElem[0].outerHTML);
+          // console.log(inputElem[0].outerHTML);
           expect(inputElem.hasClass(testData[i].expectedClasses[c])).toEqual(true);
         }
       }
@@ -49,14 +49,14 @@ describe('Date Directives spec,', function() {
 
     it('should validate an ordinary input field which must be a date, no other restrictions', function() {
       let testData = [
-        {input: '02',         output: '02',         expectedClasses: ['ng-invalid', 'ng-invalid-date-format'], desc: 'Partial date'},
-        {input: '02/01/1900', output: '02/01/1900', expectedClasses: ['ng-valid'],                      desc: 'Old valid date'},
-        {input: '',           output: '',           expectedClasses: ['ng-valid'],                      desc: 'Blank date'},
-        {input: '29/02/2000', output: '29/02/2000', expectedClasses: ['ng-valid'],                      desc: 'Is a leap year'},
+        {input: '02', output: '02', expectedClasses: ['ng-invalid', 'ng-invalid-date-format'], desc: 'Partial date'},
+        {input: '02/01/1900', output: '02/01/1900', expectedClasses: ['ng-valid'], desc: 'Old valid date'},
+        {input: '', output: '', expectedClasses: ['ng-valid'], desc: 'Blank date'},
+        {input: '29/02/2000', output: '29/02/2000', expectedClasses: ['ng-valid'], desc: 'Is a leap year'},
         {input: '29/02/1900', output: '29/02/1900', expectedClasses: ['ng-invalid', 'ng-invalid-date-format'], desc: 'Not leap year'},
-        {input: '29/02/2012', output: '29/02/2012', expectedClasses: ['ng-valid'],                      desc: 'Is a leap year'},
+        {input: '29/02/2012', output: '29/02/2012', expectedClasses: ['ng-valid'], desc: 'Is a leap year'},
         {input: '29/02/2013', output: '29/02/2013', expectedClasses: ['ng-invalid', 'ng-invalid-date-format'], desc: 'Not leap year'},
-        {input: '31122015',   output: '31122015',   expectedClasses: ['ng-valid'],                      desc: 'String of 8 digits accepted??'}
+        {input: '31122015', output: '31122015', expectedClasses: ['ng-valid'], desc: 'String of 8 digits accepted??'},
       ];
       let element = compileElement('<form name="frm"><input type="text" name="startDate" ng-model="startDate" form-date-format></form>');
 
@@ -66,13 +66,13 @@ describe('Date Directives spec,', function() {
 
     it('should validate an ordinary input field which must be a date, with a min and max date restriction', function() {
       let testData = [
-        {input: '02',         output: '02',         expectedClasses: ['ng-invalid', 'ng-invalid-date-format'],     desc: 'Partial date'},
+        {input: '02', output: '02', expectedClasses: ['ng-invalid', 'ng-invalid-date-format'], desc: 'Partial date'},
         {input: '31/12/1999', output: '31/12/1999', expectedClasses: ['ng-invalid', 'ng-invalid-min-date'], desc: 'Date too small'},
-        {input: '',           output: '',           expectedClasses: ['ng-valid'],                          desc: 'Blank date'},
+        {input: '', output: '', expectedClasses: ['ng-valid'], desc: 'Blank date'},
         {input: '01/01/2011', output: '01/01/2011', expectedClasses: ['ng-invalid', 'ng-invalid-max-date'], desc: 'Date too large'},
-        {input: '01/01/2000', output: '01/01/2000', expectedClasses: ['ng-valid'],                          desc: 'Min boundary date'},
-        {input: '01/01/2005', output: '01/01/2005', expectedClasses: ['ng-valid'],                          desc: 'Somewehere in the middle'},
-        {input: '31/12/2010', output: '31/12/2010', expectedClasses: ['ng-valid'],                          desc: 'Max boundary date'}
+        {input: '01/01/2000', output: '01/01/2000', expectedClasses: ['ng-valid'], desc: 'Min boundary date'},
+        {input: '01/01/2005', output: '01/01/2005', expectedClasses: ['ng-valid'], desc: 'Somewehere in the middle'},
+        {input: '31/12/2010', output: '31/12/2010', expectedClasses: ['ng-valid'], desc: 'Max boundary date'},
       ];
       let element = compileElement('<form name="frm"><input type="text" name="startDate" ng-model="startDate" min-date="01/01/2000" max-date="31/12/2010" form-date-format></form>');
 
@@ -85,9 +85,9 @@ describe('Date Directives spec,', function() {
       let tomorrow = DateUtil.dateAdd(today, 1);
       let yesterday = DateUtil.dateAdd(today, -1);
       let testData = [
-        {input: today, output: today,         expectedClasses: ['ng-valid'],                          desc: 'Max date boundary'},
-        {input: tomorrow, output: tomorrow,   expectedClasses: ['ng-invalid', 'ng-invalid-max-date'], desc: 'Over max date'},
-        {input: yesterday, output: yesterday, expectedClasses: ['ng-valid'],                          desc: 'Below max date'}
+        {input: today, output: today, expectedClasses: ['ng-valid'], desc: 'Max date boundary'},
+        {input: tomorrow, output: tomorrow, expectedClasses: ['ng-invalid', 'ng-invalid-max-date'], desc: 'Over max date'},
+        {input: yesterday, output: yesterday, expectedClasses: ['ng-valid'], desc: 'Below max date'},
       ];
       let element = compileElement('<form name="frm"><input type="text" name="startDate" ng-model="startDate" max-date="today" form-date-format></form>');
 
@@ -122,7 +122,6 @@ describe('Date Directives spec,', function() {
 
 
   describe('formDateInput', function() {
-
     beforeEach(() => {
       angular.mock.inject(($compile, $rootScope) => {
         scope = $rootScope.$new();
@@ -149,20 +148,21 @@ describe('Date Directives spec,', function() {
     it('should throw an error if any of the label, id and name attributes are missing', function() {
       let controlName = 'formDate';
       let directiveName = 'form-date';
-      //let errorNoNameOrId = 'All ' + controlName + ' components MUST have a uid and name attribute, and the directive MUST exist inside a <form> for errors to appear';
+      // let errorNoNameOrId = 'All ' + controlName + ' components MUST have a uid and name attribute, and the directive MUST exist inside a <form> for errors to appear';
       let errorNoLabel = 'The ' + controlName + ' component requires a label attribute.';
       let exceptionFn = function(html) {
         compileElement(html);
       };
 
       let testData = [
-        {html: '<' + directiveName + ' label="" uid="b" name="c"></' + directiveName + '>', expected: errorNoLabel}
+        {html: '<' + directiveName + ' label="" uid="b" name="c"></' + directiveName + '>', expected: errorNoLabel},
       ];
 
       testData.forEach(function(testData) {
-        expect(function() {exceptionFn(testData.html);}).toThrow(new Error(testData.expected));
+        expect(function() {
+          exceptionFn(testData.html);
+        }).toThrow(new Error(testData.expected));
       });
     });
   });
-
 });

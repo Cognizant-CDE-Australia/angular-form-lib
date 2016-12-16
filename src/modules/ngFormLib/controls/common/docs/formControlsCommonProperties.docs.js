@@ -7,6 +7,6 @@ export default mod.name;
 mod.directive('formControlsCommonPropertiesDocs', function() {
   return {
     restrict: 'A',
-    template: require('./formControlsCommonProperties.docs.html')
+    template: require('./formControlsCommonProperties.docs.html'),
   };
 });

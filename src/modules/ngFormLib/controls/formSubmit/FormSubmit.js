@@ -12,24 +12,22 @@ export default mod.name;
  *
  * @param {Object} $parse   The $parse service
  *
- * @returns {Object} Directive definition object
+ * @return {Object} Directive definition object
  */
 mod.directive('formSubmit', ['$parse', function($parse) {
   return {
     restrict: 'A',
     require: ['^form'],   // Get the form controller
     link: function(scope, element, attr, controller) {
-
-      let fn = $parse(attr.formSubmit) || angular.noop,
-        isForm = element[0].tagName === 'FORM',
-        formController = controller[0];
+      let fn = $parse(attr.formSubmit) || angular.noop;
+      let isForm = element[0].tagName === 'FORM';
+      let formController = controller[0];
 
       element.bind(isForm ? 'submit' : 'click', function(event) {
-
         formController.setSubmitted(true);
 
         scope.$apply(function() {
-          //scope.$emit('event:FormSubmitAttempted');
+          // scope.$emit('event:FormSubmitAttempted');
 
           if (formController.$valid) {
             if (fn(scope, {$event: event}) !== false) {
@@ -39,12 +37,11 @@ mod.directive('formSubmit', ['$parse', function($parse) {
               formController.setSubmitted(false);
               formController.$setPristine();
             }
-
           } else {
             event.preventDefault();
           }
         });
       });
-    }
+    },
   };
 }]);

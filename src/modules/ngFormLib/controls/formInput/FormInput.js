@@ -21,7 +21,6 @@ export default mod.name;
 
 
 mod.directive('formInput', ['formControlService', function(formControlService) {
-
   return formControlService.buildDirective({
     controlName: 'formInput',
     expectedTemplateElements: ['input', 'label'],
@@ -31,12 +30,12 @@ mod.directive('formInput', ['formControlService', function(formControlService) {
       addPlaceholder(inputElem, formControlService.translate(tAttr.placeholder)); // Do this to be API-compatible with the form-select control. ff-placeholder is still supported. Use one or the other.
 
       // If the user wants to use addons (either text or buttons), change the DOM
-      var hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
-      var parentElemForErrors = hasInputGroup ? inputElem.parent().parent() : inputElem.parent();
+      let hasInputGroup = formControlService.addInputGroup(inputElem, tAttr);
+      let parentElemForErrors = hasInputGroup ? inputElem.parent().parent() : inputElem.parent();
 
       formControlService.createFieldHint(tElement, inputElem, tAttr.fieldHint, id + '-hint', tAttr.fieldHintDisplay);
       formControlService.createErrorFeatures(parentElemForErrors, inputElem, name, tAttr.label, tAttr.fieldErrors, tAttr.textErrors);
-    }
+    },
   });
 }]);
 

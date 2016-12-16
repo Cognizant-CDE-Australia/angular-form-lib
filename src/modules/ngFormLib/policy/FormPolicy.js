@@ -18,17 +18,17 @@ mod.provider('formPolicyService', function Provider() {
     behaviour: () => {
       return {
         applyBehaviour: noop,
-        resetBehaviour: noop
+        resetBehaviour: noop,
       };
-    }
+    },
   };
   let nullStateDefinitions = {
-    create: () => { return {}; },
-    states: () => { return {}; }
+    create: () => ({}),   // Return an empty object
+    states: () => ({}),
   };
   let nullAccessibilityBehaviour = {
     createAriaErrorElement: () => '',
-    onErrorChangeBehaviour: noop
+    onErrorChangeBehaviour: noop,
   };
 
   // The self.defaults property allows the formPolicy to be customised for a specific form
@@ -37,11 +37,10 @@ mod.provider('formPolicyService', function Provider() {
     accessibilityBehaviour: null,
     behaviourOnStateChange: null,
     checkForStateChanges: null,
-    stateDefinitions: null
+    stateDefinitions: null,
   };
 
   this.$get = ['$injector', function($injector) {
-
     function getService(name) {
       try {
         return $injector.get(name);
@@ -56,10 +55,10 @@ mod.provider('formPolicyService', function Provider() {
     self.defaults.checkForStateChanges = self.defaults.checkForStateChanges || (getService('formPolicyCheckForStateChanges') || {}).checker || noop;
     self.defaults.stateDefinitions = self.defaults.stateDefinitions || getService('formPolicyStateDefinitions') || nullStateDefinitions;
 
-    var policyService = {
+    let policyService = {
       getCurrentPolicy: function() {
         return angular.copy(self.defaults);
-      }
+      },
     };
 
     return policyService;
@@ -68,13 +67,11 @@ mod.provider('formPolicyService', function Provider() {
 
 
 function formDirective(formPolicyService) {
-
   return {
-    //priority: -1,
+    // priority: -1,
     restrict: 'AE',
     require: ['?form'], // Tells the directive to get the controller for the 'form' directive, which is the FormController controller
     compile: function(tElement, tAttr) {
-
       // Use element.data() to store a reference to this element for use by child.inheritedData()
       // Will storing an element this way cause a memory leak? Or should I just store the data I currently need (attr.class)
       // This has to happen during the compile step, as the children need access to the variable when they are compiled
@@ -84,7 +81,7 @@ function formDirective(formPolicyService) {
       return {
         pre: function(scope, element, attr, controller) {
           // We want to extend the FormController by adding a form policy
-          var formController = controller[0];
+          let formController = controller[0];
 
           formController._policy = angular.extend(formPolicyService.getCurrentPolicy(), scope.$eval(attr.formPolicy));
 
@@ -120,16 +117,18 @@ function formDirective(formPolicyService) {
           // If this form is an ngForm (in that it has a parent 'form'), then we need to make sure that
           // when the parent form is submitted or reset, the same thing happens to the child forms
           if (formController._parentController) {
-            scope.$watch(function() { return formController._parentController._formSubmitAttempted; }, function(value) {
+            scope.$watch(function() {
+              return formController._parentController._formSubmitAttempted;
+            }, function(value) {
               if (value !== undefined) {
-                //formController.setSubmitted(!!value, true);  // Don't send another notification, just update our own state
+                // formController.setSubmitted(!!value, true);  // Don't send another notification, just update our own state
                 formController.setSubmitted(!!value);  // Don't send another notification, just update our own state
               }
             });
           }
-        }
+        },
       };
-    }
+    },
   };
 }
 mod.directive('form', ['formPolicyService', formDirective]);
@@ -140,14 +139,13 @@ mod.directive('ngForm', ['formPolicyService', formDirective]);
 // including controls inside sub-forms. That allows us to reset them directly. Relying simply on the fieldName
 // does not work when using sub-forms inside ng-repeaters.
 
-var inputElements = ['input', 'select'];
+let inputElements = ['input', 'select'];
 
 angular.forEach(inputElements, function(inputElem) {
   mod.directive(inputElem, function() {
-
     function hookupElementToNameToElementMap(formController, element, fieldName, fieldController) {
       // Each element in the map is an array, because form elements *can have the same name*!
-      var map = formController._controls;
+      let map = formController._controls;
 
       if (!map[fieldName]) {
         map[fieldName] = [];
@@ -158,10 +156,10 @@ angular.forEach(inputElements, function(inputElem) {
 
       element.on('$destroy', function() {
         // Delete just this element from the map of controls
-        var map = formController._controls[element.attr('name')];
-        var elementId = element.attr('id');
+        let map = formController._controls[element.attr('name')];
+        let elementId = element.attr('id');
 
-        for (var i = 0; i < map.length; i++) {
+        for (let i = 0; i < map.length; i++) {
           if (map[i].element.attr('id') === elementId) {
             map.splice(i, 1);
             break;
@@ -186,8 +184,8 @@ angular.forEach(inputElements, function(inputElem) {
           if (rootFormController && rootFormController._controls) {
             hookupElementToNameToElementMap(rootFormController, element, name, fieldController);
           }
-        }
-      }
+        },
+      },
     };
   });
 });

@@ -6,7 +6,6 @@ export default mod.name;
 
 
 mod.directive('formReset', ['$parse', function($parse) {
-
   function resetFieldState(controlMap) {
     // Loops through the controlMap and reset's each field's state
     for (let item in controlMap) {
@@ -46,6 +45,6 @@ mod.directive('formReset', ['$parse', function($parse) {
         scope.$emit('event:FormReset');
         scope.$digest();
       });
-    }
+    },
   };
 }]);

@@ -8,7 +8,7 @@ mod.directive('formRadioButtonDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormRadioButtonDemoController',
-    template: require('./formRadioButton.docs.html')
+    template: require('./formRadioButton.docs.html'),
   };
 });
 
@@ -19,10 +19,10 @@ mod.controller('FormRadioButtonDemoController', function Controller() {
   vm.titleData = [
     {label: 'Amazing Spiderman, The'},
     {label: 'Batman'},
-    {label: 'Catwoman'}
+    {label: 'Catwoman'},
   ];
 
   vm.data = {
-    radioVal2: 2   // Initial value of second radio button
+    radioVal2: 2,   // Initial value of second radio button
   };
 });

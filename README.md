@@ -1,10 +1,16 @@
 # [Angular Form Library](https://odecee.github.io/angular-form-lib)
-[![Build Status](https://travis-ci.org/odecee/angular-form-lib.svg)](https://travis-ci.org/odecee/angular-form-lib)
-[![npm version](https://badge.fury.io/js/angular-form-lib.svg)](http://badge.fury.io/js/angular-form-lib)
-[![Code Climate](https://codeclimate.com/github/Odecee/angular-form-lib/badges/gpa.svg)](https://codeclimate.com/github/odecee/angular-form-lib)
-[![Test Coverage](https://codeclimate.com/github/Odecee/angular-form-lib/badges/coverage.svg)](https://codeclimate.com/github/odecee/angular-form-lib/coverage)
 
-Angular Form Library provides AngularJS 1.2+ directives for controlling form behaviour using policies with accessible form controls.
+<!--[RM_DESCRIPTION]-->
+> AngularJS 1.2+ directives for controlling form behaviour using policies with accessible form controls
+
+<!--[]-->
+
+[![NPM Version](https://img.shields.io/npm/v/angular-form-lib.svg?style=flat-square)](http://npm.im/angular-form-lib)
+[![Build Status](https://travis-ci.org/odecee/angular-form-lib.svg)](https://travis-ci.org/odecee/angular-form-lib)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+[![Coverage Status](https://coveralls.io/repos/github/odecee/angular-form-lib/badge.svg?branch=master)](https://coveralls.io/github/odecee/angular-form-lib?branch=master)
+[![Dependencies status](https://david-dm.org/odecee/angular-form-lib/status.svg?theme=shields.io)](https://david-dm.org/odecee/angular-form-lib#info=dependencies)
+[![Dev-dependencies status](https://david-dm.org/odecee/angular-form-lib/dev-status.svg?theme=shields.io)](https://david-dm.org/odecee/angular-form-lib#info=devDependencies)
 
 ## <a name="download"></a> Download
 ```
@@ -24,8 +30,13 @@ Before your code can be accepted into the project you must also sign the [Indivi
 See [Contributors](CONTRIBUTORS.md) for a list of people who have contributed to this project.
 
 ## <a name="changes"></a> Changes
-See [Change Log](CHANGELOG.md) for a complete list of changes.
+See [Releases](releases) for recenet changes. See [Change Log](CHANGELOG.md) for a older changes (2015 and earlier).
 
-## <a name="licence"></a> Licence
 
-This project is released under the Apache Licence version 2.0.  Please see [License.txt](LICENSE.txt) for a copy of the licence.
+<!--[RM_LICENSE]-->
+## License
+
+This software is licensed under the Apache-2.0 Licence. See [LICENSE](LICENSE).
+
+<!--[]-->
+

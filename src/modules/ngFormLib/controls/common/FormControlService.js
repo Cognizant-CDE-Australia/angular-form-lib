@@ -11,7 +11,8 @@ export default mod.name;
 // Not so great for IE8, but necessary for using radio buttons inside of dynamic forms (ng-repeat)
 mod.config(['$provide', function($provide) {
   $provide.decorator('ngModelDirective', ['$delegate', function($delegate) {
-    let ngModel = $delegate[0], controller = ngModel.controller;
+    let ngModel = $delegate[0];
+    let controller = ngModel.controller;
 
     ngModel.controller = ['$scope', '$element', '$attrs', '$injector', function Controller(scope, element, attrs, $injector) {
       let $interpolate = $injector.get('$interpolate');
@@ -20,13 +21,14 @@ mod.config(['$provide', function($provide) {
       $injector.invoke(controller, this, {
         '$scope': scope,
         '$element': element,
-        '$attrs': attrs
+        '$attrs': attrs,
       });
     }];
     return $delegate;
   }]);
   $provide.decorator('formDirective', ['$delegate', function($delegate) {
-    let form = $delegate[0], controller = form.controller;
+    let form = $delegate[0];
+    let controller = form.controller;
 
     form.controller = ['$scope', '$element', '$attrs', '$injector', function Controller(scope, element, attrs, $injector) {
       let $interpolate = $injector.get('$interpolate');
@@ -35,7 +37,7 @@ mod.config(['$provide', function($provide) {
       $injector.invoke(controller, this, {
         '$scope': scope,
         '$element': element,
-        '$attrs': attrs
+        '$attrs': attrs,
       });
     }];
     return $delegate;
@@ -45,7 +47,8 @@ mod.config(['$provide', function($provide) {
 
 // Shared code for the accessible controls
 mod.provider('formControlService', function Provider() {
-  let self = this, counter = 0;    // Private variable
+  let self = this;
+  let counter = 0;    // Private variable
 
   //
   self.defaults = {
@@ -53,24 +56,24 @@ mod.provider('formControlService', function Provider() {
     inputGroupButtonTemplateFunction: (val, handler) => `<button type="button" class="btn btn-default" ${handler ? 'ng-click="' + handler + '"' : ''}>${val}</button>`,
     templates: {
       formCheckbox: {
-        template: 'ngFormLib/template/formCheckbox.html'
+        template: 'ngFormLib/template/formCheckbox.html',
       },
       formDate: {
-        template: 'ngFormLib/template/formDate.html'
+        template: 'ngFormLib/template/formDate.html',
       },
       formInput: {
-        template: 'ngFormLib/template/formInput.html'
+        template: 'ngFormLib/template/formInput.html',
       },
       formRadioButton: {
-        template: 'ngFormLib/template/formRadioButton.html'
+        template: 'ngFormLib/template/formRadioButton.html',
       },
       formSelect: {
-        template: 'ngFormLib/template/formSelect.html'
+        template: 'ngFormLib/template/formSelect.html',
       },
       requiredMarker: {
-        template: 'ngFormLib/template/requiredMarker.html'
-      }
-    }
+        template: 'ngFormLib/template/requiredMarker.html',
+      },
+    },
   };
 
   this.$get = ['ngFormLibStringUtil', '$injector', function(StringUtil, $injector) {
@@ -86,21 +89,20 @@ mod.provider('formControlService', function Provider() {
       defaults: self.defaults,
 
       buildDirective: function(params) {
-        var directive = {
+        let directive = {
           restrict: 'AE',
           replace: true,
           transclude: true,
           compile: function(tElement, tAttr) {
-
             service.validateComponentStructure(params.controlName, tElement, params.expectedTemplateElements, tAttr, params.expectedAttributes);
 
             // For items that are inside repeaters, if more than one element has the same id, the checkbox stops working.
             // By using an attribute that is not called 'id', we can avoid this issue
-            var id = tAttr.uid || service.getUniqueFieldId(),
-              name = tAttr.name || id,// Doing this *will* break radio buttons, but they SHOULD provide a name anyway (for their own good)
-              inputElem = tElement.find(params.inputElementName || 'input'),
-              labelElem = tElement.find('label'),
-              required = service.getRequiredAttribute(tAttr.required);
+            let id = tAttr.uid || service.getUniqueFieldId();
+            let name = tAttr.name || id; // Doing this *will* break radio buttons, but they SHOULD provide a name anyway (for their own good)
+            let inputElem = tElement.find(params.inputElementName || 'input');
+            let labelElem = tElement.find('label');
+            let required = service.getRequiredAttribute(tAttr.required);
 
             service.decorateLabel(labelElem, required, id, tAttr.labelClass, tAttr.hideLabel, tAttr.hideRequiredIndicator, tAttr.labelSuffix);
             inputElem = service.decorateInputField(inputElem, tElement, tAttr, id, name, required);
@@ -116,7 +118,7 @@ mod.provider('formControlService', function Provider() {
           templateUrl: function(element, attr) {
             // Check the element for a "template" attribute, which allows customisation-per-control. Otherwise, use the control-wide template.
             return attr.template || service.getHTMLTemplate(element, params.controlName);
-          }
+          },
         };
 
         return directive;
@@ -132,10 +134,10 @@ mod.provider('formControlService', function Provider() {
         // E.g.: self.defaults.templates['select']['form-inline'] = 'path/to/your/custom/template.html'
 
         // Check this element's parent-form-element-classes to see if they match. First match, wins.
-        var parentFormClasses = (element.inheritedData('formElementClasses') || '').split(' ');
-        var result = self.defaults.templates[type].template;  // The default template, if nothing else is specified.
+        let parentFormClasses = (element.inheritedData('formElementClasses') || '').split(' ');
+        let result = self.defaults.templates[type].template;  // The default template, if nothing else is specified.
 
-        for (var i = 0; i < parentFormClasses.length; i++) {
+        for (let i = 0; i < parentFormClasses.length; i++) {
           let template = self.defaults.templates[type][parentFormClasses[i]];
 
           if (template) {
@@ -191,20 +193,19 @@ mod.provider('formControlService', function Provider() {
       },
 
       addInputGroup: function(inputElem, attr) {
-
         const inputGroupMapping = [
           {inputAttr: 'inputPrefix', className: 'input-group-addon', attachFn: 'prepend', clickHandler: '', content: (val) => val},
           {inputAttr: 'inputSuffix', className: 'input-group-addon', attachFn: 'append', clickHandler: '', content: (val) => val},
           {inputAttr: 'inputButtonPrefix', className: 'input-group-btn', attachFn: 'prepend', clickHandler: 'inputButtonPrefixClick', content: self.defaults.inputGroupButtonTemplateFunction},
-          {inputAttr: 'inputButtonSuffix', className: 'input-group-btn', attachFn: 'append', clickHandler: 'inputButtonSuffixClick', content: self.defaults.inputGroupButtonTemplateFunction}
+          {inputAttr: 'inputButtonSuffix', className: 'input-group-btn', attachFn: 'append', clickHandler: 'inputButtonSuffixClick', content: self.defaults.inputGroupButtonTemplateFunction},
         ];
         let contentToAppend = [];
 
-        inputGroupMapping.forEach(igConfig => {
+        inputGroupMapping.forEach((igConfig) => {
           if (attr[igConfig.inputAttr]) {
             contentToAppend.push({
               attachFn: igConfig.attachFn,
-              html: `<span class="${igConfig.className}">${igConfig.content(attr[igConfig.inputAttr], attr[igConfig.clickHandler])}</span>`
+              html: `<span class="${igConfig.className}">${igConfig.content(attr[igConfig.inputAttr], attr[igConfig.clickHandler])}</span>`,
             });
           }
         });
@@ -213,7 +214,7 @@ mod.provider('formControlService', function Provider() {
           inputElem.wrap('<div class="input-group">');// This should be the 'control-row' element
           let wrapper = inputElem.parent();
 
-          contentToAppend.forEach(content => wrapper[content.attachFn](content.html));
+          contentToAppend.forEach((content) => wrapper[content.attachFn](content.html));
         }
 
         return !!contentToAppend.length;
@@ -241,7 +242,6 @@ mod.provider('formControlService', function Provider() {
       },
 
 
-
       decorateInputField: function(inputElem, hostElement, attr, id, name, required) {
         if (attr.inputType) {
           // inputElem.attr('type', attr.inputType); // THIS WILL NOT WORK ON IE8!
@@ -257,9 +257,9 @@ mod.provider('formControlService', function Provider() {
 
         // Apply all of the ff-* attributes to the input element. Use the original attribute names
         // attr.$attr contains the snake-case names e.g. 'form-field' vs camel case 'formField'
-        for (var a in attr.$attr) {
+        for (let a in attr.$attr) {
           if (a.indexOf('ff') === 0) {    // Don't search for 'ff-' as the '-' has been replaced with camel case now
-            var origAttrName = attr.$attr[a].substr(3);
+            let origAttrName = attr.$attr[a].substr(3);
 
             if (origAttrName === 'class') {
               inputElem.addClass(attr[a]);
@@ -300,7 +300,7 @@ mod.provider('formControlService', function Provider() {
       },
 
       createFieldHint: function(hostElement, inputElement, fieldHint, fieldHintId, fieldHintDisplay) {
-        var hintElement;
+        let hintElement;
 
         if (fieldHint) {
           let hintText = service.translate(fieldHint);
@@ -319,13 +319,13 @@ mod.provider('formControlService', function Provider() {
 
       buildNgClassExpression: function(inputElem, targetElem) {
         // If the inputElem has an ngModel and/or ngChecked attribute, create the ng-class attribute
-        //todo.. test checkbox implementation
-        let modelStr = inputElem.attr('ng-model'),
-          checkedStr = inputElem.attr('ng-checked'),
-          disabledStr = inputElem.attr('ng-disabled'),
-          value = inputElem.attr('value'),        // a string - used for Radio buttons
-          ngValue = inputElem.attr('ng-value'),   // an expression - used for Radio buttons
-          ngTrueValue = inputElem.attr('ng-true-value');
+        // todo.. test checkbox implementation
+        let modelStr = inputElem.attr('ng-model');
+        let checkedStr = inputElem.attr('ng-checked');
+        let disabledStr = inputElem.attr('ng-disabled');
+        let value = inputElem.attr('value');        // a string - used for Radio buttons
+        let ngValue = inputElem.attr('ng-value');   // an expression - used for Radio buttons
+        let ngTrueValue = inputElem.attr('ng-true-value');
 
         if (modelStr) {
           if (ngValue || ngTrueValue) {
@@ -354,18 +354,18 @@ mod.provider('formControlService', function Provider() {
       translate: (str, interpolatedParams) => translator(str || '', interpolatedParams),
 
       validateComponentStructure: function(componentName, element, requiredElements, attr, requiredAttributes) {
-        for (var i = 0; i < requiredElements.length; i++) {
+        for (let i = 0; i < requiredElements.length; i++) {
           if (!element.find(requiredElements[i])) {
             throw new Error('The ' + componentName + ' component template requires a ' + requiredElements[i] + ' element.');
           }
         }
 
-        for (var j = 0; j < requiredAttributes.length; j++) {
+        for (let j = 0; j < requiredAttributes.length; j++) {
           if (!attr[requiredAttributes[j]]) {
             throw new Error('The ' + componentName + ' component requires a ' + requiredAttributes[j] + ' attribute.');
           }
         }
-      }
+      },
 
     };
 

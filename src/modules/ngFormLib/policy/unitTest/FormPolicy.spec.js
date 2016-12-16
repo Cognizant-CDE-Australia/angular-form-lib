@@ -4,12 +4,12 @@ import defaultPolicies from '../defaultPolicies';
 
 
 describe('Form Policy Service', function() {
-
   /**
    * We are actually testing quite a few directives, as they work together to create the behaviour we want
    */
-
-  var compileElement, scope, elem;
+  let compileElement;
+  let scope;
+  let elem;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest, controls, defaultPolicies);
@@ -19,7 +19,9 @@ describe('Form Policy Service', function() {
 
     angular.mock.inject(function($compile, $rootScope) {
       scope = $rootScope.$new();
-      scope.returnFalse = function() { return false; };
+      scope.returnFalse = function() {
+        return false;
+      };
 
       compileElement = function(html) {
         let element = $compile(html)(scope);
@@ -32,29 +34,20 @@ describe('Form Policy Service', function() {
 
 
   describe('Form Policy 5 - show errors on blur but once form submitted, show them immediately', function() {
+    let PATTERN_ERROR = 'Pattern error';
+    let REQUIRED_ERROR = 'Required error';
+    let VALID_DATA = '1234';
+    let INVALID_DATA = '123';
 
-    var PATTERN_ERROR = 'Pattern error', REQUIRED_ERROR = 'Required error',
-      VALID_DATA = '1234', INVALID_DATA = '123';
-
-    var elementText = '<form name="frm" form-submit="returnFalse()">' +
+    let elementText = '<form name="frm" form-submit="returnFalse()">' +
       '<input name="fld" type="text" ng-model="postcode" field-error-controller ng-required="true" ng-pattern="/^\\d{4}$/">' +
       '<error-container field-name="fld" ' +
       'field-errors="{required: \'' + REQUIRED_ERROR + '\', pattern: \'' + PATTERN_ERROR + '\'}" ' +
       'text-errors="[\'someData\']" ' +
       '></error-container>' +
       '</form>';
-    var errorDiv, inputElem = 'An error occurred';
-
-
-    //function compileFieldTemplate($c, $r, htmlStr) {
-    //  $compile = $c;
-    //  scope = $r.$new();
-    //
-    //  elem = angular.element(htmlStr);
-    //  $compile(elem)(scope);
-    //  scope.$digest();
-    //}
-    //
+    let errorDiv;
+    let inputElem = 'An error occurred';
 
     beforeEach(function() {
       elem = compileElement(elementText);
@@ -63,10 +56,7 @@ describe('Form Policy Service', function() {
     });
 
 
-
     it('should show errors when the field loses focus, but after the form is submitted, it should show the errors immediately', function() {
-
-
       // Initially, there are no errors
       expect(errorDiv.find('div').length).toEqual(0);
       expect(errorDiv.find('div').find('span').text()).toEqual('');
@@ -138,7 +128,6 @@ describe('Form Policy Service', function() {
 
 
   describe('Form Field elements', function() {
-
     it('should not throw an error when the element does not have a FORM parent (with a form-controller)', function() {
       function shouldWork() {
         elem = compileElement('<input type="text">');
@@ -151,7 +140,6 @@ describe('Form Policy Service', function() {
 
 
   describe('with a custom form-policy', function() {
-
     it('should extend the existing form policy with a custom form policy when one is supplied', function() {
       scope.myPolicy = {foo: 'bar', extendWith: {car: 'this too'}};
       let elem = compileElement('<form form-policy="myPolicy"></form>');

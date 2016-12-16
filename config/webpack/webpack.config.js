@@ -2,59 +2,122 @@
 
 // START_CONFIT_GENERATED_CONTENT
 /** Build START */
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var path = require('path');
-var helpers = require('./webpackHelpers');
-var basePath = process.cwd() + path.sep;
 
-// https://webpack.github.io/docs/configuration.html#resolve-extensions
-var jsExtensions = [
-      '',
-      '.webpack.js',
-      '.web.js',
+// For Upgrading from Webpack 1.x, see https://webpack.js.org/how-to/upgrade-from-webpack-1/
+const webpack = require('webpack');
+const path = require('path');
+const helpers = require('./webpackHelpers')(path.resolve(__dirname, '../../'));
+
+
+/*
+ * Webpack Constants
+ */
+const HMR = helpers.hasProcessFlag('hot');
+const METADATA = {
+  title: 'Confit Sample Project',
+  baseUrl: '/',
+  isDevServer: helpers.isWebpackDevServer(),
+  HMR: HMR
+};
+
+
+
+// https://gist.github.com/sokra/27b24881210b56bbaff7#resolving-options
+let jsExtensions = [
+      '.json',
       '.js',
-      '.js'
+      '.js',
+      '.jsx'
     ];
-var moduleDirectories = ['node_modules', 'bower_components'];
+let moduleDirectories = ['node_modules', 'bower_components']; // Only needed to exclude directories for certain loaders, not for resolving modules.
 
-var config = {
+
+let config = {
+  context: helpers.root('src'),  // The baseDir for resolving the entry option and the HTML-Webpack-Plugin
+
+
   /**
    * Devtool
-   * Reference: http://webpack.github.io/docs/configuration.html#devtool
+   * Reference: https://webpack.js.org/configuration/devtool/
    * Type of sourcemap to use per build type
    */
   devtool: 'source-map',
-  context: path.join(basePath, 'src'),  // The baseDir for resolving the entry option and the HTML-Webpack-Plugin
+
+  /**
+   * Options affecting the output of the compilation.
+   *
+   * See: https://webpack.js.org/configuration/output/
+   */
   output: {
     filename: 'js/[name].[hash:8].js',
     chunkFilename: 'js/[id].[chunkhash:8].js',  // The name for non-entry chunks
-    path: 'dist/',
+    path: helpers.root('dist/'),
     pathinfo: false   // Add path info beside module numbers in source code. Do not set to 'true' in production. http://webpack.github.io/docs/configuration.html#output-pathinfo
   },
+
   module: {
-    loaders: []
+    rules: []
   },
+
+  /*
+   * Add additional plugins to the compiler.
+   *
+   * See: http://webpack.github.io/docs/configuration.html#plugins
+   */
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(true)
+
+    // Prints more readable module names in the browser console on HMR updates
+    new webpack.NamedModulesPlugin()
   ],
 
+  /*
+   * Options affecting the resolving of modules.
+   *
+   * See: http://webpack.github.io/docs/configuration.html#resolve
+   */
   resolve: {
-    // https://webpack.github.io/docs/configuration.html#resolve-modulesdirectories
-    modulesDirectories: moduleDirectories,
-    extensions: jsExtensions
+
+    /*
+     * An array of extensions that should be used to resolve modules.
+     *
+     * See: http://webpack.github.io/docs/configuration.html#resolve-extensions
+     * See: https://gist.github.com/sokra/27b24881210b56bbaff7#resolving-options
+     */
+    extensions: jsExtensions,
+
+    // An array of directory names to be resolved to the current directory
+    modules: [helpers.root('src/'), 'node_modules']
   },
+
 
   // Output stats to provide more feedback when things go wrong:
   stats: {
     colors: true,
     modules: true,
     reasons: true
-  }
+  },
+
+  /*
+   * Include polyfills or mocks for various node stuff
+   * Description: Node configuration
+   *
+   * See: https://webpack.github.io/docs/configuration.html#node
+   */
+  node: {
+    global: true,
+    crypto: 'empty',
+    process: false,
+    module: false,
+    clearImmediate: false,
+    setImmediate: false
+  },
+
+  loaderOptions: {}     // Temporary property to allow multiple builders to add their options, then the dev/prod builds will add the LoaderOptionsPlugin
 };
 /* **/
 
 /** Entry point START **/
+
 config.entry = {
   'docs': [
     './modules/docs/index.js',
@@ -79,9 +142,18 @@ config.entry.vendor = [
   'highlightjs/highlight.pack.js'
 ];
 
-// Create a common chunk for the vendor modules (https://webpack.github.io/docs/list-of-plugins.html#2-explicit-vendor-chunk)
-var commonsChunkPlugin = new webpack.optimize.CommonsChunkPlugin({
-  name: 'vendor',
+
+
+/*
+ * Plugin: CommonsChunkPlugin
+ * Description: Shares common code between the pages.
+ * It identifies common modules and put them into a commons chunk.
+ *
+ * See: https://webpack.js.org/how-to/code-splitting/splitting-vendor/#commonschunkplugin
+ * See: https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin
+ */
+let commonsChunkPlugin = new webpack.optimize.CommonsChunkPlugin({
+  names: ['vendor', 'manifest'],
   filename: 'vendor/[name].[hash:8].js',
   minChunks: Infinity
 });
@@ -91,112 +163,154 @@ config.plugins.push(commonsChunkPlugin);
 
 /** JS START */
 
-var srcLoader = {
-  test: helpers.pathRegEx(/src\/.*\.(js)$/),
-  loader: 'babel-loader',
-  exclude: ['node_modules'],    // There should be no need to exclude unit or browser tests because they should NOT be part of the source code dependency tree
-  query: {
-    // https://github.com/babel/babel-loader#options
-    cacheDirectory: true,
-    presets: ['es2015'],
-    // Generate the "default" export when using Babel 6: http://stackoverflow.com/questions/34736771/webpack-umd-library-return-object-default
-    plugins: ['add-module-exports']
+
+let srcLoader = {
+  test: helpers.pathRegEx(/src\/.*\.(js|jsx)$/),
+  use: [
+  {
+    'loader': 'babel-loader',
+    'options': {
+      'cacheDirectory': true
+    }
   }
+],
+  exclude: moduleDirectories    // There should be no need to exclude unit or browser tests because they should NOT be part of the source code dependency tree
 };
-config.module.loaders.push(srcLoader);
+config.module.rules.push(srcLoader);
+
 /* **/
 
 /** TEST UNIT START */
 /* **/
 
 /** Assets START **/
-// Output module-assets to: /assets/<moduleName>/img|font/<fileName>
+// Output module-assets to: /assets/<moduleName>/font/<fileName>
 // Other assets (such as assets in Bootstrap) will need their own loaders
-var fontLoader = {
-  $$name: 'fontLoader',
+// File-loader still uses the older Webpack 1 syntax.
+let fontLoader = {
   test: helpers.pathRegEx(/assets\/font\/.*\.(eot|otf|svg|ttf|woff|woff2)$/),
-  loader: 'file-loader?name=/assets/[1]/font/[2].[hash:8].[ext]&regExp=' + helpers.pathRegEx('modules/(.*)/assets/font/(.+?)(.[^.]*$|$)')
+  loader: 'file-loader?name=assets/[1]/font/[2].[hash:8].[ext]&regExp=' + helpers.pathRegEx('modules/(.*)/assets/font/(.+?)(.[^.]*$|$)')
 };
-config.module.loaders.push(fontLoader);
+config.module.rules.push(fontLoader);
+// Output module-assets to: /assets/<moduleName>/img/<fileName>
+// Other assets (such as assets in Bootstrap) will need their own loaders
+// File-loader still uses the older Webpack 1 syntax.
+let imgLoader = {
+  test: helpers.pathRegEx(/assets\/img\/.*\.(gif|ico|jpe?g|png|svg|webp)$/),
+  loader: 'file-loader?name=assets/[1]/img/[2].[hash:8].[ext]&regExp=' + helpers.pathRegEx('modules/(.*)/assets/img/(.+?)(.[^.]*$|$)')
+};
+config.module.rules.push(imgLoader);
+// Output module-assets to: /assets/<moduleName>/media/<fileName>
+// Other assets (such as assets in Bootstrap) will need their own loaders
+// File-loader still uses the older Webpack 1 syntax.
+let mediaLoader = {
+  test: helpers.pathRegEx(/assets\/media\/.*\.(mp4|webm|wav|mp3|m4a|aac|oga)$/),
+  loader: 'file-loader?name=assets/[1]/media/[2].[hash:8].[ext]&regExp=' + helpers.pathRegEx('modules/(.*)/assets/media/(.+?)(.[^.]*$|$)')
+};
+config.module.rules.push(mediaLoader);
 
-var imageLoader = {
-  $$name: 'imageLoader',
-  test: helpers.pathRegEx(/assets\/img\/.*\.(gif|ico|jpg|png|svg)$/),
-  loader: 'file-loader?name=/assets/[1]/img/[2].[hash:8].[ext]&regExp=' + helpers.pathRegEx('modules/(.*)/assets/img/(.+?)(.[^.]*$|$)')
-};
-config.module.loaders.push(imageLoader);
+
 /* **/
 
 /** CSS START **/
-var autoprefixer = require('autoprefixer');
-config.postcss = [
-  autoprefixer({
-    browsers: [
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// Pass postCSS options onto the (temporary) loaderOptions property
+const autoprefixer = require('autoprefixer');
+let supportedBrowsers = {
+  browsers: [
       'last 1 version',
       'last 2 versions',
+      'ie 8',
       'ie 9',
       'ie 10',
       'ie 11'
     ]
-  })
-];
-var cssLoader = {
-  test: helpers.pathRegEx(/\.(styl)/),
-  loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader!stylus-loader')
 };
-config.module.loaders.push(cssLoader);
+config.loaderOptions.postcss = [
+  autoprefixer(supportedBrowsers)
+];
+
+// ExtractTextPlugin still uses the older Webpack 1 syntax. See https://github.com/webpack/extract-text-webpack-plugin/issues/275
+let cssLoader = {
+  test: helpers.pathRegEx(/\.(styl)$/),
+  loader: ExtractTextPlugin.extract({
+    fallbackLoader: 'style-loader',
+    loader: 'css-loader!postcss-loader!stylus-loader',
+    publicPath: '/'   // This is relative to 'extractCSSTextPlugin.filename' below.
+  })
+};
+config.module.rules.push(cssLoader);
 
 // For any entry-point CSS file definitions, extract them as text files as well
-var extractCSSTextPlugin = new ExtractTextPlugin('css/[name].[contenthash:8].css', { allChunks: true });
+let extractCSSTextPlugin = new ExtractTextPlugin({
+  filename: 'css/[name].[contenthash:8].css',     // This affects the cssLoader.loader.publicPath (see above)
+  allChunks: true
+});
 config.plugins.push(extractCSSTextPlugin);
 /* **/
 
 /** HTML START */
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var htmlLoader = {
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+let indexHtmlPlugin = new HtmlWebpackPlugin({
+  template: helpers.root('src/index-template.html'),
+  filename: 'index.html',
+  title: METADATA.title,
+  chunksSortMode: 'dependency',
+  metadata: METADATA,   // Becomes available in the template as 'options.metadata'
+  inject: false         // We want full control over where we inject the CSS and JS files
+});
+config.plugins.push(indexHtmlPlugin);
+
+
+let htmlLoader = {
   test: /\.html$/,
-  loader: 'html-loader',
+  use: [
+    {
+      loader: 'html-loader'
+    }
+  ],
   exclude: /index-template.html$/
 };
-config.module.loaders.push(htmlLoader);
-
-// Configuration that works with Angular 2  :(
-config.htmlLoader = {
-  minimize: true,
-  removeAttributeQuotes: false,
-  caseSensitive: true,
-  customAttrSurround: [ [/#/, /(?:)/], [/\*/, /(?:)/], [/\[?\(?/, /(?:)/] ],
-  customAttrAssign: [ /\)?\]?=/ ]
-};
+config.module.rules.push(htmlLoader);
 
 
-var indexHtmlPlugin = new HtmlWebpackPlugin({
-  filename: 'index.html',
-  inject: false,      // We want full control over where we inject the CSS and JS files
-  template: path.join(basePath + 'src/index-template.html')
-});
 
-config.plugins.push(indexHtmlPlugin);
 /* **/
 
 /** Server - DEV - START */
-var confitConfig = require(path.join(process.cwd(), 'confit.json'))['generator-confit'];
+const yaml = require('js-yaml');
+const fs = require('fs');   // path is declared elsewhere
+const confitConfig = yaml.load(fs.readFileSync(path.join(process.cwd(), 'confit.yml')))['generator-confit'];  // Try to keep the code lively! If confit.json changes, this code still works.
 
+const HOST = process.env.HOST || confitConfig.serverDev.hostname;
+const PORT = Number(process.env.PORT || confitConfig.serverDev.port);
+
+/**
+ * Webpack Development Server configuration
+ * Description: The webpack-dev-server is a little node.js Express server.
+ * The server emits information about the compilation state to the client,
+ * which reacts to those events.
+ *
+ * See: https://webpack.github.io/docs/webpack-dev-server.html
+ */
 config.devServer = {
-  contentBase: config.output.path,  // We want to re-use this path
-  noInfo: false,
-  debug: true, // Makes no difference
-  port: confitConfig.serverDev.port,
+  contentBase: path.resolve(__dirname, 'dev/'),  // We want to re-use this path
+  port: PORT,
+  host: HOST,
   https: confitConfig.serverDev.protocol === 'https',
-  colors: true,
-  // hot: true,    // Pass this from the command line as '--hot', which sets up the HotModuleReplacementPlugin automatically
-  inline: true,
+  noInfo: false,
+  historyApiFallback: true,
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000
+  },
   // CORS settings:
   headers: {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
     'Access-Control-Allow-Headers': 'accept, content-type, authorization',
-    'Access-Control-Allow-Credentials': true
+    'Access-Control-Allow-Credentials': 'true'
   }
 };
 /* **/
@@ -209,24 +323,31 @@ config.devServer = {
 extractCSSTextPlugin.filename = 'css/[name].css';
 
 // Add additional loaders for Bootstrap assets
-config.module.loaders.push({
+config.module.rules.push({
   test: /\.(eot|otf|svg|ttf|woff|woff2)(\?.*)?$/,
   loader: 'file-loader?name=/assets/font/[name].[hash:8].[ext]'
 });
 
-config.module.loaders.push({
+config.module.rules.push({
   test: /\.(gif|ico|jpg|png|svg)(\?.*)?$/,
   loader: 'file-loader?name=/assets/img/[name].[hash:8].[ext]'
 });
 
 // Add the CSS loader for the extra CSS files we need
-config.module.loaders.push({
-  test: /\.(css)/,
-  loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
+config.module.rules.push({
+  test: /\.(css)$/,
+  loader: ExtractTextPlugin.extract({
+    fallbackLoader: 'style-loader',
+    loader: 'css-loader!postcss-loader',
+    publicPath: '/'   // If this is not specified or is blank, it defaults to 'css/'
+  })
 });
 
+
 // Stop webpack from removing whitespace (which breaks the source code formatting
-config.htmlLoader.collapseWhitespace = false;
+config.loaderOptions.htmlLoader = {
+  collapseWhitespace: false
+};
 
 
 module.exports = config;

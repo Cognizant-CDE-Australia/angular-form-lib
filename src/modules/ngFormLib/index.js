@@ -7,12 +7,11 @@ import policyDefaults from './policy/defaultPolicies';
 
 const mod = angular.module('ngFormLib', [
   FormPolicy,
-  FormControls
+  FormControls,
 ]);
 
 // The library, and the default policies
-export default {
-  ngFormLib: mod.name,
-  defaultPolicies: policyDefaults
-};
 
+const ngFormLib = mod.name;
+const defaultPolicies = policyDefaults;
+export {ngFormLib, defaultPolicies};

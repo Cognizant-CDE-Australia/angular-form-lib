@@ -8,16 +8,16 @@ mod.directive('formSelectDocs', function() {
   return {
     restrict: 'A',
     controller: 'FormSelectDemoController',
-    template: require('./formSelect.docs.html')
+    template: require('./formSelect.docs.html'),
   };
 });
 
 mod.controller('FormSelectDemoController', function Controller() {
-  var vm = this;
+  let vm = this;
 
   vm.titleData = [
     {label: 'Dr'},
     {label: 'Mr'},
-    {label: 'Ms'}
+    {label: 'Ms'},
   ];
 });

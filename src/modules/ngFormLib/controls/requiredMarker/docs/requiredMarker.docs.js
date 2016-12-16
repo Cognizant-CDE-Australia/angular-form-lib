@@ -8,16 +8,16 @@ mod.directive('requiredMarkerDocs', function() {
   return {
     restrict: 'A',
     controller: 'RequiredMarkerDemoController',
-    template: require('./requiredMarker.docs.html')
+    template: require('./requiredMarker.docs.html'),
   };
 });
 
 mod.controller('RequiredMarkerDemoController', function Controller() {
-  var vm = this;
+  let vm = this;
 
   vm.titleData = [
     {label: 'Dr'},
     {label: 'Mr'},
-    {label: 'Ms'}
+    {label: 'Ms'},
   ];
 });

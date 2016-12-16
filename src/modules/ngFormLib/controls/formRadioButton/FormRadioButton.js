@@ -16,7 +16,6 @@ export default mod.name;
 // OUTPUT:
 
 mod.directive('formRadioButton', ['formControlService', function(formControlService) {
-
   return formControlService.buildDirective({
     controlName: 'formRadioButton',
     expectedTemplateElements: ['input', 'label', 'div'],
@@ -30,7 +29,7 @@ mod.directive('formRadioButton', ['formControlService', function(formControlServ
 
       formControlService.createErrorFeatures(tElement, inputElem, name, '', tAttr.fieldErrors, tAttr.textErrors);
       formControlService.buildNgClassExpression(inputElem, inputElem);  // Put the ng-class onto the input element itself, as this makes styling easier
-    }
+    },
   });
 }]);
 

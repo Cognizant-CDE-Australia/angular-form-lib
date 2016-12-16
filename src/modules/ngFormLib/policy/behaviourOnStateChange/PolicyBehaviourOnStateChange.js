@@ -13,7 +13,8 @@ export default mod.name;
 
 
 // Helper functions
-let timeoutPromise, scrollPromise;
+let timeoutPromise;
+let scrollPromise;
 
 function isElementVisible(element) {
   return !!element.getBoundingClientRect().top;
@@ -22,10 +23,12 @@ function isElementVisible(element) {
 function setFocusOnField($document, $timeout, duration, element, offset) {
   // If no offsetHeight then assume it's invisible and let the next error field take the scroll position
   if (isElementVisible(element[0])) {
-    //console.log('Error focus set to: ' + domElement.id);
+    // console.log('Error focus set to: ' + domElement.id);
     $timeout.cancel(timeoutPromise);
     $timeout.cancel(scrollPromise);   // This doesn't seem to make a difference on a Mac - user-generated scrolling does not get cancelled
-    timeoutPromise = $timeout(function() { element[0].focus();}, duration);
+    timeoutPromise = $timeout(function() {
+     element[0].focus();
+    }, duration);
     scrollPromise = $document.scrollToElement(element, offset, duration);  // scrollToElement() comes from the angular-scroll directive // No offset
     return true;
   }
@@ -40,8 +43,8 @@ export function combineBehaviours(a, b) {
   }
 
   return function(...args) {
-    let resultA = a.apply(null, args);
-    let resultB = b.apply(null, args);
+    let resultA = a(...args);
+    let resultB = b(...args);
 
     return {
       applyBehaviour: (...args2) => {
@@ -51,12 +54,12 @@ export function combineBehaviours(a, b) {
       resetBehaviour: (...args2) => {
         resultA.resetBehaviour.apply(null, args2);
         resultB.resetBehaviour.apply(null, args2);
-      }
+      },
     };
   };
 }
 
-/**
+/*
  * Returns a function that can be called when an error is showing FOR THIS FIELD. The function is dynamically created
  *  based on the form policy.
  *
@@ -72,17 +75,16 @@ export function combineBehaviours(a, b) {
  */
 mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout', 'duScrollDuration', 'formControlService',
   function($document, $timeout, duScrollDuration, formControlService) {
-
     // Policy implementation functions
     function onSubmitFocusFirstFieldIfError(formController) {
       // We want to pretend that there is a single controller for the form, for the purpose of managing the focus.
       // Otherwise, the main form sets the focus, then the subform (ng-form) also sets the focus
-      var focusController = formController._parentController || formController;
+      let focusController = formController._parentController || formController;
 
       return {
 
         // This function is called by the fieldErrorController when the fieldState changes and when the form is submitted
-        applyBehaviour: function(fieldElem, fieldState, formSubmitAttempted/*, formName, fieldName*/) {
+        applyBehaviour: function(fieldElem, fieldState, formSubmitAttempted/* , formName, fieldName*/) {
           // Set the focus to the field if there is an error showing and a form-submit has been attempted
           if (fieldState === ERROR_STATE && formSubmitAttempted) {
             // Make sure element is the first field with an error based on DOM order
@@ -107,12 +109,12 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
 
         resetBehaviour: () => {
           focusController._focusErrorElement = null;
-        }
+        },
       };
     }
 
 
-    function onErrorSetAriaDescribedByToAriaErrorElement(/*formController*/) {
+    function onErrorSetAriaDescribedByToAriaErrorElement(/* formController*/) {
       return {
         applyBehaviour: function(fieldElem, fieldState, formSubmitAttempted, formName, fieldName) {
           fieldElem.attr('aria-invalid', fieldState === ERROR_STATE);
@@ -126,7 +128,7 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
             formControlService.removeFromAttribute(fieldElem, 'aria-describedby', errorElemId);
           }
         },
-        resetBehaviour: () => {}
+        resetBehaviour: () => {},
       };
     }
 
@@ -139,16 +141,16 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
           formGroupElement[fieldState === ERROR_STATE ? 'addClass' : 'removeClass'](policy.fieldErrorClass);
           formGroupElement[fieldState === 'success' ? 'addClass' : 'removeClass'](policy.fieldSuccessClass);
         },
-        resetBehaviour: () => {}
+        resetBehaviour: () => {},
       };
     }
 
     return {
       onSubmitFocusFirstFieldIfError,
       onErrorSetAriaDescribedByToAriaErrorElement,
-      updateElementStyle
+      updateElementStyle,
     };
-  }
+  },
 ]);
 
 
@@ -157,7 +159,7 @@ mod.provider('formPolicyBehaviourOnStateChange', function Provider() {
     behaviour: undefined,
     fieldErrorClass: 'has-error',
     fieldSuccessClass: 'has-success',
-    fieldFocusScrollOffset: 0
+    fieldFocusScrollOffset: 0,
   };
 
   this.$get = ['formPolicyBehaviourOnStateChangeLibrary', function(lib) {
@@ -165,7 +167,7 @@ mod.provider('formPolicyBehaviourOnStateChange', function Provider() {
     config.behaviour = config.behaviour || [
       lib.onSubmitFocusFirstFieldIfError,
       lib.onErrorSetAriaDescribedByToAriaErrorElement,
-      lib.updateElementStyle
+      lib.updateElementStyle,
     ].reduce(combineBehaviours);
 
     return config;

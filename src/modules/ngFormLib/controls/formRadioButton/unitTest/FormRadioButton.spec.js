@@ -1,7 +1,9 @@
 import componentUnderTest from '../FormRadioButton';
 
 describe('when I use the Form Radio Button it', function() {
-  let compileElement, scope, elem;
+  let compileElement;
+  let scope;
+  let elem;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest);

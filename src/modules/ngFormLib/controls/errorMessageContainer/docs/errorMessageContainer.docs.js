@@ -8,17 +8,17 @@ mod.directive('errorMessageContainerDocs', function() {
   return {
     restrict: 'A',
     controller: 'ErrorMessageContainerDemoController',
-    template: require('./errorMessageContainer.docs.html')
+    template: require('./errorMessageContainer.docs.html'),
   };
 });
 
 mod.controller('ErrorMessageContainerDemoController', function Controller() {
-  var vm = this;
+  let vm = this;
 
   vm.titleData = [
     {label: 'Dr'},
     {label: 'Mr'},
-    {label: 'Ms'}
+    {label: 'Ms'},
   ];
 
   vm.toggleTextError = function() {

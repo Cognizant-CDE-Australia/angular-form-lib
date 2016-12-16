@@ -6,7 +6,8 @@ import formPolicy from '../../../policy/FormPolicy';
 import defaultPolicies from '../../../policy/defaultPolicies';
 
 describe('Error Message Container directive', function() {
-  let compileElement, scope;
+  let compileElement;
+  let scope;
 
   beforeEach(function() {
     angular.mock.module(componentUnderTest, controlsCommon, formInput, formSubmit, formPolicy, defaultPolicies);
@@ -19,7 +20,6 @@ describe('Error Message Container directive', function() {
 
 
   describe('simple tests', function() {
-
     beforeEach(function() {
       angular.mock.inject(($compile, $rootScope) => {
         scope = $rootScope.$new();
@@ -37,8 +37,8 @@ describe('Error Message Container directive', function() {
     it('should create an error message container with minimum markup', function() {
       let elem = compileElement('<form name="frm"><error-container field-name="someName"></error-container></form>');
 
-      //<div class="container-error" id="frm-someName-errors"><span class="sr-only" aria-hidden="true" id="frm-someName-errors-aria"></span></div>
-      //<div class="container-error" id="frm-someName-errors"><span class="sr-only" aria-hidden="true" id="frm-someName-errors-aria"></span></div>
+      // <div class="container-error" id="frm-someName-errors"><span class="sr-only" aria-hidden="true" id="frm-someName-errors-aria"></span></div>
+      // <div class="container-error" id="frm-someName-errors"><span class="sr-only" aria-hidden="true" id="frm-someName-errors-aria"></span></div>
       expect(elem.html()).toEqual('<div class="container-error" id="frm-someName-errors"><span class="sr-only" aria-hidden="true" id="frm-someName-errors-aria"></span></div>');
       expect(elem.find('div').length).toEqual(1);
     });
@@ -49,7 +49,7 @@ describe('Error Message Container directive', function() {
         return false;
       };
 
-      var elem = compileElement('<form name="frm" form-submit="returnFalse()">' +
+      let elem = compileElement('<form name="frm" form-submit="returnFalse()">' +
         '<div class="form-group">' +
         '<input type="text" name="someName" ng-pattern="/^\\d{4}$/" ng-model="postcode" field-error-controller>' +
         '<error-container field-name="someName" field-errors="{pattern: \'msg1\', someOtherErrorType: \'msg2\'}"></error-container>' +
@@ -103,16 +103,15 @@ describe('Error Message Container directive', function() {
 
 
   describe('on an isolate-scope directive', function() {
-
     beforeEach(function() {
       angular.module('myIsolateScopeMod', [formInput])
         .directive('myIsolateScopeDirective', function() {
           return {
             scope: {
-              model: '='
+              model: '=',
             },
             restrict: 'E',
-            template: '<form-input input-type="text" name="isoField" uid="isoField" label="Isolate Postcode" required="true" ff-ng-model="model.postcode1" ff-ng-pattern="/^\\d{4}$/" field-errors="{pattern: \'msg1\', required: \'required\'}"></form-input>'
+            template: '<form-input input-type="text" name="isoField" uid="isoField" label="Isolate Postcode" required="true" ff-ng-model="model.postcode1" ff-ng-pattern="/^\\d{4}$/" field-errors="{pattern: \'msg1\', required: \'required\'}"></form-input>',
           };
         });
 
@@ -120,7 +119,9 @@ describe('Error Message Container directive', function() {
 
       angular.mock.inject(($compile, $rootScope) => {
         scope = $rootScope.$new();
-        scope.returnFalse = function() { return false; };
+        scope.returnFalse = function() {
+         return false;
+        };
 
         compileElement = function(html) {
           let element = $compile(html)(scope);
@@ -135,7 +136,7 @@ describe('Error Message Container directive', function() {
     it('should display error messages even for form-inputs that are inside components that have isolate-scopes', function() {
       scope.address = {
         postcode1: '2000',
-        postcode2: '3000'
+        postcode2: '3000',
       };
 
       let elem = compileElement('<form name="frm" novalidate form-submit>' +
@@ -158,12 +159,11 @@ describe('Error Message Container directive', function() {
 
       elem.triggerHandler('submit');
 
-      //angular.element(document.body).append(elem);
+      // angular.element(document.body).append(elem);
 
       expect(elem.find('input').eq(0).hasClass('ng-invalid')).toEqual(true);
       expect(elem.find('input').eq(1).hasClass('ng-invalid')).toEqual(false);
       expect(elem.find('div').eq(1).find('div')[0].outerHTML).toContain('There are 2 errors for this field. Error 1, msg1,Error 2, required');
     });
-
   });
 });
