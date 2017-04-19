@@ -276,7 +276,6 @@ mod.provider('formControlService', function Provider() {
         }
 
         inputElem.attr('ng-required', required);
-        inputElem.attr('aria-required', '{{!!(' + required + ')}}');  // evaluates to true / false
         return inputElem;
       },
 

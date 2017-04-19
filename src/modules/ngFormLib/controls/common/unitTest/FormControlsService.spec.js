@@ -111,7 +111,7 @@ describe('Form controls common library', function() {
 
       formControlService.decorateInputField(elem, hostElem, attr, 'myId', 'myName', 'state === \'VIC\'');
 
-      expect(elem[0].outerHTML).toEqual('<input id="myId" name="myName" ng-required="state === \'VIC\'" aria-required="{{!!(state === \'VIC\')}}">');
+      expect(elem[0].outerHTML).toEqual('<input id="myId" name="myName" ng-required="state === \'VIC\'">');
       expect(hostElem[0].outerHTML).toEqual('<div no-ff-attributes="ok" so-nothing-will-be-copied-from-here="cool"></div>');
     });
 
@@ -128,7 +128,7 @@ describe('Form controls common library', function() {
 
       formControlService.decorateInputField(elem, hostElem, attr, 'myId', 'myName', 'true');
 
-      expect(elem[0].outerHTML).toEqual('<input class="inline" id="myId" name="myName" ng-pattern="[0-9]{4}" ng-required="true" aria-required="{{!!(true)}}">');
+      expect(elem[0].outerHTML).toEqual('<input class="inline" id="myId" name="myName" ng-pattern="[0-9]{4}" ng-required="true">');
       expect(hostElem[0].outerHTML).toEqual('<div class="row"></div>');
     });
   });
