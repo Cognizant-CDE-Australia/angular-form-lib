@@ -24,7 +24,7 @@ describe('Form Select directive', function() {
   it('should create a select dropdown with the minimum markup', function() {
     elem = compileElement('<form-select label="sel" uid="sel" name="select"></form-select>');
 
-    expect(elem.find('select')[0].outerHTML).toEqual('<select class="form-control" id="sel" name="select" ng-required="false" aria-required="false"></select>');
+    expect(elem.find('select')[0].outerHTML).toEqual('<select class="form-control" id="sel" name="select" ng-required="false"></select>');
     expect(elem.find('select').length).toEqual(1);
   });
 
