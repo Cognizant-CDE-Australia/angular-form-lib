@@ -173,28 +173,26 @@ mod.directive('fieldErrorController', ['formControlService', '$timeout', functio
       var name = attr.name;
 
       if (formController) {
-        (function () {
-          var formName = formController.$name;
-          var stateChangeBehaviour = formController._applyFormBehaviourOnStateChangePolicy; // returns a function which encapsulates the form policy rules for the behaviour to apply when errors show
+        var formName = formController.$name;
+        var stateChangeBehaviour = formController._applyFormBehaviourOnStateChangePolicy; // returns a function which encapsulates the form policy rules for the behaviour to apply when errors show
 
-          if (ngModelController) {
-            setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name);
-          }
+        if (ngModelController) {
+          setupCanShowErrorPropertyOnNgModelController(scope, formController, ngModelController, element, name);
+        }
 
-          // When the error-showing flag changes, update the field style
-          formController._scope.$watch(formName + '["' + name + '"].fieldState', function (fieldState) {
-            // fieldState is set to '' when the form is reset. So must respond to that too.
-            stateChangeBehaviour.applyBehaviour(element, fieldState, false, formName, name, formGroupElement);
-          });
+        // When the error-showing flag changes, update the field style
+        formController._scope.$watch(formName + '["' + name + '"].fieldState', function (fieldState) {
+          // fieldState is set to '' when the form is reset. So must respond to that too.
+          stateChangeBehaviour.applyBehaviour(element, fieldState, false, formName, name, formGroupElement);
+        });
 
-          // Listen to form-submit events, to determine what to focus on too
-          scope.$on('event:FormSubmitAttempted', function () {
-            // Make sure that the field-level watchers have a chance to fire first, so use a timeout
-            $timeout(function () {
-              return stateChangeBehaviour.applyBehaviour(element, ngModelController.fieldState, true, formName, name, formGroupElement);
-            }, 1);
-          });
-        })();
+        // Listen to form-submit events, to determine what to focus on too
+        scope.$on('event:FormSubmitAttempted', function () {
+          // Make sure that the field-level watchers have a chance to fire first, so use a timeout
+          $timeout(function () {
+            return stateChangeBehaviour.applyBehaviour(element, ngModelController.fieldState, true, formName, name, formGroupElement);
+          }, 1);
+        });
       }
     }
   };
@@ -425,14 +423,12 @@ mod.provider('formControlService', function Provider() {
         });
 
         if (contentToAppend.length) {
-          (function () {
-            inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element
-            var wrapper = inputElem.parent();
+          inputElem.wrap('<div class="input-group">'); // This should be the 'control-row' element
+          var wrapper = inputElem.parent();
 
-            contentToAppend.forEach(function (content) {
-              return wrapper[content.attachFn](content.html);
-            });
-          })();
+          contentToAppend.forEach(function (content) {
+            return wrapper[content.attachFn](content.html);
+          });
         }
 
         return !!contentToAppend.length;
@@ -494,7 +490,6 @@ mod.provider('formControlService', function Provider() {
         }
 
         inputElem.attr('ng-required', required);
-        inputElem.attr('aria-required', '{{!!(' + required + ')}}'); // evaluates to true / false
         return inputElem;
       },
 
@@ -756,23 +751,21 @@ mod.directive('errorContainer', ['$compile', 'formControlService', function ($co
 
       // Watch formController[fieldName] - it may not have loaded yet. When it loads, call the main function.
       if (textErrors) {
-        (function () {
-          // console.log('textErrors: ' + textErrors + ', fieldName = ' + fieldName);
-          var fieldWatcher = scope.$watch(function () {
-            return formController[fieldName];
-          }, function (newValue) {
-            if (newValue) {
-              fieldWatcher(); // Cancel the watcher
+        // console.log('textErrors: ' + textErrors + ', fieldName = ' + fieldName);
+        var fieldWatcher = scope.$watch(function () {
+          return formController[fieldName];
+        }, function (newValue) {
+          if (newValue) {
+            fieldWatcher(); // Cancel the watcher
 
-              // Do the actual thing you planned to do...
-              for (var item in textErrors) {
-                if (textErrors.hasOwnProperty(item)) {
-                  toggleErrorVisibilityForTextError(errorController, formController, formController[fieldName], scope, element, textErrors[item], fieldLabel);
-                }
+            // Do the actual thing you planned to do...
+            for (var item in textErrors) {
+              if (textErrors.hasOwnProperty(item)) {
+                toggleErrorVisibilityForTextError(errorController, formController, formController[fieldName], scope, element, textErrors[item], fieldLabel);
               }
             }
-          });
-        })();
+          }
+        });
       }
 
       element.removeAttr('error-container').removeAttr('field-name').removeAttr('field-errors').removeAttr('text-errors');
@@ -1791,25 +1784,23 @@ mod.service('formPolicyBehaviourOnStateChangeLibrary', ['$document', '$timeout',
       applyBehaviour: function applyBehaviour(fieldElem, fieldState, formSubmitAttempted /* , formName, fieldName*/) {
         // Set the focus to the field if there is an error showing and a form-submit has been attempted
         if (fieldState === __WEBPACK_IMPORTED_MODULE_4__stateDefinitions_PolicyStateDefinitions__["b" /* ERROR_STATE */] && formSubmitAttempted) {
-          (function () {
-            // Make sure element is the first field with an error based on DOM order
-            var elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
-            var firstElement = void 0;
+          // Make sure element is the first field with an error based on DOM order
+          var elems = $document[0][focusController.$name].querySelectorAll('.form-group .ng-invalid');
+          var firstElement = void 0;
 
-            __WEBPACK_IMPORTED_MODULE_0_angular___default.a.forEach(elems, function (elem) {
-              if (isElementVisible(elem) && !firstElement) {
-                firstElement = elem;
-              }
-            });
-            var isFirstElement = firstElement ? firstElement.id === fieldElem[0].id : false;
-
-            // ...and if the focusErrorElement is blank...
-            var scrollOffset = formController._policy.behaviourOnStateChange.fieldFocusScrollOffset;
-
-            if (!focusController._focusErrorElement && isFirstElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, scrollOffset)) {
-              focusController._focusErrorElement = fieldElem;
+          __WEBPACK_IMPORTED_MODULE_0_angular___default.a.forEach(elems, function (elem) {
+            if (isElementVisible(elem) && !firstElement) {
+              firstElement = elem;
             }
-          })();
+          });
+          var isFirstElement = firstElement ? firstElement.id === fieldElem[0].id : false;
+
+          // ...and if the focusErrorElement is blank...
+          var scrollOffset = formController._policy.behaviourOnStateChange.fieldFocusScrollOffset;
+
+          if (!focusController._focusErrorElement && isFirstElement && setFocusOnField($document, $timeout, duScrollDuration, fieldElem, scrollOffset)) {
+            focusController._focusErrorElement = fieldElem;
+          }
         }
       },
 
@@ -2140,4 +2131,4 @@ module.exports = __webpack_require__("./modules/ngFormLib/index.js");
 /***/ }
 
 },[1]);
-//# sourceMappingURL=ngFormLib.6f7c0c40.js.map
+//# sourceMappingURL=ngFormLib.222eed47.js.map
